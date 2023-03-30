@@ -4,7 +4,7 @@ import React from 'react'
 const Button = () => {
   return (
     <View>
-      <Text>Hello there</Text>
+      <Text className='text-xl'>Hello there</Text>
     </View>
   )
 }
