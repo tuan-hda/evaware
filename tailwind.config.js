@@ -14,21 +14,23 @@ module.exports = {
           500: '#9e9e9e'
         },
         charizard: {
-          100: '#ffecb3',
-          200: '#ffe082',
-          300: '#ffd54f',
-          400: '#ffca28',
-          500: '#ffc107'
+          100: '#FFF8CF',
+          200: '#FEF2A0',
+          300: '#FEEB70',
+          400: '#FEE440',
+          500: '#FFD60A'
         }
       },
       fontFamily: {
         app: ['Poppins', 'Arial', 'sans-serif'],
         'app-light': ['Poppins-Light', 'Arial', 'sans-serif'],
+        'app-medium': ['Poppins-Medium', 'Arial', 'sans-serif'],
         'app-semibold': ['Poppins-Semibold', 'Arial', 'sans-serif']
       },
       fontSize: {
         heading1: 32,
-        body1: 16
+        body1: 16,
+        body2: 14
       }
     }
   },
