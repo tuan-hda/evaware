@@ -6,10 +6,12 @@ module.exports = function (api) {
       [
         'module-resolver',
         {
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.android.js', '.android.tsx', '.ios.js', '.ios.tsx'],
           alias: {
             // This needs to be mirrored in tsconfig.json
             '~': './src'
-          }
+          },
+          root: ['.']
         }
       ],
       'nativewind/babel'
