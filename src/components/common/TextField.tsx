@@ -1,6 +1,7 @@
-import { Text, TextInput, TextInputProps, View } from 'react-native'
-import React from 'react'
+import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native'
+import React, { useRef } from 'react'
 import classNames from 'classnames'
+import { Clear } from 'assets/icon'
 
 interface Props extends TextInputProps {
   description?: string
@@ -12,11 +13,17 @@ interface Props extends TextInputProps {
 }
 
 const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearBtn, ...props }: Props) => {
+  const ref = useRef<TextInput>(null)
+
+  const clear = () => {
+    ref.current?.clear()
+  }
+
   return (
     <View className='w-full'>
       <View
         className={classNames(
-          'h-16 w-full flex-row items-center overflow-hidden rounded-lg bg-giratina-100 px-4 font-app text-body1',
+          'h-16 w-full flex-row items-center overflow-hidden rounded-lg bg-giratina-100 font-app text-body1',
           {
             'focus:border focus:border-giratina-300': !error && !disabled,
             'border border-magikarp-400': error,
@@ -24,14 +31,20 @@ const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearB
           }
         )}
       >
-        {(icon || disabledIcon) && <View className='mr-4'>{!disabled ? icon : disabledIcon}</View>}
+        {(icon || disabledIcon) && <View className='ml-4'>{!disabled ? icon : disabledIcon}</View>}
         <TextInput
           {...props}
+          ref={ref}
           editable={!disabled}
-          className='flex-1 font-app text-body1'
+          className='flex-1 px-4 font-app text-body1'
           placeholderTextColor='#9e9e9e'
           selectionColor='#FEEB70'
         />
+        {hasClearBtn && (
+          <TouchableOpacity onPress={clear} disabled={disabled} className='h-12 w-12 items-center justify-center pr-2'>
+            <Clear fill={disabled ? '#9e9e9e' : undefined} />
+          </TouchableOpacity>
+        )}
       </View>
 
       {(error || description) && (

@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Pressable, PressableProps, Text, Animated, Easing } from 'react-native'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -13,10 +13,6 @@ interface Props extends PressableProps {
   loading?: boolean
 }
 
-const animated = new Animated.Value(0)
-const opacityAnimated = new Animated.Value(1)
-const spinAnimated = new Animated.Value(0)
-
 const Button = ({
   type = 'primary',
   disabled = false,
@@ -24,8 +20,13 @@ const Button = ({
   size = 'large',
   label,
   loading,
+  className,
   ...props
 }: Props) => {
+  const animated = new Animated.Value(0)
+  const opacityAnimated = new Animated.Value(1)
+  const spinAnimated = useMemo(() => new Animated.Value(0), [])
+
   const backgroundColor = animated.interpolate({
     inputRange: [0, 1],
     outputRange: ['#FEE440', '#CBB633']
@@ -98,7 +99,7 @@ const Button = ({
         })
       ).start()
     }
-  }, [loading])
+  }, [loading, spinAnimated])
 
   return (
     <Animated.View
@@ -120,7 +121,8 @@ const Button = ({
             'border-2': type === 'outline' && size === 'large',
             border: type === 'outline' && size === 'small',
             'border-giratina-500': type === 'outline' && disabled
-          }
+          },
+          className
         )}
       >
         {!loading && (
