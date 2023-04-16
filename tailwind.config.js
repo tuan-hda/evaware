@@ -19,13 +19,27 @@ module.exports = {
           300: '#FEEB70',
           400: '#FEE440',
           500: '#FFD60A'
+        },
+        gengar: {
+          100: '#C5CAE9',
+          200: '#9FA8DA',
+          300: '#7986CB',
+          400: '#5C6BC0',
+          500: '#3F51B5'
+        },
+        magikarp: {
+          100: '#FFCDD2',
+          200: '#EF9A9A',
+          300: '#E57373',
+          400: '#EF5350',
+          500: '#F44336'
         }
       },
       fontFamily: {
-        app: ['Poppins', 'Arial', 'sans-serif'],
-        'app-light': ['Poppins-Light', 'Arial', 'sans-serif'],
-        'app-medium': ['Poppins-Medium', 'Arial', 'sans-serif'],
-        'app-semibold': ['Poppins-Semibold', 'Arial', 'sans-serif']
+        app: ['Lexend', 'Arial', 'sans-serif'],
+        'app-light': ['Lexend-Light', 'Arial', 'sans-serif'],
+        'app-medium': ['Lexend-Medium', 'Arial', 'sans-serif'],
+        'app-semibold': ['Lexend-Semibold', 'Arial', 'sans-serif']
       },
       fontSize: {
         heading1: 32,

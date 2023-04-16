@@ -1,7 +1,8 @@
 import classNames from 'classnames'
-import { Pressable, PressableProps, Text, Animated } from 'react-native'
-import * as React from 'react'
+import { useEffect } from 'react'
+import { Pressable, PressableProps, Text, Animated, Easing } from 'react-native'
 import Svg, { Path, SvgProps } from 'react-native-svg'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 interface Props extends PressableProps {
   type?: 'primary' | 'outline'
@@ -9,19 +10,33 @@ interface Props extends PressableProps {
   label: string
   hasBagIcon?: boolean
   disabled?: boolean
+  loading?: boolean
 }
 
 const animated = new Animated.Value(0)
 const opacityAnimated = new Animated.Value(1)
+const spinAnimated = new Animated.Value(0)
 
-const Button = ({ type = 'primary', disabled = false, hasBagIcon = false, size = 'large', label, ...props }: Props) => {
+const Button = ({
+  type = 'primary',
+  disabled = false,
+  hasBagIcon = false,
+  size = 'large',
+  label,
+  loading,
+  ...props
+}: Props) => {
   const backgroundColor = animated.interpolate({
     inputRange: [0, 1],
     outputRange: ['#FEE440', '#CBB633']
   })
+  const spin = spinAnimated.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  })
 
   const animStart = () => {
-    if (disabled) {
+    if (disabled || loading) {
       return
     }
 
@@ -42,7 +57,7 @@ const Button = ({ type = 'primary', disabled = false, hasBagIcon = false, size =
   }
 
   const animEnd = () => {
-    if (disabled) {
+    if (disabled || loading) {
       return
     }
 
@@ -72,6 +87,19 @@ const Button = ({ type = 'primary', disabled = false, hasBagIcon = false, size =
     return backgroundColor
   }
 
+  useEffect(() => {
+    if (loading) {
+      Animated.loop(
+        Animated.timing(spinAnimated, {
+          toValue: 1,
+          useNativeDriver: true,
+          duration: 2000,
+          easing: Easing.linear
+        })
+      ).start()
+    }
+  }, [loading])
+
   return (
     <Animated.View
       className={classNames('flex-row rounded-lg')}
@@ -95,21 +123,24 @@ const Button = ({ type = 'primary', disabled = false, hasBagIcon = false, size =
           }
         )}
       >
-        <Text
-          className={classNames(
-            'font-app-medium',
-            {
-              'text-body1': size === 'large',
-              'text-body2': size === 'small'
-            },
-            {
-              'text-black': !disabled,
-              'text-giratina-500': disabled
-            }
-          )}
-        >
-          {label}
-        </Text>
+        {!loading && (
+          <Text
+            className={classNames(
+              'font-app-medium',
+              {
+                'text-body1': size === 'large',
+                'text-body2': size === 'small'
+              },
+              {
+                'text-black': !disabled,
+                'text-giratina-500': disabled
+              }
+            )}
+          >
+            {label}
+          </Text>
+        )}
+
         {hasBagIcon && (
           <BagSvg
             width={size === 'large' ? 24 : 18}
@@ -119,6 +150,12 @@ const Button = ({ type = 'primary', disabled = false, hasBagIcon = false, size =
               'ml-1': size === 'small'
             })}
           />
+        )}
+
+        {loading && (
+          <Animated.View style={{ transform: [{ rotate: spin }] }}>
+            <AntDesign name='loading1' size={20} />
+          </Animated.View>
         )}
       </Pressable>
     </Animated.View>

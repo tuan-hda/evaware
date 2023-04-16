@@ -1,15 +1,18 @@
 import { useFonts } from 'expo-font'
 import { StatusBar } from 'expo-status-bar'
+import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import Button from '~/components/common/Button'
+import { TextField } from '~/components/common'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    Poppins: require('./assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('./assets/fonts/Poppins-Light.ttf'),
-    'Poppins-Medium': require('./assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Semibold': require('./assets/fonts/Poppins-Semibold.ttf')
+    Lexend: require('./assets/fonts/Lexend-Regular.ttf'),
+    'Lexend-Light': require('./assets/fonts/Lexend-Light.ttf'),
+    'Lexend-Medium': require('./assets/fonts/Lexend-Medium.ttf'),
+    'Lexend-Semibold': require('./assets/fonts/Lexend-Semibold.ttf')
   })
+  const [value, setValue] = useState('')
 
   if (!fontsLoaded) {
     return null
@@ -18,7 +21,14 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Open up App.tsx to start working on your app!</Text>
-      <Button size='small' disabled label='Active' />
+      <TextField
+        icon={<AntDesign size={20} name='pluscircleo' />}
+        value={value}
+        error='Error message'
+        onChangeText={(text: string) => setValue(text)}
+        hasClearBtn
+        placeholder='Focused'
+      />
       <StatusBar style='auto' />
     </View>
   )
