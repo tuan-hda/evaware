@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 
-function SvgComponent({ fill = '#000', ...props }: SvgProps) {
+function Clear({ fill = '#000', ...props }: SvgProps) {
   return (
     <Svg width={24} height={24} viewBox='0 0 24 24' fill={fill} {...props}>
       <Path
@@ -18,4 +18,4 @@ function SvgComponent({ fill = '#000', ...props }: SvgProps) {
   )
 }
 
-export default SvgComponent
+export default Clear

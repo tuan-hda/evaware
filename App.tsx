@@ -18,7 +18,6 @@ export default function App() {
           'Lexend-Medium': require('./assets/fonts/Lexend-Medium.ttf'),
           'Lexend-Semibold': require('./assets/fonts/Lexend-Semibold.ttf')
         })
-        await new Promise((resolve) => setTimeout(resolve, 2000))
       } catch (e) {
         console.warn(e)
       } finally {

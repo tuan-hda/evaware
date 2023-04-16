@@ -1,13 +1,14 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text } from 'react-native'
 import React from 'react'
 import { Button, CustomSafeAreaView } from '~/components/common'
+import { Logo } from 'assets/icon'
 
 const OpeningScreen = () => {
   return (
-    <CustomSafeAreaView>
+    <CustomSafeAreaView className='bg-white'>
       <View className='flex-1 justify-evenly'>
         <View className='items-center justify-center'>
-          <Image source={require('assets/image/opening_ill.png')} />
+          <Logo />
         </View>
 
         <View className='mb-4 items-center px-5'>

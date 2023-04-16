@@ -1,10 +1,17 @@
 import { SafeAreaView, StyleSheet, StatusBar } from 'react-native'
 import React from 'react'
+import classNames from 'classnames'
 
 type SafeAreaViewProps = SafeAreaView['props']
 
 const CustomSafeAreaView = (props: SafeAreaViewProps) => {
-  return <SafeAreaView {...props} className='flex-1' style={[styles.container, props.style]} />
+  return (
+    <SafeAreaView
+      {...props}
+      className={classNames('flex-1', props.className)}
+      style={[styles.container, props.style]}
+    />
+  )
 }
 
 const styles = StyleSheet.create({
