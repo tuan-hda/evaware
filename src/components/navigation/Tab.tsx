@@ -5,7 +5,10 @@ import CartScreen from '~/screens/CartScreen'
 import WishlistScreen from '~/screens/WishlistScreen'
 import UserScreen from '~/screens/UserScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Bag, Heart, User, Evaware } from 'assets/icon'
+import { Bag, Heart, User, Evaware, ArrowLeft } from 'assets/icon'
+import Bars from './Bars'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
+import { green300, transparent } from 'react-native-paper/lib/typescript/src/styles/themes/v2/colors'
 
 const mTab = createBottomTabNavigator()
 
@@ -14,7 +17,7 @@ export default function Tab() {
     <mTab.Navigator
       initialRouteName='Home'
       screenOptions={{
-        headerShown: false,
+        // headerShown: false,
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
@@ -30,7 +33,16 @@ export default function Tab() {
         name='Home'
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />
+          tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
+          header: () => (
+            <Bars
+              headerLeft='return'
+              headerRight='heart'
+              title='Title'
+              subTitle='Subtitle'
+              backgroundColor='transparent'
+            />
+          )
         }}
       />
       <mTab.Screen

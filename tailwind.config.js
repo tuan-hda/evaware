@@ -39,12 +39,14 @@ module.exports = {
         app: ['Lexend', 'Arial', 'sans-serif'],
         'app-light': ['Lexend-Light', 'Arial', 'sans-serif'],
         'app-medium': ['Lexend-Medium', 'Arial', 'sans-serif'],
-        'app-semibold': ['Lexend-Semibold', 'Arial', 'sans-serif']
+        'app-semibold': ['Lexend-Semibold', 'Arial', 'sans-serif'],
+        'app-regular': ['Lexend-Regular', 'Arial', 'sans-serif']
       },
       fontSize: {
         heading1: 32,
         body1: 16,
-        body2: 14
+        body2: 14,
+        body3: 12
       }
     }
   },
