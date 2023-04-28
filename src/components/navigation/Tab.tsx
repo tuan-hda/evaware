@@ -9,6 +9,7 @@ import { Bag, Heart, User, Evaware, ArrowLeft } from 'assets/icon'
 import Bars from './Bars'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { green300, transparent } from 'react-native-paper/lib/typescript/src/styles/themes/v2/colors'
+import { CatalogScreen } from '~/screens'
 
 const mTab = createBottomTabNavigator()
 
@@ -31,18 +32,10 @@ export default function Tab() {
     >
       <mTab.Screen
         name='Home'
-        component={HomeScreen}
+        component={CatalogScreen}
         options={{
           tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
-          header: () => (
-            <Bars
-              headerLeft='return'
-              headerRight='heart'
-              title='Title'
-              subTitle='Subtitle'
-              backgroundColor='transparent'
-            />
-          )
+          header: () => <Bars headerLeft='return' title='Furniture' />
         }}
       />
       <mTab.Screen

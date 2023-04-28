@@ -29,7 +29,7 @@ const SliderItem = ({ title, imageUrl }: Props) => {
           locations={[0.44, 1]}
           style={styles.LinearGradient}
         >
-          <Text className='font-apps absolute bottom-2 left-2 right-2 h-8 text-xs text-white' numberOfLines={2}>
+          <Text className='absolute bottom-2 left-2 right-2 h-8 font-app text-xs text-white' numberOfLines={2}>
             {newTitle}
           </Text>
         </LinearGradient>
