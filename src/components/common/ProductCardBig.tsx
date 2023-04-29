@@ -17,14 +17,14 @@ interface Props {
     desc: string
     badge: string
   }
-  style: {}
+  style?: {}
 }
 
 const ProductCardBig = ({ data = DATA, style }: Props) => {
   const { price, isFavorited, desc, badge } = data
   const image = { uri: data.imageURL }
   return (
-    <Pressable className='relative' style={style}>
+    <Pressable className='relative h-[268px] w-[164px]' style={style}>
       <Image style={{ width: '100%', height: 200, borderRadius: 8, flexGrow: 1 }} source={image} />
       <View className='mb-1 mt-2 flex-row items-center'>
         <Text className='mr-2 flex-1 font-app-medium text-body1'>${price}</Text>
