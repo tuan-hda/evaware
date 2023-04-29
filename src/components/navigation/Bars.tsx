@@ -13,6 +13,7 @@ interface Props {
   label?: string
   onRightButtonPress?: () => void
   titleUnder?: boolean
+  style?: {}
 }
 
 const LEFT = ['none', 'return']
@@ -26,14 +27,15 @@ const Bars = ({
   backgroundColor = '#ffffff',
   label = '',
   onRightButtonPress = () => console.log('Right button pressed!'),
-  titleUnder = false
+  titleUnder = false,
+  style
 }: Props) => {
   const checkHeaderLeft = LEFT.includes(headerLeft) ? headerLeft : LEFT[0]
   const checkHeaderRight = RIGHT.includes(headerRight) ? headerRight : LEFT[0]
   const checkLabel = label === '' ? (headerRight === 'button' ? 'Button' : 'Action') : label
 
   return (
-    <View>
+    <View className='w-full' style={style}>
       <View className='mt-6 h-14 flex-row items-center p-4' style={{ backgroundColor }}>
         {/* Left */}
         <View className='flex-1'>
