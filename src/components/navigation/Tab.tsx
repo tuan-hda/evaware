@@ -6,6 +6,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Bag, Heart, User, Evaware } from 'assets/icon'
 import BagNav from './BagNav'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import Bars from './Bars'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
+import { green300, transparent } from 'react-native-paper/lib/typescript/src/styles/themes/v2/colors'
+import { ProductScreen } from '~/screens'
 
 const mTab = createBottomTabNavigator()
 
@@ -16,7 +20,7 @@ export default function Tab() {
     <mTab.Navigator
       initialRouteName='Home'
       screenOptions={{
-        headerShown: false,
+        // headerShown: false,
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
@@ -30,9 +34,17 @@ export default function Tab() {
     >
       <mTab.Screen
         name='Home'
-        component={HomeScreen}
+        component={ProductScreen}
         options={{
-          tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />
+          tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
+          header: () => (
+            <Bars
+              headerLeft='return'
+              headerRight='heart'
+              backgroundColor='transparent'
+              style={{ position: 'absolute' }}
+            />
+          )
         }}
       />
       <mTab.Screen
