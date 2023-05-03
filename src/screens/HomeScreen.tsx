@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import Slider from '~/components/Slider/Slider'
+import Slider from '~/components/slider/Slider'
 
 const HomeScreen = () => {
   return (

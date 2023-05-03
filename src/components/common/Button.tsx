@@ -5,7 +5,7 @@ import Svg, { Path, SvgProps } from 'react-native-svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 interface Props extends PressableProps {
-  type?: 'primary' | 'outline'
+  type?: 'primary' | 'outline' | 'secondary'
   size?: 'large' | 'small'
   label: string
   hasBagIcon?: boolean
@@ -29,7 +29,7 @@ const Button = ({
 
   const backgroundColor = animated.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#FEE440', '#CBB633']
+    outputRange: [type === 'primary' ? '#FEE440' : '#F5F5F5', type === 'primary' ? '#CBB633' : '#9e9e9e']
   })
   const spin = spinAnimated.interpolate({
     inputRange: [0, 1],
