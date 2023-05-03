@@ -1,15 +1,17 @@
-import { View, Text, Image } from 'react-native'
 import React from 'react'
 import HomeScreen from '~/screens/HomeScreen'
-import CartScreen from '~/screens/CartScreen'
 import WishlistScreen from '~/screens/WishlistScreen'
 import UserScreen from '~/screens/UserScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Bag, Heart, User, Evaware } from 'assets/icon'
+import BagNav from './BagNav'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const mTab = createBottomTabNavigator()
 
 export default function Tab() {
+  const insets = useSafeAreaInsets()
+
   return (
     <mTab.Navigator
       initialRouteName='Home'
@@ -18,7 +20,7 @@ export default function Tab() {
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: 64
+          height: 64 + insets.bottom
         },
         tabBarItemStyle: {
           alignItems: 'center',
@@ -35,7 +37,7 @@ export default function Tab() {
       />
       <mTab.Screen
         name='Cart'
-        component={CartScreen}
+        component={BagNav}
         options={{
           tabBarIcon: ({ focused }) => <Bag fill={focused ? '#000000' : '#9e9e9e'} />
         }}

@@ -42,9 +42,12 @@ module.exports = {
         'app-semibold': ['Lexend-Semibold', 'Arial', 'sans-serif']
       },
       fontSize: {
+        heading0: 48,
         heading1: 32,
+        heading2: 24,
         body1: 16,
-        body2: 14
+        body2: 14,
+        body3: 12
       }
     }
   },
