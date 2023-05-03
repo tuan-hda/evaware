@@ -94,16 +94,16 @@ const ConfirmOrder = () => {
 
         <View className='px-4 pb-4 pt-6'>
           <View className='mt-1 flex-row justify-between'>
-            <Text className='text-body1 text-giratina-500'>Subtotal</Text>
-            <Text className='text-body1 text-giratina-500'>$440,00</Text>
+            <Text className='font-app text-body1 text-giratina-500'>Subtotal</Text>
+            <Text className='font-app text-body1 text-giratina-500'>$440,00</Text>
           </View>
           <View className='mt-1 flex-row justify-between'>
-            <Text className='text-body1 text-giratina-500'>Delivery fee</Text>
-            <Text className='text-body1 text-giratina-500'>$10,00</Text>
+            <Text className='font-app text-body1 text-giratina-500'>Delivery fee</Text>
+            <Text className='font-app text-body1 text-giratina-500'>$10,00</Text>
           </View>
           <View className='mt-1 flex-row justify-between'>
-            <Text className='text-body1 text-giratina-500'>Promocode</Text>
-            <Text className='text-body1 text-giratina-500'>$-25,00</Text>
+            <Text className='font-app text-body1 text-giratina-500'>Promocode</Text>
+            <Text className='font-app text-body1 text-giratina-500'>$-25,00</Text>
           </View>
           <View className='flex-row justify-between'>
             <Text className='font-app-semibold text-heading2'>total</Text>

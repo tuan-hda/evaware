@@ -36,11 +36,11 @@ module.exports = {
         }
       },
       fontFamily: {
-        app: ['Lexend', 'Arial', 'sans-serif'],
+        app: ['Lexend-Light', 'Arial', 'sans-serif'],
         'app-light': ['Lexend-Light', 'Arial', 'sans-serif'],
         'app-medium': ['Lexend-Medium', 'Arial', 'sans-serif'],
         'app-semibold': ['Lexend-Semibold', 'Arial', 'sans-serif'],
-        'app-regular': ['Lexend-Regular', 'Arial', 'sans-serif']
+        'app-regular': ['Lexend', 'Arial', 'sans-serif']
       },
       fontSize: {
         heading0: 48,

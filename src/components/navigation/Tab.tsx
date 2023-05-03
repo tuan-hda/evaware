@@ -20,7 +20,7 @@ export default function Tab() {
     <mTab.Navigator
       initialRouteName='Home'
       screenOptions={{
-        // headerShown: false,
+        headerShown: false, 
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
