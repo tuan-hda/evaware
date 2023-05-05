@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import Tab from '~/components/navigation/Tab'
 import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -39,8 +40,10 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer onReady={onLayoutRootView}>
-      <Tab />
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer onReady={onLayoutRootView}>
+        <Tab />
+      </NavigationContainer>
+    </SafeAreaProvider>
   )
 }

@@ -1,11 +1,11 @@
-import { View, Text, Image } from 'react-native'
 import React from 'react'
 import HomeScreen from '~/screens/HomeScreen'
-import CartScreen from '~/screens/CartScreen'
 import WishlistScreen from '~/screens/WishlistScreen'
 import UserScreen from '~/screens/UserScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Bag, Heart, User, Evaware, ArrowLeft } from 'assets/icon'
+import { Bag, Heart, User, Evaware } from 'assets/icon'
+import BagNav from './BagNav'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import { green300, transparent } from 'react-native-paper/lib/typescript/src/styles/themes/v2/colors'
@@ -14,15 +14,17 @@ import { ProductScreen } from '~/screens'
 const mTab = createBottomTabNavigator()
 
 export default function Tab() {
+  const insets = useSafeAreaInsets()
+
   return (
     <mTab.Navigator
       initialRouteName='Home'
       screenOptions={{
-        // headerShown: false,
+        headerShown: false, 
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: 64
+          height: 64 + insets.bottom
         },
         tabBarItemStyle: {
           alignItems: 'center',
@@ -47,7 +49,7 @@ export default function Tab() {
       />
       <mTab.Screen
         name='Cart'
-        component={CartScreen}
+        component={BagNav}
         options={{
           tabBarIcon: ({ focused }) => <Bag fill={focused ? '#000000' : '#9e9e9e'} />
         }}
