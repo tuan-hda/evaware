@@ -6,6 +6,30 @@ const sampleList = [
   {
     title: 'best 2020',
     imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
+  },
+  {
+    title: 'best 2020',
+    imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
+  },
+  {
+    title: 'best 2020',
+    imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
+  },
+  {
+    title: 'best 2020',
+    imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
+  },
+  {
+    title: 'best 2020',
+    imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
+  },
+  {
+    title: 'best 2020',
+    imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
+  },
+  {
+    title: 'best 2020',
+    imageUrl: 'https://www.kettal.com/media/magefan_blog/aKCTL_HBT23_024_Grand-Bitta-Sofa_FINAL.jpg'
   }
 ]
 
