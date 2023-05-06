@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
 import React, { ReactElement } from 'react'
-import { ArrowLeft, Heart } from 'assets/icon'
+import { ArrowLeft, Close, Heart } from 'assets/icon'
 import { Button } from '../common'
 import classNames from 'classnames'
 
@@ -11,12 +11,13 @@ interface Props {
   headerRight?: string
   backgroundColor?: string
   label?: string
+  onLeftButtonPress?: () => void
   onRightButtonPress?: () => void
   titleUnder?: boolean
   style?: {}
 }
 
-const LEFT = ['none', 'return']
+const LEFT = ['none', 'return', 'close']
 const RIGHT = ['none', 'button', 'action', 'heart']
 
 const Bars = ({
@@ -26,6 +27,7 @@ const Bars = ({
   headerRight = 'none',
   backgroundColor = '#ffffff',
   label = '',
+  onLeftButtonPress = () => console.log('Return!'),
   onRightButtonPress = () => console.log('Right button pressed!'),
   titleUnder = false,
   style
@@ -39,16 +41,15 @@ const Bars = ({
       <View className='mt-6 h-14 flex-row items-center p-4' style={{ backgroundColor }}>
         {/* Left */}
         <View className='flex-1'>
-          {checkHeaderLeft === 'return' && (
-            <Pressable
-              className={classNames('h-9 w-6 items-center justify-center rounded-full', {
-                'w-9 bg-white': backgroundColor === 'transparent'
-              })}
-              onPress={() => console.log('Return!')}
-            >
-              <ArrowLeft />
-            </Pressable>
-          )}
+          <Pressable
+            className={classNames('h-9 w-6 items-center justify-center rounded-full', {
+              'w-9 bg-white': backgroundColor === 'transparent'
+            })}
+            onPress={onLeftButtonPress}
+          >
+            {checkHeaderLeft === 'return' && <ArrowLeft />}
+            {checkHeaderLeft === 'close' && <Close />}
+          </Pressable>
         </View>
         {/* Middle */}
         {!titleUnder && (

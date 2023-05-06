@@ -114,7 +114,7 @@ const ProductScreen = () => {
         data={youMightlike}
         horizontal={true}
         renderItem={({ item }) => <ProductCardBig data={item} style={{ paddingRight: 15 }} />}
-        className='p-4'
+        className='m-4'
         showsHorizontalScrollIndicator={false}
       />
     </ScrollView>
