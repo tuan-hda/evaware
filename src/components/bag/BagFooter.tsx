@@ -14,7 +14,7 @@ const BagFooter = () => {
       </View>
 
       <View className='my-2'>
-        <TextField />
+        <TextField hasClearBtn placeholder='EVAW2020' />
       </View>
 
       <View className='pb-4 pt-6'>

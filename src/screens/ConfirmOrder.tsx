@@ -1,6 +1,6 @@
 import { View, Text, ScrollView } from 'react-native'
 import React from 'react'
-import { Button, CustomSafeAreaView, NavBar } from '~/components/common'
+import { Button, CustomSafeAreaView, NavBar, TextField } from '~/components/common'
 import { BagItemProps } from '~/types/bagItem.type'
 import { BagItem } from '~/components/bag'
 import { AddressItem } from '~/components/address'
@@ -91,6 +91,11 @@ const ConfirmOrder = () => {
           <Text className='font-app-semibold text-heading2 text-black'>payment method</Text>
         </View>
         <PaymentItem isPlain {...payment} />
+
+        <View className='justify-center px-4 pt-4'>
+          <Text className='mb-4 font-app-semibold text-heading2 text-black'>promocode</Text>
+          <TextField color='#000' disabled value='EVAW2023' placeholder='EVAW2020' />
+        </View>
 
         <View className='px-4 pb-4 pt-6'>
           <View className='mt-1 flex-row justify-between'>

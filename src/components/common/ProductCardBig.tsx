@@ -10,7 +10,7 @@ const DATA = {
   badge: 'new'
 }
 interface Props {
-  data: {
+  data?: {
     imageURL: string
     price: number
     isFavorited: boolean

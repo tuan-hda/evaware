@@ -10,9 +10,10 @@ interface Props extends TextInputProps {
   icon?: React.ReactNode
   disabledIcon?: React.ReactNode
   hasClearBtn?: boolean
+  color?: string
 }
 
-const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearBtn, ...props }: Props) => {
+const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearBtn, color, ...props }: Props) => {
   const ref = useRef<TextInput>(null)
 
   const clear = () => {
@@ -39,6 +40,9 @@ const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearB
           className='flex-1 px-4 font-app text-body1'
           placeholderTextColor='#9e9e9e'
           selectionColor='#FEEB70'
+          style={{
+            color
+          }}
         />
         {hasClearBtn && (
           <TouchableOpacity onPress={clear} disabled={disabled} className='h-12 w-12 items-center justify-center pr-2'>
