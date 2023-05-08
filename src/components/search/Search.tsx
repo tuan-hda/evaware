@@ -11,7 +11,7 @@ const Search = (props: ViewProps) => {
       )}
     >
       <Image source={require('../../../assets/icon/search.png')} className='h-6 w-6' />
-      <TextInput placeholder='Search' className='ml-4 mt-1 flex-1 font-app text-body1' selectionColor='#999' />
+      <TextInput placeholder='Search' className='ml-4 flex-1 font-app text-body1' selectionColor='#999' />
     </View>
   )
 }

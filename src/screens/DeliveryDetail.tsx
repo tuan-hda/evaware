@@ -4,6 +4,7 @@ import { Button, CustomSafeAreaView, NavBar } from '~/components/common'
 import { useNavigation } from '@react-navigation/native'
 import { BagNavigationProp } from '~/components/navigation/BagNav'
 import { AddressItem } from '~/components/address'
+import useShowNav from '~/hooks/useShowNav'
 
 const data = [
   {
@@ -30,6 +31,7 @@ const Header = () => (
 
 const Footer = () => {
   const navigation = useNavigation<BagNavigationProp>()
+  useShowNav(navigation, false)
 
   return (
     <View>

@@ -5,6 +5,8 @@ import { BagItemProps } from '~/types/bagItem.type'
 import { BagItem } from '~/components/bag'
 import { AddressItem } from '~/components/address'
 import { PaymentItem } from '~/components/payment'
+import { useNavigation } from '@react-navigation/native'
+import { BagNavigationProp } from '~/components/navigation/BagNav'
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -68,6 +70,8 @@ const ConfirmOrder = () => {
     exp: '12/29'
   }
 
+  const navigation = useNavigation<BagNavigationProp>()
+
   return (
     <CustomSafeAreaView className='bg-white'>
       <NavBar step={3} total={3} />
@@ -94,7 +98,7 @@ const ConfirmOrder = () => {
 
         <View className='justify-center px-4 pt-4'>
           <Text className='mb-4 font-app-semibold text-heading2 text-black'>promocode</Text>
-          <TextField color='#000' disabled value='EVAW2023' placeholder='EVAW2020' />
+          <TextField maxLength={8} hasClearBtn placeholder='EVAW2020' />
         </View>
 
         <View className='px-4 pb-4 pt-6'>
@@ -117,7 +121,7 @@ const ConfirmOrder = () => {
         </View>
 
         <View className='px-4 pb-4 pt-6'>
-          <Button label='Pay $420,50' />
+          <Button label='Pay $420,50' onPress={() => navigation.navigate('Success')} />
         </View>
       </ScrollView>
     </CustomSafeAreaView>

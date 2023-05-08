@@ -8,7 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import { HomeScreen } from '~/screens'
 
-
 const mTab = createBottomTabNavigator()
 
 export default function Tab() {
@@ -35,7 +34,7 @@ export default function Tab() {
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
-          header: () => <Bars headerLeft='return' title='Filter' headerRight='action' label='Clear' />,
+          header: () => <Bars headerLeft='return' title='Filter' headerRight='action' label='Clear' />
         }}
       />
       <mTab.Screen

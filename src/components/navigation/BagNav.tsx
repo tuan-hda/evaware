@@ -4,12 +4,14 @@ import CartScreen from '~/screens/CartScreen'
 import DeliveryDetail from '~/screens/DeliveryDetail'
 import PaymentMethod from '~/screens/PaymentMethod'
 import ConfirmOrder from '~/screens/ConfirmOrder'
+import SuccessScreen from '~/screens/SuccessScreen'
 
 export type BagNavParamsList = {
   Bag: undefined
   DeliveryDetail: undefined
   PaymentMethod: undefined
   ConfirmOrder: undefined
+  Success: undefined
 }
 
 export type BagScreenProps = StackScreenProps<BagNavParamsList, 'Bag'>
@@ -25,6 +27,7 @@ const BagNav = () => {
       <Stack.Screen component={DeliveryDetail} name='DeliveryDetail' />
       <Stack.Screen component={PaymentMethod} name='PaymentMethod' />
       <Stack.Screen component={ConfirmOrder} name='ConfirmOrder' />
+      <Stack.Screen component={SuccessScreen} name='Success' />
     </Stack.Navigator>
   )
 }

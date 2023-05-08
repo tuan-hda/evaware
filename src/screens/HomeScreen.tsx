@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { Search } from '~/components/search'
 import { Slider } from '~/components/slider'
@@ -27,7 +27,7 @@ const HomeScreen = () => {
 
         <View className='w-full py-4'>
           {items.map((item, index) => (
-            <View>
+            <View key={index}>
               <HomeCategory key={index} />
               {index !== items.length - 1 && <View className='h-4' />}
             </View>
@@ -40,9 +40,10 @@ const HomeScreen = () => {
 
         <View className='flex-row flex-wrap justify-between py-4'>
           {items.map((item, index) => (
-            <View>
+            <View key={index} className='mb-6 w-[calc(50%)] flex-row'>
+              {index % 2 === 1 && <View className='w-2' />}
               <ProductCardBig />
-              {index < items.length - 2 && <View className='h-6' />}
+              {index % 2 === 0 && <View className='w-2' />}
             </View>
           ))}
         </View>
