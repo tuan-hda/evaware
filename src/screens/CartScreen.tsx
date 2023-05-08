@@ -3,6 +3,8 @@ import { CustomSafeAreaView } from '~/components/common'
 import EmptyBag from '~/components/bag/EmptyBag'
 import Bag from '~/components/bag/Bag'
 import { BagItemProps } from '~/types/bagItem.type'
+import useShowNav from '~/hooks/useShowNav'
+import { useNavigation } from '@react-navigation/native'
 
 const CartScreen = () => {
   const bagItems: BagItemProps[] = [
@@ -38,6 +40,9 @@ const CartScreen = () => {
     }
   ]
   const bagCount = bagItems.length
+  const navigation = useNavigation()
+
+  useShowNav(navigation, true)
 
   return (
     <CustomSafeAreaView className='flex-1 bg-white'>
