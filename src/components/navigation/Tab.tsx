@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import HomeNav from './HomeNav'
 import UserNav from './UserNav'
+import DetailScreen from '~/screens/DetailScreen'
 
 const mTab = createBottomTabNavigator()
 
