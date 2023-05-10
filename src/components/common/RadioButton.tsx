@@ -4,7 +4,7 @@ import { Check } from 'assets/icon'
 import { Pressable } from 'react-native'
 
 interface Props {
-  checked: boolean
+  checked?: boolean
 }
 
 export default function RadioButton({ checked }: Props) {

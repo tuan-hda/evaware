@@ -3,7 +3,7 @@ import React, { useRef } from 'react'
 import classNames from 'classnames'
 import { Clear } from 'assets/icon'
 
-interface Props extends TextInputProps {
+export interface TextFieldProps extends TextInputProps {
   description?: string
   error?: string
   disabled?: boolean
@@ -24,7 +24,7 @@ const TextField = ({
   hasClearBtn,
   color,
   ...props
-}: Props) => {
+}: TextFieldProps) => {
   const ref = useRef<TextInput>(null)
 
   const clear = () => {

@@ -31,7 +31,7 @@ const SnackBar = ({ containerClassName, className, onCancel }: Props) => {
   }, [])
 
   return (
-    <CustomSafeAreaView className={classNames('absolute', containerClassName)}>
+    <CustomSafeAreaView className={classNames('absolute z-10', containerClassName)}>
       <View className={classNames('first-letter h-16 flex-row items-center rounded-lg bg-black px-4', className)}>
         <Animated.View style={{ transform: [{ rotate: spin }] }}>
           <Loader />
