@@ -8,7 +8,7 @@ const CustomSafeAreaView = (props: SafeAreaViewProps) => {
   return (
     <SafeAreaView
       {...props}
-      className={classNames('flex-1', props.className)}
+      className={classNames('flex-1 bg-white', props.className)}
       style={[styles.container, props.style]}
     />
   )

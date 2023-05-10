@@ -13,7 +13,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<HomeNavigationProp>()
 
   return (
-    <CustomSafeAreaView>
+    <CustomSafeAreaView className='bg-white'>
       <ScrollView
         className='flex-1 bg-white px-4'
         contentContainerStyle={{

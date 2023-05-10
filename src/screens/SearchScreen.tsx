@@ -8,7 +8,7 @@ const data = ['Wood chaid', 'Dark wood']
 
 const SearchScreen = () => {
   return (
-    <CustomSafeAreaView className='bg-white'>
+    <CustomSafeAreaView className='relative bg-white'>
       <View className='w-full px-4 py-2'>
         <Search isSearching />
       </View>
