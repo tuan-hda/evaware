@@ -55,7 +55,7 @@ export default function Tab() {
         name='User'
         component={UserNav}
         options={{
-          tabBarIcon: ({ focused }) => <User fill={focused ? '#000000' : '#9e9e9e'} />
+          tabBarIcon: ({ focused }) => <User fill={focused ? '#000000' : '#9e9e9e'} />,
         }}
       />
     </mTab.Navigator>

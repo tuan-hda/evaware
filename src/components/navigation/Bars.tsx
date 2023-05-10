@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
 import React, { ReactElement } from 'react'
-import { ArrowLeft, Close, Heart } from 'assets/icon'
+import { ArrowLeft, Close, Heart, Setting } from 'assets/icon'
 import { Button } from '../common'
 import classNames from 'classnames'
 
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const LEFT = ['none', 'return', 'close']
-const RIGHT = ['none', 'button', 'action', 'heart']
+const RIGHT = ['none', 'button', 'action', 'heart', 'setting']
 
 const Bars = ({
   headerLeft = 'none',
@@ -90,6 +90,18 @@ const Bars = ({
               >
                 {checkLabel}
               </Text>
+            </Pressable>
+          )}
+
+          {/* Setting */}
+          {checkHeaderRight === 'setting' && (
+            <Pressable
+              className={classNames('h-9 w-6 items-center justify-center rounded-full', {
+                'w-9 bg-white': backgroundColor === 'transparent'
+              })}
+              onPress={onRightButtonPress}
+            >
+              <Setting height={24} width={24} />
             </Pressable>
           )}
         </View>
