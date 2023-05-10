@@ -7,6 +7,7 @@ import BagNav from './BagNav'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import { HomeScreen } from '~/screens'
+import HomeNav from './HomeNav'
 
 const mTab = createBottomTabNavigator()
 
@@ -31,7 +32,7 @@ export default function Tab() {
     >
       <mTab.Screen
         name='Home'
-        component={HomeScreen}
+        component={HomeNav}
         options={{
           tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
           header: () => <Bars headerLeft='return' title='Filter' headerRight='action' label='Clear' />

@@ -1,13 +1,17 @@
-import { View, Text, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import React from 'react'
 import { Search } from '~/components/search'
 import { Slider } from '~/components/slider'
 import { HomeCategory } from '~/components/category'
 import { CustomSafeAreaView, ProductCardBig } from '~/components/common'
+import { useNavigation } from '@react-navigation/native'
+import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 
 const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 const HomeScreen = () => {
+  const navigation = useNavigation<HomeNavigationProp>()
+
   return (
     <CustomSafeAreaView>
       <ScrollView
@@ -27,10 +31,10 @@ const HomeScreen = () => {
 
         <View className='w-full py-4'>
           {items.map((item, index) => (
-            <View key={index}>
+            <TouchableOpacity key={index} onPress={() => navigation.navigate('Category')}>
               <HomeCategory key={index} />
               {index !== items.length - 1 && <View className='h-4' />}
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 
