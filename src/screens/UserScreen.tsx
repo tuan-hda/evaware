@@ -29,7 +29,7 @@ const UserScreen = () => {
       </Modal>
 
       <View className='h-14 items-end justify-center px-4'>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
           <Setting />
         </TouchableOpacity>
       </View>
@@ -57,7 +57,11 @@ const UserScreen = () => {
         onPress={() => navigation.navigate('Address')}
         icon={<Pin fill='#000' width={24} height={24} />}
       />
-      <Cell text='Payment Methods' icon={<Card fill='#000' width={24} height={24} />} />
+      <Cell
+        onPress={() => navigation.navigate('PaymentMethod')}
+        text='Payment Methods'
+        icon={<Card fill='#000' width={24} height={24} />}
+      />
       <Cell text='Sign Out' icon={<SignOut fill='#000' width={24} height={24} />} onPress={toggle} />
     </CustomSafeAreaView>
   )

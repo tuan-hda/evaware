@@ -4,6 +4,9 @@ import Tab from '~/components/navigation/Tab'
 import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { LogBox } from 'react-native'
+
+LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
 
 SplashScreen.preventAutoHideAsync()
 

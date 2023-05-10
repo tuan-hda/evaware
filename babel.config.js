@@ -14,7 +14,8 @@ module.exports = function (api) {
           root: ['.']
         }
       ],
-      'nativewind/babel'
+      'nativewind/babel',
+      'react-native-reanimated/plugin',
     ]
   }
 }
