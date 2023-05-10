@@ -14,7 +14,7 @@ const Cell = ({ icon, text, subtext, rightIcon, rightText, ...props }: Props) =>
   return (
     <TouchableOpacity {...props} className={classNames('h-16 flex-row items-center px-4', props.className)}>
       {icon}
-      <View className='ml-4 min-w-0 flex-1'>
+      <View className={classNames('min-w-0 flex-1', icon && 'ml-4')}>
         <Text className='font-app text-body1 text-black'>{text}</Text>
         {subtext && <Text className='font-app text-body2 text-giratina-500'>{subtext}</Text>}
       </View>

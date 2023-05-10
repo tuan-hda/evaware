@@ -4,6 +4,8 @@ import { UserScreen } from '~/screens'
 import AddressBookScreen from '~/screens/AddressBookScreen'
 import AddAddressScreen from '~/screens/AddAddressScreen'
 import ChooseAddressScreen from '~/screens/ChooseAddresScreen'
+import SettingScreen from '~/screens/SettingScreen'
+import PaymentMethodScreen from '~/screens/PaymentMethodScreen'
 
 export type UserNavParamList = {
   UserScreen: undefined
@@ -15,6 +17,8 @@ export type UserNavParamList = {
         setAddress?: (address: string) => void
       }
     | undefined
+  Setting: undefined
+  PaymentMethod: undefined
 }
 
 export type UserNavigationProp = StackNavigationProp<UserNavParamList>
@@ -29,6 +33,8 @@ const UserNav = () => (
     <Stack.Screen name='Address' component={AddressBookScreen} />
     <Stack.Screen name='AddAddress' component={AddAddressScreen} />
     <Stack.Screen name='ChooseAddress' component={ChooseAddressScreen} />
+    <Stack.Screen name='Setting' component={SettingScreen} />
+    <Stack.Screen name='PaymentMethod' component={PaymentMethodScreen} />
   </Stack.Navigator>
 )
 
