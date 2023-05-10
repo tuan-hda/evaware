@@ -22,7 +22,7 @@ const HomeScreen = () => {
       >
         <Text className='mt-14 h-[58] font-app-semibold text-heading1 text-black'>evaware</Text>
         <View className='py-[7]'>
-          <Search className='w-full' />
+          <Search onPress={() => navigation.navigate('Search')} className='w-full' />
         </View>
 
         <View className='py-2'>

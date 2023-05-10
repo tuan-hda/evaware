@@ -8,9 +8,10 @@ import classNames from 'classnames'
 type Props = BagItemProps & {
   paddingBottom?: number
   disableButton?: boolean
+  onRemove?: (id: string) => void
 }
 
-const BagItem = ({ img, qty: outerQty, price, desc, paddingBottom, disableButton }: Props) => {
+const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableButton, onRemove }: Props) => {
   const [qty, setQty] = useState(0)
 
   useEffect(() => {
@@ -37,7 +38,8 @@ const BagItem = ({ img, qty: outerQty, price, desc, paddingBottom, disableButton
           <Stepper number={qty} setNumber={setQty} />
         )}
       </View>
-      {!disableButton && <Clear fill='#9e9e9e' />}
+
+      {!disableButton && <Clear onPress={() => onRemove && onRemove(id)} fill='#9e9e9e' />}
     </View>
   )
 }

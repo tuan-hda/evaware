@@ -8,12 +8,23 @@ interface Props extends TextInputProps {
   error?: string
   disabled?: boolean
   icon?: React.ReactNode
+  rightIcon?: React.ReactNode
   disabledIcon?: React.ReactNode
   hasClearBtn?: boolean
   color?: string
 }
 
-const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearBtn, color, ...props }: Props) => {
+const TextField = ({
+  description,
+  rightIcon,
+  error,
+  disabled,
+  icon,
+  disabledIcon,
+  hasClearBtn,
+  color,
+  ...props
+}: Props) => {
   const ref = useRef<TextInput>(null)
 
   const clear = () => {
@@ -44,6 +55,9 @@ const TextField = ({ description, error, disabled, icon, disabledIcon, hasClearB
             color
           }}
         />
+
+        <View className='pr-4'>{rightIcon}</View>
+
         {hasClearBtn && (
           <TouchableOpacity onPress={clear} disabled={disabled} className='h-12 w-12 items-center justify-center pr-2'>
             <Clear fill={disabled ? '#9e9e9e' : undefined} />
