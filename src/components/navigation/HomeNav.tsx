@@ -11,7 +11,7 @@ export type HomeNavParamList = {
 
 export type HomeNavigationProp = StackNavigationProp<HomeNavParamList>
 
-const Stack = createStackNavigator()
+const Stack = createStackNavigator<HomeNavParamList>()
 
 export default function HomeNav() {
   return (

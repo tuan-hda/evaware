@@ -1,16 +1,17 @@
 import classNames from 'classnames'
 import { useEffect, useMemo } from 'react'
-import { Pressable, PressableProps, Text, Animated, Easing } from 'react-native'
+import { Pressable, PressableProps, Text, View, Animated, Easing } from 'react-native'
 import Svg, { Path, SvgProps } from 'react-native-svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 interface Props extends PressableProps {
-  type?: 'primary' | 'outline' | 'secondary'
+  type?: 'primary' | 'outline' | 'secondary' | 'text'
   size?: 'large' | 'small'
   label: string
   hasBagIcon?: boolean
   disabled?: boolean
   loading?: boolean
+  isDanger?: boolean
 }
 
 const Button = ({
@@ -21,15 +22,28 @@ const Button = ({
   label,
   loading,
   className,
+  isDanger = false,
   ...props
 }: Props) => {
   const animated = new Animated.Value(0)
   const opacityAnimated = new Animated.Value(1)
   const spinAnimated = useMemo(() => new Animated.Value(0), [])
 
+  const getStartColor = () => {
+    if (type === 'primary') return '#FEE440'
+    if (type === 'text') return '#F44336'
+    return '#f5f5f5'
+  }
+
+  const getEndColor = () => {
+    if (type === 'primary') return '#CBB633'
+    if (type === 'text') return '#9F0704'
+    return '#9e9e9e'
+  }
+
   const backgroundColor = animated.interpolate({
     inputRange: [0, 1],
-    outputRange: [type === 'primary' ? '#FEE440' : '#F5F5F5', type === 'primary' ? '#CBB633' : '#9e9e9e']
+    outputRange: [getStartColor(), getEndColor()]
   })
   const spin = spinAnimated.interpolate({
     inputRange: [0, 1],
@@ -79,7 +93,7 @@ const Button = ({
   }
 
   const getBackgroundColor = () => {
-    if (type === 'outline') {
+    if (type === 'outline' || type === 'text') {
       return 'transparent'
     }
     if (disabled) {
@@ -126,21 +140,29 @@ const Button = ({
         )}
       >
         {!loading && (
-          <Text
-            className={classNames(
-              'font-app-medium',
-              {
-                'text-body1': size === 'large',
-                'text-body2': size === 'small'
-              },
-              {
-                'text-black': !disabled,
-                'text-giratina-500': disabled
-              }
+          <View>
+            {type === 'text' && isDanger && !disabled ? (
+              <Animated.Text className='font-app-medium text-body1' style={{ color: backgroundColor }}>
+                {label}
+              </Animated.Text>
+            ) : (
+              <Text
+                className={classNames(
+                  'font-app-medium',
+                  {
+                    'text-body1': size === 'large',
+                    'text-body2': size === 'small'
+                  },
+                  {
+                    'text-black': !disabled && !isDanger,
+                    'text-giratina-500': disabled
+                  }
+                )}
+              >
+                {label}
+              </Text>
             )}
-          >
-            {label}
-          </Text>
+          </View>
         )}
 
         {hasBagIcon && (
