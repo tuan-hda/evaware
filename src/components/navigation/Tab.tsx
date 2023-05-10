@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import HomeNav from './HomeNav'
 import UserNav from './UserNav'
+import DetailScreen from '~/screens/DetailScreen'
 
 const mTab = createBottomTabNavigator()
 
@@ -55,7 +56,7 @@ export default function Tab() {
         name='User'
         component={UserNav}
         options={{
-          tabBarIcon: ({ focused }) => <User fill={focused ? '#000000' : '#9e9e9e'} />,
+          tabBarIcon: ({ focused }) => <User fill={focused ? '#000000' : '#9e9e9e'} />
         }}
       />
     </mTab.Navigator>
