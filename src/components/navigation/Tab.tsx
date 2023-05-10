@@ -6,9 +6,8 @@ import { Bag, Heart, User, Evaware } from 'assets/icon'
 import BagNav from './BagNav'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
-import { HomeScreen } from '~/screens'
+import { EmptyAccountScreen, HomeScreen } from '~/screens'
 import HomeNav from './HomeNav'
-
 const mTab = createBottomTabNavigator()
 
 export default function Tab() {
@@ -54,9 +53,11 @@ export default function Tab() {
       />
       <mTab.Screen
         name='User'
-        component={UserScreen}
+        component={EmptyAccountScreen}
         options={{
-          tabBarIcon: ({ focused }) => <User fill={focused ? '#000000' : '#9e9e9e'} />
+          headerShown: true,
+          tabBarIcon: ({ focused }) => <User fill={focused ? '#000000' : '#9e9e9e'} />,
+          header: () => <Bars headerRight='setting' />
         }}
       />
     </mTab.Navigator>
