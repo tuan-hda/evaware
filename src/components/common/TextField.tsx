@@ -12,6 +12,7 @@ export interface TextFieldProps extends TextInputProps {
   disabledIcon?: React.ReactNode
   hasClearBtn?: boolean
   color?: string
+  TextfieldClassName?:string
 }
 
 const TextField = ({
@@ -23,6 +24,7 @@ const TextField = ({
   disabledIcon,
   hasClearBtn,
   color,
+  TextfieldClassName,
   ...props
 }: TextFieldProps) => {
   const ref = useRef<TextInput>(null)
@@ -40,7 +42,8 @@ const TextField = ({
             'focus:border focus:border-giratina-300': !error && !disabled,
             'border border-magikarp-400': error,
             'text-giratina-500': disabled
-          }
+          },
+          TextfieldClassName
         )}
       >
         {(icon || disabledIcon) && <View className='ml-4'>{!disabled ? icon : disabledIcon}</View>}
