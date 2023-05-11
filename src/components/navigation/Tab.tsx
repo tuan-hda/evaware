@@ -8,6 +8,7 @@ import Bars from './Bars'
 import HomeNav from './HomeNav'
 import UserNav from './UserNav'
 import DetailScreen from '~/screens/DetailScreen'
+import { SavedItemsScreen } from '~/screens'
 
 const mTab = createBottomTabNavigator()
 
@@ -47,7 +48,7 @@ export default function Tab() {
       />
       <mTab.Screen
         name='Wishlist'
-        component={WishlistScreen}
+        component={SavedItemsScreen}
         options={{
           tabBarIcon: ({ focused }) => <Heart fill={focused ? '#000000' : '#9e9e9e'} />
         }}
