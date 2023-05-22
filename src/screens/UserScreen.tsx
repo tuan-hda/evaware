@@ -6,10 +6,11 @@ import { TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
 import Modal from 'react-native-modal'
-import { signOut } from 'firebase/auth'
+import { sendEmailVerification, signOut } from 'firebase/auth'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import { auth } from 'firebaseConfig'
+import Toast from 'react-native-toast-message'
 const UserScreen = () => {
   const [show, setShow] = useState(false)
   const navigation = useNavigation<UserNavigationProp>()

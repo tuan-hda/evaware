@@ -16,7 +16,7 @@ import { auth } from 'firebaseConfig'
 
 const validationSchema = yup.object({
   email: yup.string().required('Required').email('Invalid email'),
-  password: yup.string().required('Required'),
+  password: yup.string().required('Required').min(8, 'At least 8 characters'),
   confirmPassword: yup.string().test('confirm-pwd', 'Passwords must match', function (value) {
     return this.parent.password === value
   })
@@ -55,14 +55,14 @@ const SignupScreen = () => {
     <CustomSafeAreaView className='items-center px-5'>
       {/* Header */}
       <View className='flex-row items-center'>
-        <Pressable>
+        <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
           <ArrowLeft />
         </Pressable>
         <View className='flex-1' />
         <Star8 />
       </View>
 
-      <ScrollView className='w-full' showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className='w-full' showsVerticalScrollIndicator={false}>
         <Text className='mt-[54px] w-full text-heading1 font-bold'>Sign up</Text>
         <TextFieldWithLabel
           label={'Email'}
@@ -95,16 +95,7 @@ const SignupScreen = () => {
         />
 
         <Button onPress={handleSubmit(onSubmit)} label={'Create account'} />
-
-        <View className='mb-[22px] mt-[38px] flex-row items-center'>
-          <View className='h-0 flex-1 border-t border-[#D8DADC]' />
-          <Text className='font-app-semibold text-sm' onPress={() => navigation.navigate('Signup')}>
-            {' '}
-            or login with phone number{' '}
-          </Text>
-          <View className='h-0 flex-1 border-t border-[#D8DADC]' />
-        </View>
-
+        <View className='flex-1' />
         {/* Already have an account? Log in */}
         <View className='mb-12 mt-4 flex-row justify-center'>
           <Text className='font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>

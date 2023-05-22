@@ -3,19 +3,20 @@ import { initializeApp } from 'firebase/app'
 import { getAuth, initializeAuth } from 'firebase/auth'
 import { getReactNativePersistence } from 'firebase/auth/react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID } from '@env'
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyAw6W2MRd8nrRa4VaLOLbdcrQO8O0qK1ac',
-  authDomain: 'evaware-893a5.firebaseapp.com',
-  projectId: 'evaware-893a5',
-  storageBucket: 'evaware-893a5.appspot.com',
-  messagingSenderId: '253008480260',
-  appId: '1:253008480260:web:caa845188b08cc2947cd51',
-  measurementId: 'G-VW0PZ3DE3B'
+export const config = {
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID
 }
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig)
+const app = initializeApp(config)
 initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage)
 })
