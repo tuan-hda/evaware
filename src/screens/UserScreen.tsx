@@ -9,7 +9,7 @@ import Modal from 'react-native-modal'
 import { signOut } from 'firebase/auth'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
-import auth from '@react-native-firebase/auth'
+import { auth } from 'firebaseConfig'
 const UserScreen = () => {
   const [show, setShow] = useState(false)
   const navigation = useNavigation<UserNavigationProp>()
@@ -19,11 +19,9 @@ const UserScreen = () => {
 
   const logout = () => {
     toggle()
-    auth()
-      .signOut()
-      .then(() => {
-        logOut()
-      })
+    signOut(auth).then(() => {
+      logOut()
+    })
   }
 
   return (

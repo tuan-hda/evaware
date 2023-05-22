@@ -1,14 +1,13 @@
-import { FirebaseAuthTypes } from '@react-native-firebase/auth'
 import { User } from 'firebase/auth'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
 interface State {
-  user?: FirebaseAuthTypes.User
+  user?: User
 }
 
 interface Action {
-  setUser: (user: FirebaseAuthTypes.User) => void
+  setUser: (user: User) => void
   logOut: () => void
 }
 

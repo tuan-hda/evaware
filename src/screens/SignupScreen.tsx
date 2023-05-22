@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
-import auth from '@react-native-firebase/auth'
+import { auth } from 'firebaseConfig'
 
 const validationSchema = yup.object({
   email: yup.string().required('Required').email('Invalid email'),
@@ -38,8 +38,7 @@ const SignupScreen = () => {
   const [secure, setSecure] = useState([true, true])
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    auth()
-      .createUserWithEmailAndPassword(data.email, data.password)
+    createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user
         setUser(user)

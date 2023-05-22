@@ -12,7 +12,7 @@ import { shallow } from 'zustand/shallow'
 import Toast from 'react-native-toast-message'
 import getAuthErrorMsg from '~/utils/getAuthErrorMsg'
 import { signInFb } from '~/utils/thirdPartyAuth'
-import auth from '@react-native-firebase/auth'
+import { auth } from 'firebaseConfig'
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
@@ -22,7 +22,7 @@ const LoginScreen = () => {
   const [setUser] = useUserStore((state) => [state.setUser], shallow)
 
   useEffect(() => {
-    auth().onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user)
       }
@@ -30,8 +30,7 @@ const LoginScreen = () => {
   }, [setUser])
 
   const login = () => {
-    auth()
-      .signInWithEmailAndPassword(email, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user
         setUser(user)
@@ -96,7 +95,7 @@ const LoginScreen = () => {
         </View>
         <View className='flex-row items-center'>
           <Pressable
-            // onPress={() => signInFb(auth, setUser)}
+            onPress={() => signInFb(auth, setUser)}
             className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'
           >
             <Facebook />
