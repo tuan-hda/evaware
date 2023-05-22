@@ -5,6 +5,11 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { LogBox } from 'react-native'
+import AuthNav from '~/components/navigation/AuthNav'
+import useUserStore from '~/store/user'
+import { shallow } from 'zustand/shallow'
+import Toast from 'react-native-toast-message'
+import toastConfig from 'config/toast'
 
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
 
@@ -12,6 +17,7 @@ SplashScreen.preventAutoHideAsync()
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false)
+  const [user] = useUserStore((state) => [state.user], shallow)
 
   useEffect(() => {
     async function prepare() {
@@ -45,7 +51,8 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer onReady={onLayoutRootView}>
-        <Tab />
+        {user ? <Tab /> : <AuthNav />}
+        <Toast config={toastConfig} position='bottom' />
       </NavigationContainer>
     </SafeAreaProvider>
   )

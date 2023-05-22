@@ -2,6 +2,7 @@ import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-n
 import React, { useRef } from 'react'
 import classNames from 'classnames'
 import { Clear } from 'assets/icon'
+import { Control, Controller, FormProvider, useController } from 'react-hook-form'
 
 export interface TextFieldProps extends TextInputProps {
   description?: string
@@ -9,10 +10,13 @@ export interface TextFieldProps extends TextInputProps {
   disabled?: boolean
   icon?: React.ReactNode
   rightIcon?: React.ReactNode
+  onRightIconPress?: () => void
   disabledIcon?: React.ReactNode
   hasClearBtn?: boolean
   color?: string
-  TextfieldClassName?:string
+  TextfieldClassName?: string
+  control?: Control<any, any>
+  name?: string
 }
 
 const TextField = ({
@@ -24,7 +28,10 @@ const TextField = ({
   disabledIcon,
   hasClearBtn,
   color,
+  onRightIconPress,
   TextfieldClassName,
+  control,
+  name = '',
   ...props
 }: TextFieldProps) => {
   const ref = useRef<TextInput>(null)
@@ -47,19 +54,43 @@ const TextField = ({
         )}
       >
         {(icon || disabledIcon) && <View className='ml-4'>{!disabled ? icon : disabledIcon}</View>}
-        <TextInput
-          {...props}
-          ref={ref}
-          editable={!disabled}
-          className='flex-1 px-4 font-app text-body1'
-          placeholderTextColor='#9e9e9e'
-          selectionColor='#FEEB70'
-          style={{
-            color
-          }}
-        />
+        {control ? (
+          <Controller
+            control={control}
+            name={name}
+            render={({ field }) => (
+              <TextInput
+                {...props}
+                value={field.value}
+                onChangeText={field.onChange}
+                ref={ref}
+                editable={!disabled}
+                className='flex-1 px-4 font-app text-body1'
+                placeholderTextColor='#9e9e9e'
+                selectionColor='#FEEB70'
+                style={{
+                  color
+                }}
+              />
+            )}
+          />
+        ) : (
+          <TextInput
+            {...props}
+            ref={ref}
+            editable={!disabled}
+            className='flex-1 px-4 font-app text-body1'
+            placeholderTextColor='#9e9e9e'
+            selectionColor='#FEEB70'
+            style={{
+              color
+            }}
+          />
+        )}
 
-        <View className='pr-4'>{rightIcon}</View>
+        <TouchableOpacity className='pr-4' onPress={onRightIconPress}>
+          <View>{rightIcon}</View>
+        </TouchableOpacity>
 
         {hasClearBtn && (
           <TouchableOpacity onPress={clear} disabled={disabled} className='h-12 w-12 items-center justify-center pr-2'>
