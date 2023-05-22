@@ -11,7 +11,6 @@ import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import Toast from 'react-native-toast-message'
 import getAuthErrorMsg from '~/utils/getAuthErrorMsg'
-import { signInFb } from '~/utils/thirdPartyAuth'
 import { auth } from 'firebaseConfig'
 
 const LoginScreen = () => {
@@ -76,7 +75,7 @@ const LoginScreen = () => {
           label={'Password'}
           containerClassName='mt-[26px] mb-[15px]'
           placeholder='Enter password'
-          rightIcon={<UnEye />}
+          rightIcon={!showPwd ? <UnEye /> : <Eye />}
           secureTextEntry={!showPwd}
         />
 
@@ -88,34 +87,15 @@ const LoginScreen = () => {
         {/* Login with other 3 party  */}
         <View className='mb-[22px] mt-[38px] flex-row items-center'>
           <View className='h-0 flex-1 border-t border-[#D8DADC]' />
-          <Text className='mx-[10px] font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
-            Or Login with
+          <Text className='font-app-semibold text-sm' onPress={() => navigation.navigate('Signup')}>
+            {' '}
+            or login with phone number{' '}
           </Text>
           <View className='h-0 flex-1 border-t border-[#D8DADC]' />
         </View>
-        <View className='flex-row items-center'>
-          <Pressable
-            onPress={() => signInFb(auth, setUser)}
-            className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'
-          >
-            <Facebook />
-          </Pressable>
-
-          <View className='flex-1' />
-
-          <Pressable className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'>
-            <Google />
-          </Pressable>
-
-          <View className='flex-1' />
-
-          <Pressable className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'>
-            <Apple />
-          </Pressable>
-        </View>
 
         {/* Don’t have an account? Sign up */}
-        <View className='mb-12 mt-[52px] flex-row justify-center'>
+        <View className='mb-12 mt-4 flex-row justify-center'>
           <Text className='font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
             Don't have an account?
           </Text>

@@ -2,7 +2,7 @@ import { View, Text, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { Button, CustomSafeAreaView } from '~/components/common'
 import { Pressable } from 'react-native'
-import { Apple, ArrowLeft, Eye, Facebook, Google, Star8 } from 'assets/icon'
+import { Apple, ArrowLeft, Eye, Facebook, Google, Star8, UnEye } from 'assets/icon'
 import TextFieldWithLabel from '~/components/common/TextFieldWithLabel'
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigationProp } from '~/components/navigation/AuthNav'
@@ -81,7 +81,7 @@ const SignupScreen = () => {
           name='password'
           onRightIconPress={() => setSecure([!secure[0], secure[1]])}
           placeholder='must be 8 characters'
-          rightIcon={<Eye />}
+          rightIcon={!secure[0] ? <Eye /> : <UnEye />}
         />
         <TextFieldWithLabel
           error={errors.confirmPassword?.message}
@@ -91,39 +91,22 @@ const SignupScreen = () => {
           name='confirmPassword'
           containerClassName='mt-[22px] mb-[38px]'
           placeholder='repeat password'
-          rightIcon={<Eye />}
+          rightIcon={!secure[1] ? <Eye /> : <UnEye />}
         />
 
         <Button onPress={handleSubmit(onSubmit)} label={'Create account'} />
 
-        {/* Register with other 3 party  */}
         <View className='mb-[22px] mt-[38px] flex-row items-center'>
           <View className='h-0 flex-1 border-t border-[#D8DADC]' />
-          <Text className='mx-[10px] font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
-            Or Register with
+          <Text className='font-app-semibold text-sm' onPress={() => navigation.navigate('Signup')}>
+            {' '}
+            or login with phone number{' '}
           </Text>
           <View className='h-0 flex-1 border-t border-[#D8DADC]' />
         </View>
-        <View className='flex-row items-center'>
-          <Pressable className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'>
-            <Facebook />
-          </Pressable>
-
-          <View className='flex-1' />
-
-          <Pressable className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'>
-            <Google />
-          </Pressable>
-
-          <View className='flex-1' />
-
-          <Pressable className='rounded-[10px] border border-[#D8DADC] px-[44px] py-[18px]'>
-            <Apple />
-          </Pressable>
-        </View>
 
         {/* Already have an account? Log in */}
-        <View className='mb-12 mt-[52px] flex-row justify-center'>
+        <View className='mb-12 mt-4 flex-row justify-center'>
           <Text className='font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
             Already have an account?{' '}
           </Text>
