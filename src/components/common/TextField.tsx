@@ -1,4 +1,4 @@
-import { Text, TextInput, TextInputProps, Touchable, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TextInputProps, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useRef } from 'react'
 import classNames from 'classnames'
 import { Clear } from 'assets/icon'
@@ -42,6 +42,13 @@ const TextField = ({
     ref.current?.clear()
   }
 
+  const styles = StyleSheet.create({
+    text: {
+      textAlignVertical: props.multiline ? 'top' : 'center',
+      paddingVertical: props.multiline ? 16 : 0
+    }
+  })
+
   return (
     <View className='w-full'>
       <View
@@ -55,9 +62,11 @@ const TextField = ({
           TextfieldClassName
         )}
       >
-        <TouchableOpacity className='ml-4' onPress={onLeftIconPress}>
-          {(icon || disabledIcon) && <View>{!disabled ? icon : disabledIcon}</View>}
-        </TouchableOpacity>
+        {(icon || disabledIcon) && (
+          <TouchableOpacity className='ml-4' onPress={onLeftIconPress}>
+            {<View>{!disabled ? icon : disabledIcon}</View>}
+          </TouchableOpacity>
+        )}
         {control ? (
           <Controller
             control={control}
@@ -69,11 +78,12 @@ const TextField = ({
                 onChangeText={field.onChange}
                 ref={ref}
                 editable={!disabled}
-                className='flex-1 px-4 font-app text-body1'
+                className='h-full flex-1 px-4 font-app text-body1'
                 placeholderTextColor='#9e9e9e'
                 selectionColor='#FEEB70'
                 style={{
-                  color
+                  color,
+                  ...styles.text
                 }}
               />
             )}
@@ -83,11 +93,12 @@ const TextField = ({
             {...props}
             ref={ref}
             editable={!disabled}
-            className='flex-1 px-4 font-app text-body1'
+            className={'h-full flex-1 px-4 font-app text-body1'}
             placeholderTextColor='#9e9e9e'
             selectionColor='#FEEB70'
             style={{
-              color
+              color,
+              ...styles.text
             }}
           />
         )}

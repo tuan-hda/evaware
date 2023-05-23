@@ -33,7 +33,10 @@ const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableBu
         </View>
 
         {disableButton ? (
-          <Text className='mt-1 text-body3 text-black'>Qty: {qty}</Text>
+          <View>
+            <Text className='mt-1 text-body3 text-black'>Variation: Hel</Text>
+            <Text className='mt-1 text-body3 text-black'>Qty: {qty}</Text>
+          </View>
         ) : (
           <Stepper number={qty} setNumber={setQty} />
         )}
