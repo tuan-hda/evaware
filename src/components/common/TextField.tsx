@@ -1,4 +1,4 @@
-import { Text, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native'
+import { Text, TextInput, TextInputProps, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useRef } from 'react'
 import classNames from 'classnames'
 import { Clear } from 'assets/icon'
@@ -17,6 +17,7 @@ export interface TextFieldProps extends TextInputProps {
   TextfieldClassName?: string
   control?: Control<any, any>
   name?: string
+  onLeftIconPress?: () => void
 }
 
 const TextField = ({
@@ -28,6 +29,7 @@ const TextField = ({
   disabledIcon,
   hasClearBtn,
   color,
+  onLeftIconPress,
   onRightIconPress,
   TextfieldClassName,
   control,
@@ -53,7 +55,9 @@ const TextField = ({
           TextfieldClassName
         )}
       >
-        {(icon || disabledIcon) && <View className='ml-4'>{!disabled ? icon : disabledIcon}</View>}
+        <TouchableOpacity className='ml-4' onPress={onLeftIconPress}>
+          {(icon || disabledIcon) && <View>{!disabled ? icon : disabledIcon}</View>}
+        </TouchableOpacity>
         {control ? (
           <Controller
             control={control}

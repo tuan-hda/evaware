@@ -1,7 +1,7 @@
 import { View, Text, Pressable, FlatList } from 'react-native'
 import React from 'react'
 import { CustomSafeAreaView, ProductCardBig } from '~/components/common'
-import { Search } from '~/components/search'
+import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import FlatGrid from '~/layouts/FlatGrid'
 
@@ -60,7 +60,7 @@ const DATA = [
 const CatalogScreen = () => {
   return (
     <CustomSafeAreaView className='items-center bg-white px-4'>
-      <Search className='mb-2' />
+      <SearchBar className='mb-2' />
       {/* Sort and filter */}
       <View className='my-2 flex-row'>
         <Pressable

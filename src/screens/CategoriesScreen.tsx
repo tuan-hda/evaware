@@ -1,13 +1,13 @@
 import React from 'react'
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { AppBar, CustomSafeAreaView } from '~/components/common'
-import { Search } from '~/components/search'
+import { SearchBar } from '~/components/common'
 
 const data = ['Furniture', 'Lightning', 'Rugs', 'Mirrors', 'Blankets', 'Cushions', 'Curtains', 'Curtains']
 
 const Header = () => (
   <View className='mx-4 justify-center'>
-    <Search className='my-2' />
+    <SearchBar className='my-2' />
     <View className='h-16 justify-center'>
       <Text className='font-app-semibold text-heading2'>categories</Text>
     </View>

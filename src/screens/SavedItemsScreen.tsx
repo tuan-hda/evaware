@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
 import React from 'react'
-import { Search } from '~/components/search'
+import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
 import { CustomSafeAreaView, SmallCard } from '~/components/common'
@@ -44,7 +44,7 @@ const SavedItemsScreen = ({ data = DATA }) => {
     <CustomSafeAreaView className='flex-1 bg-white px-4'>
       <Text className='mb-6 mt-14 font-app-semibold text-heading1'>saved items</Text>
 
-      <Search />
+      <SearchBar />
       {/* Sort and filter */}
       <View className='mb-2 mt-4 flex-row'>
         <Pressable
@@ -68,7 +68,9 @@ const SavedItemsScreen = ({ data = DATA }) => {
         className='w-full pt-4'
         showsVerticalScrollIndicator={false}
         data={data}
-        renderItem={({ item }) => <SmallCard price={item.price} desc={item.desc} image={item.image} style='saved' containerClassName='mb-6' />}
+        renderItem={({ item }) => (
+          <SmallCard price={item.price} desc={item.desc} image={item.image} style='saved' containerClassName='mb-6' />
+        )}
       />
     </CustomSafeAreaView>
   )

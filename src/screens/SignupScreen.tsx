@@ -13,6 +13,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import { auth } from 'firebaseConfig'
+import Toast from 'react-native-toast-message'
 
 const validationSchema = yup.object({
   email: yup.string().required('Required').email('Invalid email'),
@@ -47,6 +48,7 @@ const SignupScreen = () => {
         const errorCode = error.code
         const errorMessage = error.message
         console.log(errorCode, errorMessage)
+        Toast.show({ type: 'error', text1: 'Sign up failed', text2: errorMessage })
       })
   }
 
@@ -89,6 +91,7 @@ const SignupScreen = () => {
           onRightIconPress={() => setSecure([secure[0], !secure[1]])}
           secureTextEntry={secure[1]}
           name='confirmPassword'
+          control={control}
           containerClassName='mt-[22px] mb-[38px]'
           placeholder='repeat password'
           rightIcon={!secure[1] ? <Eye /> : <UnEye />}

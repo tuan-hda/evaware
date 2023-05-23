@@ -1,9 +1,8 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Search } from '~/components/search'
 import { Slider } from '~/components/slider'
 import { HomeCategory } from '~/components/category'
-import { CustomSafeAreaView, ProductCardBig } from '~/components/common'
+import { CustomSafeAreaView, ProductCardBig, SearchBar } from '~/components/common'
 import { useNavigation } from '@react-navigation/native'
 import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 
@@ -22,7 +21,7 @@ const HomeScreen = () => {
       >
         <Text className='mt-14 h-[58] font-app-semibold text-heading1 text-black'>evaware</Text>
         <View className='py-[7]'>
-          <Search onPress={() => navigation.navigate('Search')} className='w-full' />
+          <SearchBar onPress={() => navigation.navigate('Search')} className='w-full' />
         </View>
 
         <View className='py-2'>

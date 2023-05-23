@@ -10,6 +10,7 @@ import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import Toast from 'react-native-toast-message'
 import toastConfig from 'config/toast'
+import { AdminTab } from '~/admin/nav'
 
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
 
@@ -48,10 +49,16 @@ export default function App() {
     return null
   }
 
+  const getNav = () => {
+    if (!user) return <AuthNav />
+    if (user.email === 'hdatdragon2@gmail.com') return <AdminTab />
+    return <Tab />
+  }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer onReady={onLayoutRootView}>
-        {user ? <Tab /> : <AuthNav />}
+        {getNav()}
         <Toast config={toastConfig} position='bottom' />
       </NavigationContainer>
     </SafeAreaProvider>
