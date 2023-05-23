@@ -19,7 +19,6 @@ import TextFieldWithLabel from '~/components/common/TextFieldWithLabel'
 import Variation from '../components/product/Variation'
 import AddRectangle from '../components/product/AddVariation'
 import Modal from 'react-native-modal'
-import useUserStore from '~/store/user'
 
 type Props = ViewProps
 
