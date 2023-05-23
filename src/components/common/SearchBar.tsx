@@ -3,13 +3,14 @@ import classNames from 'classnames'
 import { Image, Text, View, TouchableWithoutFeedbackProps, TouchableWithoutFeedback } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
-import { TextField } from '../common'
+import TextField from './TextField'
 
 type Props = TouchableWithoutFeedbackProps & {
   isSearching?: boolean
+  onBack?: () => void
 }
 
-const Search = ({ isSearching, ...props }: Props) => {
+const SearchBar = ({ isSearching, onBack, ...props }: Props) => {
   const navigation = useNavigation()
 
   if (isSearching)
@@ -17,16 +18,9 @@ const Search = ({ isSearching, ...props }: Props) => {
       <TextField
         className={props.className}
         placeholder='Search something...'
-        icon={
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ArrowLeft />
-          </TouchableOpacity>
-        }
-        rightIcon={
-          <TouchableOpacity>
-            <Micro />
-          </TouchableOpacity>
-        }
+        onLeftIconPress={() => (onBack ? onBack() : navigation.goBack())}
+        icon={<ArrowLeft />}
+        rightIcon={<Micro />}
       />
     )
 
@@ -40,4 +34,4 @@ const Search = ({ isSearching, ...props }: Props) => {
   )
 }
 
-export default Search
+export default SearchBar

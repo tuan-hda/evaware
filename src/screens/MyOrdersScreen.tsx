@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
 import React from 'react'
-import { Search } from '~/components/search'
+import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
 import { Order } from '~/components/common'
@@ -62,7 +62,7 @@ const DATA = [
 const MyOrdersScreen = ({ data = DATA }) => {
   return (
     <View className='flex-1 items-center bg-white px-4 pt-2'>
-      <Search />
+      <SearchBar />
       {/* Sort and filter */}
       <View className='mb-2 mt-4 flex-row'>
         <Pressable

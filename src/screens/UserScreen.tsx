@@ -6,12 +6,24 @@ import { TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
 import Modal from 'react-native-modal'
-
+import { sendEmailVerification, signOut } from 'firebase/auth'
+import useUserStore from '~/store/user'
+import { shallow } from 'zustand/shallow'
+import { auth } from 'firebaseConfig'
+import Toast from 'react-native-toast-message'
 const UserScreen = () => {
   const [show, setShow] = useState(false)
   const navigation = useNavigation<UserNavigationProp>()
+  const [logOut] = useUserStore((state) => [state.logOut], shallow)
 
   const toggle = () => setShow((prev) => !prev)
+
+  const logout = () => {
+    toggle()
+    signOut(auth).then(() => {
+      logOut()
+    })
+  }
 
   return (
     <CustomSafeAreaView>
@@ -24,7 +36,7 @@ const UserScreen = () => {
           <View className='h-6' />
           <Button onPress={toggle} label='No, I want to stay' />
           <View className='h-2' />
-          <Button onPress={toggle} type='secondary' label='Yep, sign out' />
+          <Button onPress={logout} type='secondary' label='Yep, sign out' />
         </View>
       </Modal>
 

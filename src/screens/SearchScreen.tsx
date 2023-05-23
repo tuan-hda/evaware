@@ -1,7 +1,6 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { CustomSafeAreaView } from '~/components/common'
-import { Search } from '~/components/search'
+import { CustomSafeAreaView, SearchBar } from '~/components/common'
 import { Clear, Clock, Dissatisfied } from 'assets/icon'
 
 const data = ['Wood chaid', 'Dark wood']
@@ -10,7 +9,7 @@ const SearchScreen = () => {
   return (
     <CustomSafeAreaView className='relative bg-white'>
       <View className='w-full px-4 py-2'>
-        <Search isSearching />
+        <SearchBar isSearching />
       </View>
       <View className='h-2' />
       <FlatList
