@@ -7,6 +7,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import OrderScreen from '../screens/OrderScreen'
 import SettingScreen from '../screens/SettingScreen'
 import AnalyticsScreen from '../screens/AnalyticsScreen'
+import OrderNav from './OrderNav'
+import ProductNav from './ProductNav'
 
 const Tab = createBottomTabNavigator()
 
@@ -30,14 +32,14 @@ const AdminTab = () => {
     >
       <Tab.Screen
         name='Home'
-        component={ProductScreen}
+        component={ProductNav}
         options={{
           tabBarIcon: ({ focused }) => <Entypo size={28} name='box' color={focused ? '#000000' : '#9e9e9e'} />
         }}
       />
       <Tab.Screen
         name='Order'
-        component={OrderScreen}
+        component={OrderNav}
         options={{
           tabBarIcon: ({ focused }) => <Ionicons size={28} name='card' color={focused ? '#000000' : '#9e9e9e'} />
         }}
