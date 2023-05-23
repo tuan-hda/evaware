@@ -1,9 +1,11 @@
 import { View, Text, Pressable, FlatList } from 'react-native'
 import React from 'react'
-import { CustomSafeAreaView, ProductCardBig } from '~/components/common'
+import { AppBar, CustomSafeAreaView, ProductCardBig } from '~/components/common'
 import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import FlatGrid from '~/layouts/FlatGrid'
+import { useNavigation } from '@react-navigation/native'
+import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 
 const DATA = [
   {
@@ -58,6 +60,8 @@ const DATA = [
 ]
 
 const CatalogScreen = () => {
+  const navigation = useNavigation<HomeNavigationProp>()
+
   return (
     <CustomSafeAreaView className='items-center bg-white px-4'>
       <SearchBar className='mb-2' />
@@ -79,7 +83,7 @@ const CatalogScreen = () => {
         </Pressable>
       </View>
       {/* Gridview */}
-      <FlatGrid data={DATA} numColumns={2} verticalGap={24} horizontalGap={15} />
+      <FlatGrid data={DATA} numColumns={2} verticalGap={24} horizontalGap={15} onItemPress={()=>navigation.navigate('Product')}/>
     </CustomSafeAreaView>
   )
 }
