@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView, Pressable } from 'react-native'
+import { View, Text, FlatList, ScrollView, Pressable, Dimensions } from 'react-native'
 import React from 'react'
 import { Button, CustomSafeAreaView, ProductCardBig, SwipeSlider } from '~/components/common'
 import { ChevronRight, Sale } from 'assets/icon'
@@ -59,10 +59,11 @@ const imageSlider = [
   'https://cdn.pixabay.com/photo/2020/04/19/21/25/field-5065671_960_720.jpg',
   'https://cdn.pixabay.com/photo/2016/11/22/04/19/snow-1848346_960_720.png'
 ]
+const WIDTH = Dimensions.get('window').width
 
 const ProductScreen = () => {
   return (
-    <ScrollView className='flex-1 bg-white' showsVerticalScrollIndicator={false}>
+    <ScrollView className='mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
       {/* Slider */}
       <SwipeSlider images={imageSlider} className='h-[458px]' />
 
@@ -113,8 +114,10 @@ const ProductScreen = () => {
       <FlatList
         data={youMightlike}
         horizontal={true}
-        renderItem={({ item }) => <ProductCardBig data={item} style={{ paddingRight: 15 }} />}
-        className='m-4'
+        renderItem={({ item }) => (
+          <ProductCardBig data={item} style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }} />
+        )}
+        className='m-4 h-[310px]'
         showsHorizontalScrollIndicator={false}
       />
     </ScrollView>

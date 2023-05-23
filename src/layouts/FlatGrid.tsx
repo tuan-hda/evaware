@@ -15,9 +15,10 @@ interface Props {
   numColumns: number
   verticalGap?: number
   horizontalGap?: number
+  onItemPress?: ()=>void
 }
 
-const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20 }: Props) => {
+const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, onItemPress }: Props) => {
   const formatData = (dataList: Item[], numOfColumns: number) => {
     const totalRows = Math.floor(dataList.length / numOfColumns)
     let totalLastRows = dataList.length - totalRows * numOfColumns
@@ -42,6 +43,7 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20 }
       return (
         <ProductCardBig
           data={item}
+          onPress={onItemPress}
           style={[
             {
               flexGrow: 1,
