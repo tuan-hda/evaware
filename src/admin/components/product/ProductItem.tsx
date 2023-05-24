@@ -50,12 +50,12 @@ const ProductItem = ({ disabled, img, qty: outerQty, price, desc, paddingBottom 
               </View>
             )}
           </View>
-          <Text numberOfLines={1} ellipsizeMode='tail' className='mt-1 text-body3 text-giratina-500'>
+          <Text numberOfLines={1} ellipsizeMode='tail' className='mt-1 font-app text-body3 text-giratina-500'>
             {desc}
           </Text>
 
-          <Text className='mt-1 text-body3 text-black'>4 variations</Text>
-          <Text className='mt-1 text-body3 text-black'>{qty} quantity on hand</Text>
+          <Text className='mt-1 font-app text-body3 text-black'>4 variations</Text>
+          <Text className='mt-1 font-app text-body3 text-black'>{qty} quantity on hand</Text>
         </View>
       </View>
     </TouchableWithoutFeedback>

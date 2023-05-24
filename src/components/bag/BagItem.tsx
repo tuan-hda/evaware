@@ -29,13 +29,13 @@ const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableBu
       <View className={classNames('ml-4 mr-2 flex-1', !disableButton && 'justify-between')}>
         <View>
           <Text className='font-app-medium text-body1 text-black'>${price}</Text>
-          <Text className='mt-1 text-body3 text-giratina-500'>{desc}</Text>
+          <Text className='mt-1 font-app text-body3 text-giratina-500'>{desc}</Text>
         </View>
 
         {disableButton ? (
           <View>
-            <Text className='mt-1 text-body3 text-black'>Variation: Hel</Text>
-            <Text className='mt-1 text-body3 text-black'>Qty: {qty}</Text>
+            <Text className='mt-1 font-app text-body3 text-black'>Variation: Hel</Text>
+            <Text className='mt-1 font-app text-body3 text-black'>Qty: {qty}</Text>
           </View>
         ) : (
           <Stepper number={qty} setNumber={setQty} />

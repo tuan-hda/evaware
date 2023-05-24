@@ -9,6 +9,7 @@ import SettingScreen from '../screens/SettingScreen'
 import AnalyticsScreen from '../screens/AnalyticsScreen'
 import OrderNav from './OrderNav'
 import ProductNav from './ProductNav'
+import SettingNav from './SettingNav'
 
 const Tab = createBottomTabNavigator()
 
@@ -55,7 +56,7 @@ const AdminTab = () => {
       />
       <Tab.Screen
         name='Setting'
-        component={SettingScreen}
+        component={SettingNav}
         options={{
           tabBarIcon: ({ focused }) => <Ionicons size={28} name='settings' color={focused ? '#000000' : '#9e9e9e'} />
         }}

@@ -1,9 +1,9 @@
 import { StackNavigationProp, createStackNavigator } from '@react-navigation/stack'
-import ProductScreen from '../screens/ProductScreen'
 import ProductDetail from '../screens/ProductDetail'
+import ProductDrawer from './ProductDrawer'
 
 export type ProductNavParamsList = {
-  ProductList: undefined
+  ProductDrawer: undefined
   ProductDetail: undefined
 }
 
@@ -14,7 +14,7 @@ const Stack = createStackNavigator<ProductNavParamsList>()
 function ProductNav() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name='ProductList' component={ProductScreen} />
+      <Stack.Screen name='ProductDrawer' component={ProductDrawer} />
       <Stack.Screen name='ProductDetail' component={ProductDetail} />
     </Stack.Navigator>
   )

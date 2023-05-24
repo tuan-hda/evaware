@@ -72,24 +72,32 @@ const Button = ({
   }
 
   const animEnd = () => {
+    let flag = true
+
     if (disabled || loading) {
-      return
+      flag = false
     }
 
-    if (type === 'outline') {
+    if (flag && type === 'outline') {
       Animated.timing(opacityAnimated, {
         toValue: 1,
-        duration: 200,
+        duration: 100,
         useNativeDriver: false
       }).start()
-      return
+      flag = false
     }
 
-    Animated.timing(animated, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: false
-    }).start()
+    if (flag) {
+      Animated.timing(animated, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: false
+      }).start()
+    }
+
+    // if (!disabled) {
+    //   setTimeout(() => props.onPress && props.onPress(e), 100)
+    // }
   }
 
   const getBackgroundColor = () => {
@@ -121,8 +129,7 @@ const Button = ({
       style={{ backgroundColor: getBackgroundColor(), opacity: opacityAnimated }}
     >
       <Pressable
-        {...props}
-        onPress={!disabled ? props.onPress : null}
+        onPress={props.onPress}
         onPressIn={animStart}
         onPressOut={animEnd}
         className={classNames(

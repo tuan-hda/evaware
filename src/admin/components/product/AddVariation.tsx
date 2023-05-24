@@ -1,25 +1,37 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { Plus } from 'assets/icon'
-import classNames from 'classnames'
+import { TouchableOpacity, View, ScrollView, Text } from 'react-native'
+import React, { Ref, forwardRef, memo } from 'react'
+import { Card, Close, Mastercard } from 'assets/icon'
+import { Button, Title, TextFieldWithLabel } from '~/components/common'
+import { BottomSheetModal } from '@gorhom/bottom-sheet'
 
 type Props = {
-  title?: string
-  size?: 'normal' | 'big'
+  close: () => void
 }
 
-const AddRectangle = ({ title = '', size = 'normal' }: Props) => {
+const Backdrop = () => <View className='h-full w-full bg-black/50' />
+
+const AddPayment = forwardRef(({ close }: Props, ref: Ref<BottomSheetModal>) => {
   return (
-    <TouchableOpacity
-      className={classNames(
-        'items-center justify-center rounded-lg bg-giratina-100',
-        size === 'big' ? 'w-[130] flex-1' : 'h-[140] w-[120] '
-      )}
-    >
-      <Plus fill='#000' />
-      <Text className='mt-1 font-app text-body2 text-black'>{title}</Text>
-    </TouchableOpacity>
-  )
-}
+    <BottomSheetModal onDismiss={close} backdropComponent={Backdrop} snapPoints={['90%']} ref={ref}>
+      <ScrollView className='h-full rounded-t-3xl bg-white px-4'>
+        <TouchableOpacity onPress={close} className='mt-3'>
+          <Close />
+        </TouchableOpacity>
+        <Title isBig title='add variation' className='mt-4 px-0' />
+        <TextFieldWithLabel placeholder='Sofia Sofa' label='Title' />
+        <View className='h-4' />
+        <TextFieldWithLabel placeholder='300' label='Price' keyboardType='number-pad' />
+        <View className='mt-4'>
+          <Text className='mb-1 font-app text-body1'>Image</Text>
+          <View className='h-[200] w-full rounded-lg bg-giratina-100' />
+        </View>
 
-export default AddRectangle
+        <View className='mt-6'>
+          <Button label='Save card' />
+        </View>
+      </ScrollView>
+    </BottomSheetModal>
+  )
+})
+
+export default memo(AddPayment)
