@@ -6,6 +6,7 @@ import { DirectionVertical, Filter } from 'assets/icon'
 import FlatGrid from '~/layouts/FlatGrid'
 import { useNavigation } from '@react-navigation/native'
 import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import Bars from '~/components/navigation/Bars'
 
 const DATA = [
   {
@@ -64,7 +65,8 @@ const CatalogScreen = () => {
 
   return (
     <CustomSafeAreaView className='items-center bg-white px-4'>
-      <SearchBar className='mb-2' />
+      <Bars headerLeft='return' title='Furniture' onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
+      <SearchBar />
       {/* Sort and filter */}
       <View className='my-2 flex-row'>
         <Pressable
@@ -76,14 +78,20 @@ const CatalogScreen = () => {
         </Pressable>
         <Pressable
           className='h-9 flex-1 flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => console.log('Filter')}
+          onPress={() => navigation.navigate('Filter')}
         >
           <Text className='mr-1 font-app-medium text-body2'>Filter</Text>
           <Filter />
         </Pressable>
       </View>
       {/* Gridview */}
-      <FlatGrid data={DATA} numColumns={2} verticalGap={24} horizontalGap={15} onItemPress={()=>navigation.navigate('Product')}/>
+      <FlatGrid
+        data={DATA}
+        numColumns={2}
+        verticalGap={24}
+        horizontalGap={15}
+        onItemPress={() => navigation.navigate('Product')}
+      />
     </CustomSafeAreaView>
   )
 }

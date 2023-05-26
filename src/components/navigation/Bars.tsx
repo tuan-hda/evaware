@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, StyleProp, ViewStyle } from 'react-native'
 import React, { ReactElement } from 'react'
 import { ArrowLeft, Close, Heart, Setting } from 'assets/icon'
 import { Button } from '../common'
@@ -14,7 +14,8 @@ interface Props {
   onLeftButtonPress?: () => void
   onRightButtonPress?: () => void
   titleUnder?: boolean
-  style?: {}
+  style?: StyleProp<ViewStyle>
+  className?: string | undefined
 }
 
 const LEFT = ['none', 'return', 'close']
@@ -30,15 +31,16 @@ const Bars = ({
   onLeftButtonPress = () => console.log('Return!'),
   onRightButtonPress = () => console.log('Right button pressed!'),
   titleUnder = false,
-  style
+  style,
+  className
 }: Props) => {
   const checkHeaderLeft = LEFT.includes(headerLeft) ? headerLeft : LEFT[0]
   const checkHeaderRight = RIGHT.includes(headerRight) ? headerRight : LEFT[0]
   const checkLabel = label === '' ? (headerRight === 'button' ? 'Button' : 'Action') : label
 
   return (
-    <View className='w-full' style={style}>
-      <View className='mt-6 h-14 flex-row items-center p-4' style={{ backgroundColor }}>
+    <View className={classNames('w-full', className)} style={style}>
+      <View className='h-14 flex-row items-center' style={{ backgroundColor }}>
         {/* Left */}
         <View className='flex-1'>
           <Pressable
