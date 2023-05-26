@@ -1,12 +1,13 @@
 import { View, Text, Pressable, FlatList } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { AppBar, CustomSafeAreaView, ProductCardBig } from '~/components/common'
 import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import FlatGrid from '~/layouts/FlatGrid'
 import { useNavigation } from '@react-navigation/native'
-import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import { CatalogProp, HomeNavigationProp } from '~/components/navigation/HomeNav'
 import Bars from '~/components/navigation/Bars'
+import ModalSort from '~/components/modal/ModalSort'
 
 const DATA = [
   {
@@ -60,18 +61,20 @@ const DATA = [
   }
 ]
 
-const CatalogScreen = () => {
-  const navigation = useNavigation<HomeNavigationProp>()
+const CatalogScreen = ({ navigation, route }: CatalogProp) => {
+  const { catalog } = route.params
+  const [sortVisible, setSortVisible] = useState(false)
 
   return (
     <CustomSafeAreaView className='items-center bg-white px-4'>
-      <Bars headerLeft='return' title='Furniture' onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
-      <SearchBar />
+      <ModalSort visible={sortVisible} setVisible={setSortVisible }/>
+      <Bars headerLeft='return' title={catalog} onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
+      <SearchBar onPress={() => navigation.navigate('Search')}/>
       {/* Sort and filter */}
       <View className='my-2 flex-row'>
         <Pressable
           className='mr-[15px] h-9 flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => console.log('Sort')}
+          onPress={()=>setSortVisible(true)}
         >
           <Text className='mr-1 font-app-medium text-body2'>Sort</Text>
           <DirectionVertical />

@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, ImageBackground, ImageSourcePropType } from 'react-native'
+import { View, Text, Image, StyleSheet, ImageBackground, ImageSourcePropType, Pressable } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 
@@ -16,13 +16,14 @@ const formatTitle = (title: string) => {
 interface Props {
   title: string
   imageUrl: string
+  onPress?: ()=>void
 }
 
-const SliderItem = ({ title, imageUrl }: Props) => {
+const SliderItem = ({ title, imageUrl, onPress }: Props) => {
   const newTitle = formatTitle(title)
   const image = { uri: imageUrl }
   return (
-    <View className='relative mr-3 h-[88px] w-[88px] rounded-lg'>
+    <Pressable className='relative mr-3 h-[88px] w-[88px] rounded-lg' onPress={onPress}>
       <ImageBackground source={image} className='flex-1 overflow-hidden rounded-lg'>
         <LinearGradient
           colors={['rgba(33,33,33,0)', 'rgba(33,33,33,0.8)']}
@@ -34,7 +35,7 @@ const SliderItem = ({ title, imageUrl }: Props) => {
           </Text>
         </LinearGradient>
       </ImageBackground>
-    </View>
+    </Pressable>
   )
 }
 

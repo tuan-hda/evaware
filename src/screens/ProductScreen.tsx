@@ -1,10 +1,11 @@
 import { View, Text, FlatList, ScrollView, Pressable, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, CustomSafeAreaView, ProductCardBig, SwipeSlider } from '~/components/common'
 import { ChevronRight, Sale } from 'assets/icon'
 import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '~/components/navigation/Bars'
+import ModalProductInfo from '~/components/modal/ModalProductInfo'
 
 const youMightlike = [
   {
@@ -66,18 +67,25 @@ const WIDTH = Dimensions.get('window').width
 
 const ProductScreen = () => {
   const navigation = useNavigation<HomeNavigationProp>()
+  const [productInfoVisible, setProductInfoVisible] = useState(false)
+  const [isFaver, setIsFaver] = useState(false)
+
   return (
     <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
+      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible}/>
+
       {/* Slider */}
       <SwipeSlider images={imageSlider} className='h-[458px]' />
 
       <Bars
         headerLeft='return'
         headerRight='heart'
+        isHeart={isFaver}
         backgroundColor='transparent'
         style={{ position: 'absolute' }}
         className='px-4 pt-2'
         onLeftButtonPress={() => navigation.goBack()}
+        onRightButtonPress={()=>setIsFaver(!isFaver)}
       />
 
       <View className='bg-giratina-100'>
@@ -110,7 +118,7 @@ const ProductScreen = () => {
         <Button label={'Copy'} size='small' />
       </Pressable>
 
-      <Pressable className='h-16 flex-row px-4 py-5'>
+      <Pressable className='h-16 flex-row px-4 py-5' onPress={()=>setProductInfoVisible(true)}>
         <Text className='mr-4 flex-1 font-app-light text-body1'>Product information</Text>
         <ChevronRight />
       </Pressable>

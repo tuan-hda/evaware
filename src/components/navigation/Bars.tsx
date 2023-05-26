@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleProp, ViewStyle } from 'react-native'
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { ArrowLeft, Close, Heart, Setting } from 'assets/icon'
 import { Button } from '../common'
 import classNames from 'classnames'
@@ -9,6 +9,7 @@ interface Props {
   title?: string
   subTitle?: string
   headerRight?: string
+  isHeart?: boolean
   backgroundColor?: string
   label?: string
   onLeftButtonPress?: () => void
@@ -26,6 +27,7 @@ const Bars = ({
   title,
   subTitle,
   headerRight = 'none',
+  isHeart = false,
   backgroundColor = '#ffffff',
   label = '',
   onLeftButtonPress = () => console.log('Return!'),
@@ -37,6 +39,11 @@ const Bars = ({
   const checkHeaderLeft = LEFT.includes(headerLeft) ? headerLeft : LEFT[0]
   const checkHeaderRight = RIGHT.includes(headerRight) ? headerRight : LEFT[0]
   const checkLabel = label === '' ? (headerRight === 'button' ? 'Button' : 'Action') : label
+
+  const [isHeartTrue, setIsHeartTrue] = useState(isHeart)
+  useEffect(() => {
+    setIsHeartTrue(isHeart)
+  }, [isHeart])
 
   return (
     <View className={classNames('w-full', className)} style={style}>
@@ -65,9 +72,15 @@ const Bars = ({
           {/* Heart */}
           {checkHeaderRight === 'heart' && (
             <Pressable
-              className={classNames('h-9 w-6 items-center justify-center rounded-full', {
-                'w-9 bg-white': backgroundColor === 'transparent'
-              })}
+              className={classNames(
+                'h-9 w-6 items-center justify-center rounded-full',
+                {
+                  'w-9 bg-white': backgroundColor === 'transparent'
+                },
+                {
+                  'bg-charizard-400': isHeartTrue
+                }
+              )}
               onPress={onRightButtonPress}
             >
               <Heart height={24} width={24} />
