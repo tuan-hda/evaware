@@ -4,16 +4,16 @@ import { Button, Cell, CustomSafeAreaView, Title } from '~/components/common'
 import { Bag, Card, Pin, Setting, SignOut, User } from 'assets/icon'
 import { TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { UserNavigationProp } from '~/components/navigation/UserNav'
 import Modal from 'react-native-modal'
-import { sendEmailVerification, signOut } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import { auth } from 'firebaseConfig'
-import Toast from 'react-native-toast-message'
+import Feather from 'react-native-vector-icons/Feather'
+import { SettingNavigationProp } from '../nav/SettingNav'
 const SettingScreen = () => {
   const [show, setShow] = useState(false)
-  const navigation = useNavigation<UserNavigationProp>()
+  const navigation = useNavigation<SettingNavigationProp>()
   const [logOut] = useUserStore((state) => [state.logOut], shallow)
 
   const toggle = () => setShow((prev) => !prev)
@@ -41,11 +41,11 @@ const SettingScreen = () => {
       </Modal>
 
       <View className='h-14 items-end justify-center px-4'>
-        <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Configure')}>
           <Setting />
         </TouchableOpacity>
       </View>
-      <Title isBig title='my account' />
+      <Title isBig title='settings' />
 
       <View className='mt-2 h-16 flex-row items-center px-4'>
         <View className='rounded-full border border-giratina-200'>
@@ -62,18 +62,13 @@ const SettingScreen = () => {
         </View>
       </View>
 
-      <Cell text='My Orders' rightText='14' icon={<Bag fill='#000' width={24} height={24} />} />
       <Cell text='My Details' icon={<User fill='#000' width={24} height={24} />} />
       <Cell
-        text='Address Book'
-        onPress={() => navigation.navigate('Address')}
-        icon={<Pin fill='#000' width={24} height={24} />}
+        text='Manage Users'
+        onPress={() => navigation.navigate('ManageUsers')}
+        icon={<Feather name='user-plus' size={24} />}
       />
-      <Cell
-        onPress={() => navigation.navigate('PaymentMethod')}
-        text='Payment Methods'
-        icon={<Card fill='#000' width={24} height={24} />}
-      />
+
       <Cell text='Sign Out' icon={<SignOut fill='#000' width={24} height={24} />} onPress={toggle} />
     </CustomSafeAreaView>
   )

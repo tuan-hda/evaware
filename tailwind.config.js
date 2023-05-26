@@ -18,7 +18,8 @@ module.exports = {
           200: '#FEF2A0',
           300: '#FEEB70',
           400: '#FEE440',
-          500: '#FFD60A'
+          500: '#FFD60A',
+          600: '#D6B200'
         },
         gengar: {
           100: '#C5CAE9',

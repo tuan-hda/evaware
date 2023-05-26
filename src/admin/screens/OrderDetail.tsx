@@ -1,5 +1,5 @@
 import { View, Text, ViewProps, TouchableWithoutFeedback, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Status from '../components/order/Status'
 import { ChevronRight } from 'assets/icon'
 import classNames from 'classnames'
@@ -9,13 +9,16 @@ import { AppBar, Button, CustomSafeAreaView } from '~/components/common'
 import { BagItem } from '~/components/bag'
 import { BagItemProps } from '~/types/bagItem.type'
 import useShowNav from '~/hooks/useShowNav'
+import SelectModal from '~/components/common/SelectModal'
 
 type Props = ViewProps
 
 const OrderDetail = ({ ...props }: Props) => {
   const navigation = useNavigation<OrderNavigationProp>()
   useShowNav(navigation, false)
+  const [show, setShow] = useState(false)
 
+  const toggle = () => setShow((prev) => !prev)
   const bagItems: BagItemProps[] = [
     {
       id: '1',
@@ -49,9 +52,16 @@ const OrderDetail = ({ ...props }: Props) => {
     }
   ]
 
+  const items = [
+    { value: 'Success', className: 'text-venusaur-500', action: () => {} },
+    { value: 'Delivering', className: 'text-gengar-500', action: () => {} },
+    { value: 'Cancelled', className: 'text-magikarp-500', action: () => {} }
+  ]
+
   return (
     <CustomSafeAreaView>
       <AppBar title='ORDER102' />
+      <SelectModal selected='Success' title='Update status' show={show} toggle={toggle} items={items} />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 12 }}>
         <View className={classNames('w-full px-4')}>
@@ -61,7 +71,7 @@ const OrderDetail = ({ ...props }: Props) => {
               <Status type='text' status='success' className='mr-1' />
             </View>
 
-            <Button size='small' label='Update' />
+            <Button size='small' onPress={toggle} label='Update' />
           </View>
 
           <View className='mt-1 flex-row justify-between rounded-lg bg-giratina-100 p-2'>

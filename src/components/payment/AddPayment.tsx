@@ -1,9 +1,8 @@
-import { TouchableOpacity, View, ScrollView } from 'react-native'
+import { TouchableOpacity, View, ScrollView, Text } from 'react-native'
 import React, { Ref, forwardRef, memo } from 'react'
 import { Card, Close, Mastercard } from 'assets/icon'
-import { Button, Title } from '../common'
+import { Button, Title, TextFieldWithLabel } from '~/components/common'
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
-import TextFieldWithLabel from '../common/TextFieldWithLabel'
 
 type Props = {
   close: () => void

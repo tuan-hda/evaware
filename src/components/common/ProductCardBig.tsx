@@ -18,14 +18,14 @@ interface Props {
     badge: string
   }
   style?: {}
-  onPress?: ()=>void
+  onPress?: () => void
 }
 
 const ProductCardBig = ({ data = DATA, style, onPress }: Props) => {
   const { price, isFavorited, desc, badge } = data
   const image = { uri: data.imageURL }
   return (
-    <Pressable className='relative flex-1' style={style} onPress={onPress}> 
+    <Pressable className='relative flex-1' style={style} onPress={onPress}>
       <Image style={{ width: '100%', borderRadius: 8, flexGrow: 1 }} className='aspect-[0.82]' source={image} />
       <View className='mb-1 mt-2 flex-row items-center'>
         <Text className='mr-2 flex-1 font-app-medium text-body1'>${price}</Text>

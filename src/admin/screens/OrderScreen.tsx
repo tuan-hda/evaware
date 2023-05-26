@@ -5,6 +5,7 @@ import { SearchBar } from '~/components/common'
 import classNames from 'classnames'
 import Filter from '~/components/filter/Filter'
 import { OrderItem } from '../components/order'
+import SortFilter from '~/components/common/SortFilter'
 
 const OrderScreen = () => {
   const [focus, setFocus] = useState(false)
@@ -22,6 +23,8 @@ const OrderScreen = () => {
         <View className={classNames(focus && 'mt-4', 'px-4')}>
           <SearchBar onBack={toggle} onPress={!focus ? toggle : undefined} isSearching={focus} className='w-full' />
         </View>
+        <SortFilter className='mx-4' />
+
         <View className='mt-4 w-full flex-1 bg-giratina-200 py-2'>
           <OrderItem />
           <OrderItem className='mt-2' />
