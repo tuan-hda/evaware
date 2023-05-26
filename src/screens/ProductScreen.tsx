@@ -2,6 +2,9 @@ import { View, Text, FlatList, ScrollView, Pressable, Dimensions } from 'react-n
 import React from 'react'
 import { Button, CustomSafeAreaView, ProductCardBig, SwipeSlider } from '~/components/common'
 import { ChevronRight, Sale } from 'assets/icon'
+import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import { useNavigation } from '@react-navigation/native'
+import Bars from '~/components/navigation/Bars'
 
 const youMightlike = [
   {
@@ -62,10 +65,20 @@ const imageSlider = [
 const WIDTH = Dimensions.get('window').width
 
 const ProductScreen = () => {
+  const navigation = useNavigation<HomeNavigationProp>()
   return (
-    <ScrollView className='mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
+    <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
       {/* Slider */}
       <SwipeSlider images={imageSlider} className='h-[458px]' />
+
+      <Bars
+        headerLeft='return'
+        headerRight='heart'
+        backgroundColor='transparent'
+        style={{ position: 'absolute' }}
+        className='px-4 pt-2'
+        onLeftButtonPress={() => navigation.goBack()}
+      />
 
       <View className='bg-giratina-100'>
         {/* Price and desc */}
