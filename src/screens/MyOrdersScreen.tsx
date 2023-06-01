@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { CustomSafeAreaView, SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
@@ -7,6 +7,7 @@ import { Order } from '~/components/common'
 import Bars from '~/components/navigation/Bars'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
 import { useNavigation } from '@react-navigation/native'
+import ModalSort from '~/components/modal/ModalSort'
 // options={{
 //     headerShown: true,
 //     tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
@@ -64,23 +65,26 @@ const DATA = [
 
 const MyOrdersScreen = ({ data = DATA }) => {
   const navigation = useNavigation<UserNavigationProp>()
+  const [sortVisible, setSortVisible] = useState(false)
+
 
   return (
     <CustomSafeAreaView className='flex-1 items-center bg-white px-4 pt-2'>
+      <ModalSort visible={sortVisible} setVisible={setSortVisible }/>
       <Bars headerLeft='return' title='My orders' onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
       <SearchBar />
       {/* Sort and filter */}
       <View className='mb-2 mt-4 flex-row'>
         <Pressable
           className='mr-[15px] flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => console.log('Sort')}
+          onPress={() => setSortVisible(true)}
         >
           <Text className='my-2 mr-1 font-app-medium text-body2'>Sort</Text>
           <DirectionVertical />
         </Pressable>
         <Pressable
           className='flex-1 flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => console.log('Filter')}
+          onPress={() => navigation.navigate('Filter')}
         >
           <Text className='my-2 mr-1 font-app-medium text-body2'>Filter</Text>
           <Filter />

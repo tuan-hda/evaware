@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import filterReducer from '../components/filter/filterSlice'
-import sortReducer from '../components/modal/sortSlice'
+import filterReducer from '../slice/filterSlice'
+import sortReducer from '../slice/sortSlice'
 
 export default configureStore({
   reducer: {

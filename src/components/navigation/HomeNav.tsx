@@ -26,7 +26,7 @@ export type HomeNavParamList = {
 }
 
 export type HomeNavigationProp = StackNavigationProp<HomeNavParamList>
-export type FilterOptionProp = StackScreenProps<HomeNavParamList, 'FilterOption'>
+export type HomeFilterOptionProp = StackScreenProps<HomeNavParamList, 'FilterOption'>
 export type CatalogProp = StackScreenProps<HomeNavParamList, 'Catalog'>
 
 const Stack = createStackNavigator<HomeNavParamList>()

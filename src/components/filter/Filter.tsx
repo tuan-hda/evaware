@@ -6,7 +6,8 @@ import { HomeNavigationProp } from '../navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '../navigation/Bars'
 import { useSelector } from 'react-redux'
-import { RootState } from './filterSlice'
+import { RootState } from '../../slice/filterSlice'
+import { UserNavigationProp } from '../navigation/UserNav'
 
 const DATA = [
   {
@@ -150,7 +151,7 @@ const Filter = () => {
         ))}
       </View>
 
-      <Button label={'Show 25 items'} />
+      <Button label={'Show 25 items'} onPress={() => navigation.goBack()} />
     </CustomSafeAreaView>
   )
 }

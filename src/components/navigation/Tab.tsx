@@ -1,5 +1,4 @@
 import React from 'react'
-import WishlistScreen from '~/screens/WishlistScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Bag, Heart, User, Evaware } from 'assets/icon'
 import BagNav from './BagNav'
@@ -7,8 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import HomeNav from './HomeNav'
 import UserNav from './UserNav'
-import DetailScreen from '~/screens/DetailScreen'
-import { SavedItemsScreen } from '~/screens'
+import SavedNav from './SavedNav'
 
 const mTab = createBottomTabNavigator()
 
@@ -48,7 +46,7 @@ export default function Tab() {
       />
       <mTab.Screen
         name='Wishlist'
-        component={SavedItemsScreen}
+        component={SavedNav}
         options={{
           tabBarIcon: ({ focused }) => <Heart fill={focused ? '#000000' : '#9e9e9e'} />
         }}

@@ -10,16 +10,18 @@ interface Props {
   image: string
   style?: string
   containerClassName?: string
+  onPress?: () => void
+  onButtonClearPress?:()=>void
 }
 
 const styles = ['order', 'saved']
 
-const SmallCard = ({ price, desc, image, style = 'order', containerClassName }: Props) => {
+const SmallCard = ({ price, desc, image, style = 'order', containerClassName, onPress, onButtonClearPress }: Props) => {
   const checkedStyle = styles.includes(style) ? style : styles[0]
   const buttonLabel = checkedStyle === 'order' ? 'Order again' : 'Move to bag'
 
   return (
-    <View className={classNames('w-full flex-row', containerClassName)}>
+    <Pressable className={classNames('w-full flex-row', containerClassName)} onPress={onPress}>
       <Image style={{ width: 94, height: 115 }} className='mr-4 rounded-lg' source={{ uri: image }} />
       <View className='flex-1'>
         <View className='flex-1 flex-row'>
@@ -30,7 +32,7 @@ const SmallCard = ({ price, desc, image, style = 'order', containerClassName }: 
             </Text>
           </View>
           {checkedStyle === 'saved' && (
-            <Pressable>
+            <Pressable onPress={onButtonClearPress}>
               <Clear fill={'#9e9e9e'} />
             </Pressable>
           )}
@@ -41,7 +43,7 @@ const SmallCard = ({ price, desc, image, style = 'order', containerClassName }: 
           <View className='flex-1' />
         </View>
       </View>
-    </View>
+    </Pressable>
   )
 }
 

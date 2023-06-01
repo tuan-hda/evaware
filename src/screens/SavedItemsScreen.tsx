@@ -1,9 +1,11 @@
 import { View, Text, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
 import { CustomSafeAreaView, SmallCard } from '~/components/common'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeItem, RootState } from '~/slice/saveItemSlice'
 
 const DATA = [
   {
@@ -39,7 +41,19 @@ const DATA = [
   }
 ]
 
-const SavedItemsScreen = ({ data = DATA }) => {
+const SavedItemsScreen = () => {
+  const savedItemList = useSelector((state: RootState) => state.savedItem.savedItemList)
+  const [data, setData] = useState(savedItemList)
+  useEffect(() => {
+    setData(savedItemList)
+  }, [])
+
+  const dispatch = useDispatch()
+
+  const handleRemoveItem = (id: string) => {
+    dispatch(removeItem(id))
+  }
+
   return (
     <CustomSafeAreaView className='flex-1 bg-white px-4'>
       <Text className='mb-6 mt-14 font-app-semibold text-heading1'>saved items</Text>
@@ -69,7 +83,14 @@ const SavedItemsScreen = ({ data = DATA }) => {
         showsVerticalScrollIndicator={false}
         data={data}
         renderItem={({ item }) => (
-          <SmallCard price={item.price} desc={item.desc} image={item.image} style='saved' containerClassName='mb-6' />
+          <SmallCard
+            price={item.price}
+            desc={item.desc}
+            image={item.image}
+            style='saved'
+            containerClassName='mb-6'
+            onButtonClearPress={() => handleRemoveItem(item.id)}
+          />
         )}
       />
     </CustomSafeAreaView>

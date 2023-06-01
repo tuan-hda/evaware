@@ -1,12 +1,13 @@
 import { View } from 'react-native'
-import React, {useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Category, CustomSafeAreaView } from '~/components/common'
 import Bars from '../navigation/Bars'
-import { FilterOptionProp } from '../navigation/HomeNav'
+import { HomeFilterOptionProp } from '../navigation/HomeNav'
 import { useDispatch } from 'react-redux'
-import { updateFilter } from './filterSlice'
+import { updateFilter } from '../../slice/filterSlice'
+import { UserFilterOptionProp } from '../navigation/UserNav'
 
-const FilterOption = ({ navigation, route }: FilterOptionProp) => {
+const FilterOption = ({ navigation, route }: HomeFilterOptionProp | UserFilterOptionProp) => {
   const { name, selected } = route.params
   const [data, setData] = useState(selected)
 
@@ -22,7 +23,7 @@ const FilterOption = ({ navigation, route }: FilterOptionProp) => {
 
   const handleFilter = () => {
     const payload = {
-      name: name, 
+      name: name,
       selecteds: data
     }
     dispatch(updateFilter(payload))
