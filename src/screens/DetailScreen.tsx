@@ -1,10 +1,24 @@
 import { View, Text, Pressable, Image } from 'react-native'
 import React from 'react'
 import TextFieldWithLabel from '~/components/common/TextFieldWithLabel'
+import Bars from '~/components/navigation/Bars'
+import { CustomSafeAreaView } from '~/components/common'
+import { useNavigation } from '@react-navigation/native'
+import { UserNavigationProp } from '~/components/navigation/UserNav'
 
 const DetailScreen = () => {
+  const navigation = useNavigation<UserNavigationProp>()
   return (
-    <View className='flex-1 items-center bg-white px-4'>
+    <CustomSafeAreaView className='flex-1 items-center bg-white px-4'>
+      <Bars
+        headerLeft='return'
+        title='My details'
+        headerRight='action'
+        label='Save'
+        onLeftButtonPress={() => navigation.goBack()}
+        className='mb-2'
+      />
+
       <Pressable className='items-center py-4'>
         <Image
           className='h-14 w-14'
@@ -29,7 +43,7 @@ const DetailScreen = () => {
 
       {/* Date of birth */}
       <TextFieldWithLabel label='Date of birth' containerClassName='mt-4' />
-    </View>
+    </CustomSafeAreaView>
   )
 }
 

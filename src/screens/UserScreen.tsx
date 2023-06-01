@@ -62,8 +62,17 @@ const UserScreen = () => {
         </View>
       </View>
 
-      <Cell text='My Orders' rightText='14' icon={<Bag fill='#000' width={24} height={24} />} />
-      <Cell text='My Details' icon={<User fill='#000' width={24} height={24} />} />
+      <Cell
+        text='My Orders'
+        rightText='14'
+        onPress={() => navigation.navigate('MyOrders')}
+        icon={<Bag fill='#000' width={24} height={24} />}
+      />
+      <Cell
+        text='My Details'
+        onPress={() => navigation.navigate('MyDetails')}
+        icon={<User fill='#000' width={24} height={24} />}
+      />
       <Cell
         text='Address Book'
         onPress={() => navigation.navigate('Address')}

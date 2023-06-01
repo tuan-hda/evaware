@@ -60,13 +60,11 @@ export const filterSlice = createSlice({
     initialState,
     reducers:{
         updateFilter: (state, action)=>{
-            console.log('check1')
             const prevState = state.filterList
             const {name, selecteds} = action.payload
 
             const item = prevState.find((item) => item.filterName === name)
             if (item) {
-                console.log('check2')
               const filterItem = { filterName: name, optionsSelected: selecteds }
               state.filterList[prevState.indexOf(item)] = filterItem
             }

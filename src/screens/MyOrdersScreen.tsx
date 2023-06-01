@@ -1,9 +1,12 @@
 import { View, Text, Pressable } from 'react-native'
 import React from 'react'
-import { SearchBar } from '~/components/common'
+import { CustomSafeAreaView, SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
 import { Order } from '~/components/common'
+import Bars from '~/components/navigation/Bars'
+import { UserNavigationProp } from '~/components/navigation/UserNav'
+import { useNavigation } from '@react-navigation/native'
 // options={{
 //     headerShown: true,
 //     tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
@@ -60,8 +63,11 @@ const DATA = [
 ]
 
 const MyOrdersScreen = ({ data = DATA }) => {
+  const navigation = useNavigation<UserNavigationProp>()
+
   return (
-    <View className='flex-1 items-center bg-white px-4 pt-2'>
+    <CustomSafeAreaView className='flex-1 items-center bg-white px-4 pt-2'>
+      <Bars headerLeft='return' title='My orders' onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
       <SearchBar />
       {/* Sort and filter */}
       <View className='mb-2 mt-4 flex-row'>
@@ -93,10 +99,11 @@ const MyOrdersScreen = ({ data = DATA }) => {
             price={item.price}
             orderID={item.orderID}
             products={item.products}
+            onPress={() => navigation.navigate('OrderScreen')}
           />
         )}
       />
-    </View>
+    </CustomSafeAreaView>
   )
 }
 

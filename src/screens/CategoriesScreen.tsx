@@ -7,9 +7,9 @@ import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 
 const data = ['Furniture', 'Lightning', 'Rugs', 'Mirrors', 'Blankets', 'Cushions', 'Curtains', 'Curtains']
 
-const Header = () => (
+const Header = (navigation: HomeNavigationProp) => (
   <View className='mx-4 justify-center'>
-    <SearchBar className='my-2' />
+    <SearchBar className='my-2' onPress={() => navigation.navigate('Search')}/>
     <View className='h-16 justify-center'>
       <Text className='font-app-semibold text-heading2'>categories</Text>
     </View>
@@ -25,11 +25,11 @@ const CategoriesScreen = () => {
     <CustomSafeAreaView className='h-full w-full bg-white'>
       <AppBar title='Living room' />
       <FlatList
-        ListHeaderComponent={Header}
+        ListHeaderComponent={Header(navigation)}
         ListFooterComponent={Footer}
         data={data}
         renderItem={({ item, index }) => (
-          <TouchableOpacity className='mx-4 h-16 flex-row items-center' onPress={() => navigation.navigate('Catalog')}>
+          <TouchableOpacity className='mx-4 h-16 flex-row items-center' onPress={() => navigation.navigate('Catalog',{catalog:item})}>
             <Image
               source={{
                 uri: 'https://www.next.co.uk/nxtcms/resource/blob/5489338/758225c48c0db35da723075526be2aa2/chair-data.jpg'

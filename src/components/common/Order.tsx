@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Pressable } from 'react-native'
 import React from 'react'
 import { FlatList } from 'react-native-gesture-handler'
 
@@ -8,11 +8,12 @@ interface Props {
   price: number
   orderID: number
   products: string[]
+  onPress?: ()=>void
 }
 
-const Order = ({ date, state, price, orderID, products }: Props) => {
+const Order = ({ date, state, price, orderID, products, onPress }: Props) => {
   return (
-    <View className='py-4'>
+    <Pressable className='py-4' onPress={onPress}>
       {/* Date and price  */}
       <View className='mb-[2px] w-full flex-row'>
         <Text className='mr-2 flex-1 font-app-regular text-body1'>{date}</Text>
@@ -36,7 +37,7 @@ const Order = ({ date, state, price, orderID, products }: Props) => {
           />
         )}
       />
-    </View>
+    </Pressable>
   )
 }
 

@@ -48,7 +48,7 @@ const OrderScreen = () => {
 
         {/* Producrt */}
         <FlatList
-          className='py-4'
+          className='w-full py-4'
           ItemSeparatorComponent={() => <View className='h-6' />}
           data={products}
           renderItem={({ item }) => <SmallCard price={item.price} desc={item.desc} image={item.image} />}
