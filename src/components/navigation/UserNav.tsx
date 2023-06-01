@@ -1,6 +1,6 @@
 import React from 'react'
 import { StackNavigationProp, createStackNavigator, StackScreenProps } from '@react-navigation/stack'
-import { MyOrdersScreen, UserScreen } from '~/screens'
+import { MyOrdersScreen, OrderScreen, UserScreen } from '~/screens'
 import AddressBookScreen from '~/screens/AddressBookScreen'
 import AddAddressScreen from '~/screens/AddAddressScreen'
 import ChooseAddressScreen from '~/screens/ChooseAddresScreen'
@@ -22,6 +22,7 @@ export type UserNavParamList = {
   PaymentMethod: undefined
   MyDetails: undefined
   MyOrders: undefined
+  OrderScreen: undefined
 }
 
 export type UserNavigationProp = StackNavigationProp<UserNavParamList>
@@ -38,8 +39,9 @@ const UserNav = () => (
     <Stack.Screen name='ChooseAddress' component={ChooseAddressScreen} />
     <Stack.Screen name='Setting' component={SettingScreen} />
     <Stack.Screen name='PaymentMethod' component={PaymentMethodScreen} />
-    <Stack.Screen name='MyOrders' component={MyOrdersScreen} />
     <Stack.Screen name='MyDetails' component={DetailScreen} />
+    <Stack.Screen name='MyOrders' component={MyOrdersScreen} />
+    <Stack.Screen name='OrderScreen' component={OrderScreen} />
   </Stack.Navigator>
 )
 

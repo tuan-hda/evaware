@@ -99,6 +99,7 @@ const MyOrdersScreen = ({ data = DATA }) => {
             price={item.price}
             orderID={item.orderID}
             products={item.products}
+            onPress={() => navigation.navigate('OrderScreen')}
           />
         )}
       />
