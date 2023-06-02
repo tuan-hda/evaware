@@ -15,6 +15,7 @@ const HomeScreen = () => {
     <CustomSafeAreaView className='bg-white'>
       <ScrollView
         className='flex-1 bg-white px-4'
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           alignItems: 'center'
         }}
@@ -45,7 +46,7 @@ const HomeScreen = () => {
           {items.map((item, index) => (
             <View key={index} className='mb-6 w-[calc(50%)] flex-row'>
               {index % 2 === 1 && <View className='w-2' />}
-              <ProductCardBig onPress={() => navigation.navigate('Product')}/>
+              <ProductCardBig onPress={() => navigation.navigate('Product')} />
               {index % 2 === 0 && <View className='w-2' />}
             </View>
           ))}

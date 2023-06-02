@@ -70,9 +70,11 @@ const ProductScreen = () => {
   const [productInfoVisible, setProductInfoVisible] = useState(false)
   const [isFaver, setIsFaver] = useState(false)
 
+  const toggle = () => setProductInfoVisible((prev) => !prev)
+
   return (
     <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
-      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible}/>
+      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible} toggle={toggle} />
 
       {/* Slider */}
       <SwipeSlider images={imageSlider} className='h-[458px]' />
@@ -85,7 +87,7 @@ const ProductScreen = () => {
         style={{ position: 'absolute' }}
         className='px-4 pt-2'
         onLeftButtonPress={() => navigation.goBack()}
-        onRightButtonPress={()=>setIsFaver(!isFaver)}
+        onRightButtonPress={() => setIsFaver(!isFaver)}
       />
 
       <View className='bg-giratina-100'>
@@ -118,7 +120,7 @@ const ProductScreen = () => {
         <Button label={'Copy'} size='small' />
       </Pressable>
 
-      <Pressable className='h-16 flex-row px-4 py-5' onPress={()=>setProductInfoVisible(true)}>
+      <Pressable className='h-16 flex-row px-4 py-5' onPress={() => setProductInfoVisible(true)}>
         <Text className='mr-4 flex-1 font-app-light text-body1'>Product information</Text>
         <ChevronRight />
       </Pressable>
@@ -136,7 +138,11 @@ const ProductScreen = () => {
         data={youMightlike}
         horizontal={true}
         renderItem={({ item }) => (
-          <ProductCardBig data={item} style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }} />
+          <ProductCardBig
+            data={item}
+            style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }}
+            onPress={() => navigation.navigate('Product')}
+          />
         )}
         className='m-4 h-[310px]'
         showsHorizontalScrollIndicator={false}

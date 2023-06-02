@@ -5,6 +5,7 @@ import DeliveryDetail from '~/screens/DeliveryDetail'
 import PaymentMethod from '~/screens/PaymentMethod'
 import ConfirmOrder from '~/screens/ConfirmOrder'
 import SuccessScreen from '~/screens/SuccessScreen'
+import { HomeScreen } from '~/screens'
 
 export type BagNavParamsList = {
   Bag: undefined

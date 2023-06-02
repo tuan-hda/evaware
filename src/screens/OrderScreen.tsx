@@ -4,6 +4,9 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import { AppBar, CustomSafeAreaView, SmallCard } from '~/components/common'
 import { Pressable } from 'react-native'
 import { Car, Pin } from 'assets/icon'
+import Bars from '~/components/navigation/Bars'
+import { useNavigation } from '@react-navigation/native'
+import { UserNavigationProp } from '~/components/navigation/UserNav'
 
 const sample = {
   orderID: 23124,
@@ -31,31 +34,36 @@ const sample = {
 }
 
 const OrderScreen = () => {
+  const navigation = useNavigation<UserNavigationProp>()
   const { date, state, price, orderID, products } = sample
   return (
-    <CustomSafeAreaView>
-      <AppBar title={'Order #' + orderID} />
+    <CustomSafeAreaView className='flex-1 px-4'>
+      <Bars headerLeft='return' onLeftButtonPress={() => navigation.goBack()} title={'Order #' + orderID} />
       <ScrollView
-        className='flex-1 bg-white px-4'
+        className='flex-1 bg-white'
         contentContainerStyle={{ alignItems: 'center' }}
         showsVerticalScrollIndicator={false}
       >
         {/* Header  1*/}
-        <View className='w-full py-4'>
+        <View className='w-full pb-8 pt-4'>
           <Text className='w-full font-app-semibold text-heading2'>{date}</Text>
           <Text className='mt-2 font-app-light text-body2 text-giratina-500'>{state}</Text>
         </View>
 
         {/* Producrt */}
-        <FlatList
-          className='w-full py-4'
-          ItemSeparatorComponent={() => <View className='h-6' />}
-          data={products}
-          renderItem={({ item }) => <SmallCard price={item.price} desc={item.desc} image={item.image} />}
-          scrollEnabled={false}
-        />
+        {products.map((item, index) => (
+          <View key={index} className='mb-6 w-full'>
+            <SmallCard
+              price={item.price}
+              desc={item.desc}
+              image={item.image}
+              onPress={() => navigation.navigate('Product')}
+            />
+          </View>
+        ))}
+
         {/* Heading 2 */}
-        <Text className='mb-4 mt-6 w-full font-app-semibold text-heading2'>delivery info</Text>
+        <Text className='my-4 w-full font-app-semibold text-heading2'>delivery info</Text>
 
         {/* Delivery */}
         <Pressable className='h-16 w-full flex-row items-center'>

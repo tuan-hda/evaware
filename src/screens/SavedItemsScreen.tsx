@@ -1,9 +1,14 @@
 import { View, Text, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
 import { CustomSafeAreaView, SmallCard } from '~/components/common'
+import { SavedNavigationProp } from '~/components/navigation/SavedNav'
+import { useNavigation } from '@react-navigation/native'
+import useSavedStore from '~/store/saved'
+import { shallow } from 'zustand/shallow'
+import ModalSort from '~/components/modal/ModalSort'
 
 const DATA = [
   {
@@ -39,24 +44,35 @@ const DATA = [
   }
 ]
 
-const SavedItemsScreen = ({ data = DATA }) => {
+const SavedItemsScreen = () => {
+  const navigation = useNavigation<SavedNavigationProp>()
+  const [savedList, removeSaved] = useSavedStore((state) => [state.savedList, state.removeSaved], shallow)
+  const [data, setData] = useState(savedList)
+  const [sortVisible, setSortVisible] = useState(false)
+  const toggle = () => setSortVisible((prev) => !prev)
+
+  useEffect(() => {
+    setData(savedList)
+  }, [savedList])
+
   return (
     <CustomSafeAreaView className='flex-1 bg-white px-4'>
+      <ModalSort visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
       <Text className='mb-6 mt-14 font-app-semibold text-heading1'>saved items</Text>
 
-      <SearchBar />
+      <SearchBar onPress={() => navigation.navigate('Search')} />
       {/* Sort and filter */}
       <View className='mb-2 mt-4 flex-row'>
         <Pressable
           className='mr-[15px] flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => console.log('Sort')}
+          onPress={() => setSortVisible(true)}
         >
           <Text className='my-2 mr-1 font-app-medium text-body2'>Sort</Text>
           <DirectionVertical />
         </Pressable>
         <Pressable
           className='flex-1 flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => console.log('Filter')}
+          onPress={() => navigation.navigate('Filter')}
         >
           <Text className='my-2 mr-1 font-app-medium text-body2'>Filter</Text>
           <Filter />
@@ -69,7 +85,15 @@ const SavedItemsScreen = ({ data = DATA }) => {
         showsVerticalScrollIndicator={false}
         data={data}
         renderItem={({ item }) => (
-          <SmallCard price={item.price} desc={item.desc} image={item.image} style='saved' containerClassName='mb-6' />
+          <SmallCard
+            price={item.price}
+            desc={item.desc}
+            image={item.image}
+            style='saved'
+            containerClassName='mb-6'
+            onButtonClearPress={() => removeSaved(item.id)}
+            onPress={() => navigation.navigate('Product')}
+          />
         )}
       />
     </CustomSafeAreaView>
