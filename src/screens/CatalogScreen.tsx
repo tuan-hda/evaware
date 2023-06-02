@@ -65,16 +65,18 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   const { catalog } = route.params
   const [sortVisible, setSortVisible] = useState(false)
 
+  const toggle = () => setSortVisible((prev) => !prev)
+
   return (
     <CustomSafeAreaView className='items-center bg-white px-4'>
-      <ModalSort visible={sortVisible} setVisible={setSortVisible }/>
+      <ModalSort visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
       <Bars headerLeft='return' title={catalog} onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
-      <SearchBar onPress={() => navigation.navigate('Search')}/>
+      <SearchBar onPress={() => navigation.navigate('Search')} />
       {/* Sort and filter */}
       <View className='my-2 flex-row'>
         <Pressable
           className='mr-[15px] h-9 flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={()=>setSortVisible(true)}
+          onPress={() => setSortVisible(true)}
         >
           <Text className='mr-1 font-app-medium text-body2'>Sort</Text>
           <DirectionVertical />

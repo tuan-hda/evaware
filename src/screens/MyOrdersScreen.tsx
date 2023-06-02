@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CustomSafeAreaView, SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
@@ -8,11 +8,8 @@ import Bars from '~/components/navigation/Bars'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
 import { useNavigation } from '@react-navigation/native'
 import ModalSort from '~/components/modal/ModalSort'
-// options={{
-//     headerShown: true,
-//     tabBarIcon: ({ focused }) => <Evaware fill={focused ? '#000000' : '#9e9e9e'} />,
-//     header: () => <Bars headerLeft='return' title='My orders' />
-//   }}
+import useSavedStore from '~/store/saved'
+import { shallow } from 'zustand/shallow'
 const DATA = [
   {
     orderID: 23124,
@@ -63,16 +60,18 @@ const DATA = [
   }
 ]
 
-const MyOrdersScreen = ({ data = DATA }) => {
+const MyOrdersScreen = () => {
   const navigation = useNavigation<UserNavigationProp>()
-  const [sortVisible, setSortVisible] = useState(false)
+  const [data, setData] = useState(DATA)
 
+  const [sortVisible, setSortVisible] = useState(false)
+  const toggle = () => setSortVisible((prev) => !prev)
 
   return (
     <CustomSafeAreaView className='flex-1 items-center bg-white px-4 pt-2'>
-      <ModalSort visible={sortVisible} setVisible={setSortVisible }/>
+      <ModalSort visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
       <Bars headerLeft='return' title='My orders' onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
-      <SearchBar />
+      <SearchBar onPress={() => navigation.navigate('Search')} />
       {/* Sort and filter */}
       <View className='mb-2 mt-4 flex-row'>
         <Pressable

@@ -1,33 +1,36 @@
-import { View, Text, FlatList, SafeAreaView } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, FlatList, SafeAreaView, Dimensions } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { BagItemProps } from '~/types/bagItem.type'
 import BagFooter from './BagFooter'
 import BagItem from './BagItem'
+import useBagStore from '~/store/bag'
+import { shallow } from 'zustand/shallow'
 
-type Props = {
-  bagItems: BagItemProps[]
-}
+const HEIGHT = Dimensions.get('window').height
 
 const Separator = () => <View className='h-6' />
 
 const BagHeader = () => <Text className='mb-4 mt-14 h-[58] font-app-semibold text-heading1'>bag</Text>
 
-const Bag = ({ bagItems }: Props) => {
-  const [data, setData] = useState(bagItems)
-  const handleRemoveItem = (id: string) => {
-    const newData = data.filter((item) => item.id != id)
-    setData(newData)
-  }
+const Bag = () => {
+  const [bagList, removeBag] = useBagStore((state) => [state.bagList, state.removeBag], shallow)
+  const [data, setData] = useState(bagList)
+
+  useEffect(() => {
+    setData(bagList)
+  }, [bagList])
+
   return (
-    <SafeAreaView className='flex-1'>
+    <SafeAreaView className='relative flex-1' style={{ height: HEIGHT }}>
       <FlatList
         ListHeaderComponent={BagHeader}
-        ListFooterComponent={BagFooter}
         ItemSeparatorComponent={Separator}
+        showsVerticalScrollIndicator={false}
         data={data}
-        className='px-4'
-        renderItem={({ item }) => <BagItem {...item} onRemove={()=>handleRemoveItem(item.id)}/>}
+        className='flex-1 px-4'
+        renderItem={({ item }) => <BagItem {...item} onRemove={() => removeBag(item.id)} />}
       />
+      <BagFooter/>
     </SafeAreaView>
   )
 }

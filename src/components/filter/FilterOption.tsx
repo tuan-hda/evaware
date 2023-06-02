@@ -1,17 +1,22 @@
 import { View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Category, CustomSafeAreaView } from '~/components/common'
 import Bars from '../navigation/Bars'
 import { HomeFilterOptionProp } from '../navigation/HomeNav'
 import { useDispatch } from 'react-redux'
 import { updateFilter } from '../../slice/filterSlice'
 import { UserFilterOptionProp } from '../navigation/UserNav'
+import useSortFilterStore from '~/store/sort_filter'
+import { shallow } from 'zustand/shallow'
 
 const FilterOption = ({ navigation, route }: HomeFilterOptionProp | UserFilterOptionProp) => {
   const { name, selected } = route.params
   const [data, setData] = useState(selected)
 
-  const dispatch = useDispatch()
+  const [updateFilter, filterOptionClear] = useSortFilterStore(
+    (state) => [state.updateFilter, state.filterOptionClear],
+    shallow
+  )
 
   const handleCheck = (i: number) => {
     const newData = [...data]
@@ -22,11 +27,11 @@ const FilterOption = ({ navigation, route }: HomeFilterOptionProp | UserFilterOp
   }
 
   const handleFilter = () => {
-    const payload = {
-      name: name,
-      selecteds: data
+    const filter = {
+      filterName: name,
+      optionsSelected: data
     }
-    dispatch(updateFilter(payload))
+    updateFilter(filter)
     navigation.goBack()
   }
 
@@ -38,6 +43,10 @@ const FilterOption = ({ navigation, route }: HomeFilterOptionProp | UserFilterOp
         headerRight='action'
         label='Clear'
         onLeftButtonPress={() => navigation.goBack()}
+        onRightButtonPress={() => {
+          filterOptionClear(name)
+          navigation.goBack()
+        }}
       />
       {/* ListItem */}
       <View className='w-full flex-1'>

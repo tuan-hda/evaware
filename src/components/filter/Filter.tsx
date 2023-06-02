@@ -6,8 +6,8 @@ import { HomeNavigationProp } from '../navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '../navigation/Bars'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../slice/filterSlice'
-import { UserNavigationProp } from '../navigation/UserNav'
+import useSortFilterStore from '~/store/sort_filter'
+import { shallow } from 'zustand/shallow'
 
 const DATA = [
   {
@@ -100,24 +100,29 @@ const getFilterList = (filterList: FilterListProps) => {
 
 const Filter = () => {
   const navigation = useNavigation<HomeNavigationProp>()
-  const filterList = useSelector((state: RootState) => state.filter.filterList)
+  const [filterList, filterClear, updateMin, updateMax] = useSortFilterStore(
+    (state) => [state.filterList, state.filterClear, state.updateMin, state.updateMax],
+    shallow
+  )
   const [data, setData] = useState(filterList)
+
   useEffect(() => {
     setData(filterList)
   }, [filterList])
 
   return (
-    <CustomSafeAreaView className='flex-1 items-center bg-white px-4'>
+    <CustomSafeAreaView className='flex-1 items-center bg-white px-4 pb-4'>
       <Bars
         headerLeft='close'
         title='Filter'
         headerRight='action'
         label='Clear'
         onLeftButtonPress={() => navigation.goBack()}
+        onRightButtonPress={filterClear}
       />
       <View className='mt-4 flex-row'>
-        <Text className='flex-1 font-app-medium text-body1'>$0</Text>
-        <Text className='flex-1 text-right font-app-medium text-body1'>$700</Text>
+        <Text className='flex-1 font-app-medium text-body1'>${0}</Text>
+        <Text className='flex-1 text-right font-app-medium text-body1'>${700}</Text>
       </View>
       {/* RangerSlider */}
       <View className='relative w-full'>
@@ -131,7 +136,10 @@ const Filter = () => {
           renderRail={() => <View className='h-[2px] w-full bg-giratina-200' />}
           renderRailSelected={() => <View className='h-[2px] w-full bg-charizard-400' />}
           renderLabel={(value) => <Text>${value}</Text>}
-          onValueChanged={(low, high) => console.log(low, high)}
+          onValueChanged={(low, high) => {
+            updateMin(low)
+            updateMax(high)
+          }}
         />
       </View>
       {/* ListItem */}

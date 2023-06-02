@@ -1,7 +1,8 @@
-import { View, Text, Modal, Pressable } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React from 'react'
 import { Button, Category } from '../common'
 import { Close } from 'assets/icon'
+import Modal from 'react-native-modal'
 
 // Cách dùng
 // 1. Thêm vào code render (vị trí ở đâu cũng được)       
@@ -11,6 +12,7 @@ import { Close } from 'assets/icon'
 interface Props {
   visible: boolean
   setVisible: (visible: boolean) => void
+  toggle: ()=>void
 }
 
 const measurements = {
@@ -25,17 +27,10 @@ const composition = {
   weight: '100% Chipboard'
 }
 
-const ModalProductInfo = ({ visible, setVisible }: Props) => {
+const ModalProductInfo = ({ visible, setVisible, toggle }: Props) => {
   return (
-    <Modal
-      animationType='slide'
-      transparent={true}
-      visible={visible}
-      onRequestClose={() => {
-        //   setModalVisible(!modalVisible);
-      }}
-    >
-      <Pressable style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)', justifyContent: 'flex-end' }} onPress={() => setVisible(false)}>
+    <Modal isVisible={visible} onBackdropPress={toggle} className='m-0'>
+      <Pressable className='h-full w-full justify-end bg-transparent' onPress={toggle}>
         <View className='rounded-t-3xl bg-white px-4 pb-[66px] pt-9'>
           <Pressable onPress={() => setVisible(false)}>
             <Close />

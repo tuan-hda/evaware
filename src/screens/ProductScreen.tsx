@@ -70,9 +70,11 @@ const ProductScreen = () => {
   const [productInfoVisible, setProductInfoVisible] = useState(false)
   const [isFaver, setIsFaver] = useState(false)
 
+  const toggle = () => setProductInfoVisible((prev) => !prev)
+
   return (
     <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
-      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible} />
+      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible} toggle={toggle} />
 
       {/* Slider */}
       <SwipeSlider images={imageSlider} className='h-[458px]' />
