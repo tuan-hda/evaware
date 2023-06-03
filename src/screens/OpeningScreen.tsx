@@ -2,8 +2,12 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { Button, CustomSafeAreaView } from '~/components/common'
 import { Logo } from 'assets/icon'
+import { AuthNavigationProp } from '~/components/navigation/AuthNav'
+import { useNavigation } from '@react-navigation/native'
 
 const OpeningScreen = () => {
+  const navigation = useNavigation<AuthNavigationProp>()
+
   return (
     <CustomSafeAreaView className='bg-white'>
       <View className='flex-1 justify-evenly'>
@@ -18,8 +22,13 @@ const OpeningScreen = () => {
       </View>
 
       <View className='px-5 pb-5'>
-        <Button label='Sign In' />
-        <Button className='mt-[14]' type='outline' label='Create account' />
+        <Button label='Sign In' onPress={() => navigation.navigate('Login')} />
+        <Button
+          className='mt-[14] border border-[#747474]'
+          type='outline'
+          label='Create account'
+          onPress={() => navigation.navigate('Signup')}
+        />
       </View>
     </CustomSafeAreaView>
   )

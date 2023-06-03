@@ -124,13 +124,9 @@ const ProductScreen = () => {
         <Text className='mr-4 flex-1 font-app-light text-body1'>Product information</Text>
         <ChevronRight />
       </Pressable>
-      <Pressable className='h-16 flex-row px-4 py-5'>
+      <Pressable className='h-16 flex-row px-4 py-5' onPress={() => navigation.navigate('Reviews')}>
         <Text className='mr-4 flex-1 font-app-light text-body1'>Reviews</Text>
         <Text className='text-right font-app-light text-body1 text-giratina-500'>32</Text>
-      </Pressable>
-      <Pressable className='h-16 flex-row px-4 py-5'>
-        <Text className='mr-4 flex-1 font-app-light text-body1'>Questions and answers</Text>
-        <Text className='text-right font-app-light text-body1 text-giratina-500'>5</Text>
       </Pressable>
 
       <Text className='p-4 font-app-semibold text-heading2'>you might also like</Text>

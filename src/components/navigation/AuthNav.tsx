@@ -1,4 +1,5 @@
 import { StackNavigationProp, createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import { OpeningScreen } from '~/screens'
 import ForgotPasswordScreen from '~/screens/ForgotPasswordScreen'
 import LoginScreen from '~/screens/LoginScreen'
 import PhoneLoginScreen from '~/screens/PhoneLoginScreen'
@@ -13,6 +14,7 @@ export type AuthNavParamsList = {
   PhoneVerification: {
     veriId: string
   }
+  Opening: undefined
 }
 
 export type AuthNavigationProp = StackNavigationProp<AuthNavParamsList>
@@ -23,6 +25,7 @@ const Stack = createStackNavigator<AuthNavParamsList>()
 function AuthNav() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name='Opening' component={OpeningScreen} />
       <Stack.Screen name='Login' component={LoginScreen} />
       <Stack.Screen name='Signup' component={SignupScreen} />
       <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} />

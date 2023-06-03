@@ -19,6 +19,20 @@ const data = [
     zip: 123123,
     name: 'Hanna Gouse',
     street: 'Tạ Quang Bửu'
+  },
+  {
+    id: 'abcd',
+    province: 'TP HCM',
+    address: 'Phường Linh Trung',
+    city: 'HCM',
+    ward: 'Phường Linh Trung',
+    description: 'KTX Khu A DHQG',
+    district: 'Thủ Đức',
+    email: 'hdatdragon2@gmail.com',
+    phone: '0987654321',
+    zip: 123123,
+    name: 'Hanna Gouse',
+    street: 'Tạ Quang Bửu'
   }
 ]
 

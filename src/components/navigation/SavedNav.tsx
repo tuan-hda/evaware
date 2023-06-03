@@ -1,5 +1,5 @@
 import { createStackNavigator, StackNavigationProp, StackScreenProps } from '@react-navigation/stack'
-import { ProductScreen } from '~/screens'
+import { NewReviewScreen, ProductScreen, ReviewScreen } from '~/screens'
 import SavedScreen from '~/screens/SavedScreen'
 import SearchScreen from '~/screens/SearchScreen'
 import Filter from '../filter/Filter'
@@ -17,6 +17,8 @@ export type SavedNavParamList = {
     }[]
   }
   Search:undefined
+  Reviews: undefined
+  NewReview: undefined
 }
 
 export type SavedNavigationProp = StackNavigationProp<SavedNavParamList>
@@ -32,6 +34,8 @@ export default function SavedNav() {
       <Stack.Screen component={Filter} name='Filter' />
       <Stack.Screen component={FilterOption} name='FilterOption' />
       <Stack.Screen component={SearchScreen} name='Search' />
+      <Stack.Screen component={ReviewScreen} name='Reviews' />
+      <Stack.Screen component={NewReviewScreen} name='NewReview' />
     </Stack.Navigator>
   )
 }

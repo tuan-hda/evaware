@@ -4,10 +4,16 @@ import SavedItemsEmptyScreen from './SavedItemsEmptyScreen'
 import SavedItemsScreen from './SavedItemsScreen'
 import useSavedStore from '~/store/saved'
 import { shallow } from 'zustand/shallow'
+import { useNavigation } from '@react-navigation/native'
+import useShowNav from '~/hooks/useShowNav'
 
 const SavedScreen = () => {
   const [savedList] = useSavedStore((state) => [state.savedList], shallow)
   const [data, setData] = useState(savedList)
+
+  const navigation = useNavigation()
+
+  useShowNav(navigation, true)
 
   useEffect(() => {
     setData(savedList)

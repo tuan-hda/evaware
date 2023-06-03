@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import type { BagItemProps } from '~/types/bagItem.type'
 import { Stepper } from '../common'
@@ -9,9 +9,10 @@ type Props = BagItemProps & {
   paddingBottom?: number
   disableButton?: boolean
   onRemove?: (id: string) => void
+  onPress?:()=>void
 }
 
-const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableButton, onRemove }: Props) => {
+const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableButton, onRemove, onPress }: Props) => {
   const [qty, setQty] = useState(0)
 
   useEffect(() => {
@@ -19,7 +20,7 @@ const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableBu
   }, [outerQty])
 
   return (
-    <View className='flex-row' style={{ paddingBottom }}>
+    <Pressable className='flex-row' style={{ paddingBottom }} onPress={onPress} >
       <Image
         source={{
           uri: img
@@ -43,7 +44,7 @@ const BagItem = ({ id, img, qty: outerQty, price, desc, paddingBottom, disableBu
       </View>
 
       {!disableButton && <Clear onPress={() => onRemove && onRemove(id)} fill='#9e9e9e' />}
-    </View>
+    </Pressable>
   )
 }
 

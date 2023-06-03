@@ -1,5 +1,5 @@
 import { StackNavigationProp, createStackNavigator, StackScreenProps } from '@react-navigation/stack'
-import { CatalogScreen, HomeScreen, ProductScreen } from '~/screens'
+import { CatalogScreen, HomeScreen, NewReviewScreen, ProductScreen, ReviewScreen } from '~/screens'
 import CategoriesScreen from '~/screens/CategoriesScreen'
 import SearchScreen from '~/screens/SearchScreen'
 import Filter from '../filter/Filter'
@@ -21,6 +21,8 @@ export type HomeNavParamList = {
     }[]
   }
   Slider: undefined
+  Reviews:undefined
+  NewReview: undefined
 }
 
 export type HomeNavigationProp = StackNavigationProp<HomeNavParamList>
@@ -40,6 +42,8 @@ export default function HomeNav() {
       <Stack.Screen component={Filter} name='Filter' />
       <Stack.Screen component={FilterOption} name='FilterOption' />
       <Stack.Screen component={Slider} name='Slider' />
+      <Stack.Screen component={ReviewScreen} name='Reviews' />
+      <Stack.Screen component={NewReviewScreen} name='NewReview' />
     </Stack.Navigator>
   )
 }
