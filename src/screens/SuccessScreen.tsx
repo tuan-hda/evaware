@@ -2,8 +2,12 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { Button, CustomSafeAreaView } from '~/components/common'
 import { Friendly } from 'assets/icon'
+import { BagNavigationProp } from '~/components/navigation/BagNav'
+import { useNavigation } from '@react-navigation/native'
 
 const SuccessScreen = () => {
+  const navigation = useNavigation<BagNavigationProp>()
+
   return (
     <CustomSafeAreaView className='h-full w-full justify-between bg-charizard-300 p-4'>
       <View />
@@ -16,7 +20,12 @@ const SuccessScreen = () => {
         </Text>
       </View>
 
-      <Button type='outline' label='To my orders' className='self-end' />
+      <Button
+        type='outline'
+        label='To my orders'
+        className='self-end'
+        onPress={() => navigation.navigate('MyOrders')}
+      />
     </CustomSafeAreaView>
   )
 }

@@ -7,6 +7,7 @@ import Bars from './Bars'
 import HomeNav from './HomeNav'
 import UserNav from './UserNav'
 import SavedNav from './SavedNav'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 
 const mTab = createBottomTabNavigator()
 
@@ -16,16 +17,28 @@ export default function Tab() {
   return (
     <mTab.Navigator
       initialRouteName='Home'
-      screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarHideOnKeyboard: true,
-        tabBarStyle: {
-          height: 64 + insets.bottom
-        },
-        tabBarItemStyle: {
-          alignItems: 'center',
-          justifyContent: 'center'
+      screenOptions={({ route }) => {
+        const routeName = getFocusedRouteNameFromRoute(route) ?? ''
+        const hideTabbar = [
+          'Product',
+          'Reviews',
+          'NewReview',
+          'Filter',
+          'FilterOption',
+          'Search',
+        ].includes(routeName)
+        return {
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: {
+            height: 64 + insets.bottom,
+            display: hideTabbar ? 'none' : 'flex'
+          },
+          tabBarItemStyle: {
+            alignItems: 'center',
+            justifyContent: 'center'
+          }
         }
       }}
     >

@@ -8,8 +8,6 @@ import Bars from '~/components/navigation/Bars'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
 import { useNavigation } from '@react-navigation/native'
 import ModalSort from '~/components/modal/ModalSort'
-import useSavedStore from '~/store/saved'
-import { shallow } from 'zustand/shallow'
 const DATA = [
   {
     orderID: 23124,

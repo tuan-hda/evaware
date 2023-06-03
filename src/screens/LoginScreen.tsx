@@ -97,7 +97,7 @@ const LoginScreen = () => {
 
         {/* Don’t have an account? Sign up */}
         <View className='mb-12 mt-4 flex-row justify-center'>
-          <Text className='font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
+          <Text className='font-app-light text-sm mr-1' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
             Don't have an account?
           </Text>
           <Text className='font-app-semibold text-sm' onPress={() => navigation.navigate('Signup')}>

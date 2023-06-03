@@ -36,7 +36,7 @@ const Footer = () => {
   return (
     <View>
       <View className='mt-10 px-4'>
-        <Button label='Add new address' type='secondary' />
+        <Button label='Add new address' type='secondary' onPress={() => navigation.navigate('Address')} />
       </View>
       <View className='mt-4 px-4 pb-4'>
         <Button onPress={() => navigation.navigate('PaymentMethod')} label='Continue' />
