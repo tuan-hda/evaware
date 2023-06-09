@@ -51,7 +51,7 @@ export default function App() {
 
   const getNav = () => {
     if (!user) return <AuthNav />
-    if (user.email === 'hdatdragon2@gmail.com') return <AdminTab />
+    if (user.is_staff || user.is_superuser) return <AdminTab />
     return <Tab />
   }
 

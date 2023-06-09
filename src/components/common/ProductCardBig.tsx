@@ -25,8 +25,10 @@ const ProductCardBig = ({ data = DATA, style, onPress }: Props) => {
   const { price, isFavorited, desc, badge } = data
   const image = { uri: data.imageURL }
   return (
-    <Pressable className='relative flex-1' style={style} onPress={onPress}>
-      <Image style={{ width: '100%', borderRadius: 8, flexGrow: 1 }} className='aspect-[0.82]' source={image} />
+    <View style={style}>
+      <Pressable className='relative flex-1' onPress={onPress}>
+        <Image style={{ width: '100%', borderRadius: 8, flexGrow: 1 }} className='aspect-[0.82]' source={image} />
+      </Pressable>
       <View className='mb-1 mt-2 flex-row items-center'>
         <Text className='mr-2 flex-1 font-app-medium text-body1'>${price}</Text>
         {isFavorited ? <HeartFilled width={24} height={24} /> : <Heart width={24} height={24} />}
@@ -34,12 +36,12 @@ const ProductCardBig = ({ data = DATA, style, onPress }: Props) => {
       <Text numberOfLines={2} className='font-app-medium text-body3 text-giratina-500'>
         {desc}
       </Text>
-      {badge !== 'none' && (
+      {badge && (
         <View className='absolute left-2 top-2 h-6 items-center rounded bg-charizard-400 px-2'>
           <Text className='font-app-medium text-body2'>{badge}</Text>
         </View>
       )}
-    </Pressable>
+    </View>
   )
 }
 

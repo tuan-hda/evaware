@@ -2,48 +2,59 @@ import { View, Text, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView, RadioButton } from '~/components/common'
 import { Pressable } from 'react-native'
-import { Apple, ArrowLeft, Eye, Facebook, Google, Star8, UnEye } from 'assets/icon'
+import { ArrowLeft, Eye, Star8, UnEye } from 'assets/icon'
 import TextFieldWithLabel from '~/components/common/TextFieldWithLabel'
 import { useNavigation } from '@react-navigation/native'
 import type { AuthNavigationProp } from '~/components/navigation/AuthNav'
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
-import Toast from 'react-native-toast-message'
-import getAuthErrorMsg from '~/utils/getAuthErrorMsg'
-import { auth } from 'firebaseConfig'
+import { loginService } from '~/services/auth'
+import { isError, toastLoginError } from '~/utils/callAxios'
+import * as yup from 'yup'
+
+const validationSchema = yup.object({
+  email: yup.string().required('Required').email('Invalid email')
+})
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [showPwd, setShowPwd] = useState(false)
   const navigation = useNavigation<AuthNavigationProp>()
   const [setUser] = useUserStore((state) => [state.setUser], shallow)
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user)
-      }
-    })
-  }, [setUser])
+  const checkEmail = async () => {
+    try {
+      await validationSchema.validate({ email: email })
+      setError('')
+      return true
+    } catch (err: any) {
+      setError(err.errors[0])
+      return false
+    }
+  }
 
-  const login = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user
+  const login = async () => {
+    if (!(await checkEmail())) {
+      return
+    }
+
+    const user = await loginService(email, password)
+    if (user) {
+      if (isError(user)) {
+        toastLoginError(user)
+      } else {
         setUser(user)
-      })
-      .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        Toast.show({
-          type: 'error',
-          text1: 'Login failed',
-          text2: getAuthErrorMsg(errorMessage)
-        })
-        console.log(errorCode, errorMessage)
-      })
+        setEmail('')
+        setPassword('')
+      }
+    }
+  }
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value)
+    setError('')
   }
 
   return (
@@ -62,7 +73,8 @@ const LoginScreen = () => {
 
         {/* Email address */}
         <TextFieldWithLabel
-          onChangeText={(text) => setEmail(text)}
+          error={error}
+          onChangeText={handleEmailChange}
           label={'Email address'}
           containerClassName='mt-[34px]'
           placeholder='example@gmail.com'
@@ -97,7 +109,7 @@ const LoginScreen = () => {
 
         {/* Don’t have an account? Sign up */}
         <View className='mb-12 mt-4 flex-row justify-center'>
-          <Text className='font-app-light text-sm mr-1' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
+          <Text className='mr-1 font-app-light text-sm' style={{ color: 'rgba(0, 0, 0, 0.7)' }}>
             Don't have an account?
           </Text>
           <Text className='font-app-semibold text-sm' onPress={() => navigation.navigate('Signup')}>

@@ -20,9 +20,7 @@ const UserScreen = () => {
 
   const logout = () => {
     toggle()
-    signOut(auth).then(() => {
-      logOut()
-    })
+    logOut()
   }
 
   return (

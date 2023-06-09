@@ -15,7 +15,7 @@ interface Props {
   numColumns: number
   verticalGap?: number
   horizontalGap?: number
-  onItemPress?: ()=>void
+  onItemPress?: () => void
 }
 
 const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, onItemPress }: Props) => {

@@ -8,62 +8,12 @@ import { useNavigation } from '@react-navigation/native'
 import { CatalogProp, HomeNavigationProp } from '~/components/navigation/HomeNav'
 import Bars from '~/components/navigation/Bars'
 import ModalSort from '~/components/modal/ModalSort'
-
-const DATA = [
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  },
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  },
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  },
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  },
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  },
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  },
-  {
-    imageURL: 'https://noithatluongson.vn/wp-content/uploads/2021/07/furniture1.jpg',
-    price: 149.99,
-    isFavorited: true,
-    desc: 'Chair made of ash wood sourced from responsib sourced from responsib sourced from responsib',
-    badge: 'new'
-  }
-]
+import useProductData from '~/hooks/useProductData'
 
 const CatalogScreen = ({ navigation, route }: CatalogProp) => {
-  const { catalog } = route.params
+  const { catalog, id } = route.params
   const [sortVisible, setSortVisible] = useState(false)
+  const { response: product } = useProductData(id)
 
   const toggle = () => setSortVisible((prev) => !prev)
 
@@ -90,13 +40,15 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
         </Pressable>
       </View>
       {/* Gridview */}
-      <FlatGrid
-        data={DATA}
-        numColumns={2}
-        verticalGap={24}
-        horizontalGap={15}
-        onItemPress={() => navigation.navigate('Product')}
-      />
+      {product?.results && (
+        <FlatGrid
+          data={product?.results}
+          numColumns={2}
+          verticalGap={24}
+          horizontalGap={15}
+          onItemPress={() => navigation.navigate('Product')}
+        />
+      )}
     </CustomSafeAreaView>
   )
 }
