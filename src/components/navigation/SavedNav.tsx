@@ -1,4 +1,4 @@
-import { createStackNavigator, StackNavigationProp, StackScreenProps } from '@react-navigation/stack'
+import { createStackNavigator, StackNavigationProp, StackScreenProps, TransitionPresets } from '@react-navigation/stack'
 import { NewReviewScreen, ProductScreen, ReviewScreen } from '~/screens'
 import SavedScreen from '~/screens/SavedScreen'
 import SearchScreen from '~/screens/SearchScreen'
@@ -16,7 +16,7 @@ export type SavedNavParamList = {
       selected: boolean
     }[]
   }
-  Search:undefined
+  Search: undefined
   Reviews: undefined
   NewReview: undefined
 }
@@ -28,7 +28,7 @@ const Stack = createStackNavigator<SavedNavParamList>()
 
 export default function SavedNav() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
       <Stack.Screen component={SavedScreen} name='SavedScreen' />
       <Stack.Screen component={ProductScreen} name='Product' />
       <Stack.Screen component={Filter} name='Filter' />

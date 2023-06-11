@@ -11,7 +11,9 @@ import { shallow } from 'zustand/shallow'
 import Toast from 'react-native-toast-message'
 import toastConfig from 'config/toast'
 import { AdminTab } from '~/admin/nav'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+const queryClient = new QueryClient()
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
 
 SplashScreen.preventAutoHideAsync()
@@ -57,10 +59,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer onReady={onLayoutRootView}>
-        {getNav()}
-        <Toast config={toastConfig} position='bottom' />
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer onReady={onLayoutRootView}>
+          {getNav()}
+          <Toast config={toastConfig} position='top' />
+        </NavigationContainer>
+      </QueryClientProvider>
     </SafeAreaProvider>
   )
 }

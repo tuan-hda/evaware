@@ -11,6 +11,7 @@ import { shallow } from 'zustand/shallow'
 import { loginService } from '~/services/auth'
 import { isError, toastLoginError } from '~/utils/callAxios'
 import * as yup from 'yup'
+import { getCurrentUserProfileService } from '~/services/user'
 
 const validationSchema = yup.object({
   email: yup.string().required('Required').email('Invalid email')
@@ -46,6 +47,13 @@ const LoginScreen = () => {
         toastLoginError(user)
       } else {
         setUser(user)
+        const profile = await getCurrentUserProfileService()
+        if (profile && !isError(profile)) {
+          setUser({
+            ...user,
+            ...profile
+          })
+        }
         setEmail('')
         setPassword('')
       }

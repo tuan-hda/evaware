@@ -10,3 +10,13 @@ export interface ListProps<T extends {}> {
   previous: string | null
   results: T[]
 }
+
+export interface GenericData {
+  id: number
+  created_at: string
+  updated_at: string
+}
+
+export interface SoftGenericData extends GenericData {
+  is_deleted: boolean
+}

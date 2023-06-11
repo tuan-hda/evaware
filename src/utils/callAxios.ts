@@ -2,20 +2,28 @@ import { AxiosResponse, isAxiosError } from 'axios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { ServiceError } from '~/types/service.type'
 
-export const callAxios = async <T extends {}>(request: Promise<AxiosResponse<T, any>>, name?: string) => {
+export const callAxios = async <T extends {}>(
+  request: Promise<AxiosResponse<T, any>>,
+  name?: string,
+  returnError = true
+) => {
   try {
     return (await request).data
   } catch (error) {
-    console.log('\n' + name?.toUpperCase() + '\n')
+    console.error('\n' + name?.toUpperCase() + '\n')
     if (isAxiosError(error) && error.response) {
-      console.log(error.response.data)
-      console.log(error.response.status)
-      console.log(error.response.headers)
-      return {
-        error: error.response
+      console.error(error.response.data)
+      console.error(error.response.status)
+      console.error(error.response.headers)
+      if (returnError) {
+        return {
+          error: error.response
+        }
+      } else {
+        throw error
       }
     } else {
-      console.log(JSON.stringify(error))
+      console.error(JSON.stringify(error))
       Toast.show({ type: 'error', text1: 'Service failed', text2: 'Some errors have occurred!' })
     }
   }

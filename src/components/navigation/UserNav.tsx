@@ -1,5 +1,5 @@
 import React from 'react'
-import { StackNavigationProp, createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import { StackNavigationProp, createStackNavigator, StackScreenProps, TransitionPresets } from '@react-navigation/stack'
 import { MyOrdersScreen, NewReviewScreen, OrderScreen, ProductScreen, ReviewScreen, UserScreen } from '~/screens'
 import AddressBookScreen from '~/screens/AddressBookScreen'
 import AddAddressScreen from '~/screens/AddAddressScreen'
@@ -47,7 +47,7 @@ export type UserFilterOptionProp = StackScreenProps<UserNavParamList, 'FilterOpt
 const Stack = createStackNavigator<UserNavParamList>()
 
 const UserNav = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
     <Stack.Screen name='UserScreen' component={UserScreen} />
     <Stack.Screen name='Address' component={AddressBookScreen} />
     <Stack.Screen name='AddAddress' component={AddAddressScreen} />

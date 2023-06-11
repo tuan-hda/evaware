@@ -172,7 +172,7 @@ const Button = ({
           </View>
         )}
 
-        {hasBagIcon && (
+        {hasBagIcon && !loading && (
           <BagSvg
             width={size === 'large' ? 24 : 18}
             height={size === 'large' ? 24 : 18}

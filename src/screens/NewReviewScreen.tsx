@@ -1,14 +1,25 @@
-import { View, Text, Pressable, ScrollView, Image } from 'react-native'
+import { View, Text, Pressable, ScrollView, Image, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView, TextField, TextFieldWithLabel } from '~/components/common'
 import Bars from '~/components/navigation/Bars'
 import { Camera, Close, Star, YellowStar } from 'assets/icon'
 import { BlurView } from 'expo-blur'
 import * as ImagePicker from 'expo-image-picker'
-import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import { HomeNavigationProp, NewReviewProp } from '~/components/navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
+import { uploadFileService } from '~/services/other'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import mime from 'mime'
+import useAlertExit from '~/hooks/useAlertExit'
+import { addReviewService, getProductDetailService } from '~/services/product'
+import useProductStore from '~/store/product'
+import { shallow } from 'zustand/shallow'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { CreateReviewProps } from '~/types/reviews.type'
 
-const NewReviewScreen = () => {
+const NewReviewScreen = ({ route }: NewReviewProp) => {
+  const { productId } = route.params
   const [starState, setStarState] = useState([
     {
       selected: true,
@@ -34,6 +45,7 @@ const NewReviewScreen = () => {
   const [selectedStar, setSelectedStar] = useState(4)
   const [review, setReview] = useState('')
   const [images, setImages] = useState<string[]>([])
+  const { createAlert } = useAlertExit(() => navigation.goBack())
 
   const navigation = useNavigation<HomeNavigationProp>()
 
@@ -42,6 +54,55 @@ const NewReviewScreen = () => {
     setStarState(
       starState.map((item, index) => (index > i ? { ...item, selected: false } : { ...item, selected: true }))
     )
+  }
+
+  const { refetch } = useQuery({
+    queryKey: ['productDetail', productId],
+    queryFn: async () => getProductDetailService(productId)
+  })
+
+  const createReview = async () => {
+    const res = await addReviewService({
+      content: review,
+      img_urls: images,
+      product: productId,
+      variation: 1,
+      rating: selectedStar + 1
+    })
+    if (isError(res)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Added review failed'
+      })
+      return
+    }
+    refetch().then(() => {
+      navigation.goBack()
+    })
+  }
+
+  const uploadImage = async (asset: ImagePicker.ImagePickerAsset) => {
+    const formData = new FormData()
+    const newImageUri = 'file:///' + asset.uri.split('file:/').join('')
+
+    formData.append('file', {
+      uri: newImageUri,
+      type: mime.getType(newImageUri),
+      name: newImageUri.split('/').pop()
+    } as any)
+
+    const res = await uploadFileService(formData)
+    if (isError(res)) {
+      Toast.show({
+        type: 'error',
+        text1: 'Uploaded image failed'
+      })
+      return {
+        url: ''
+      }
+    } else {
+      return res
+    }
   }
 
   const pickImage = async () => {
@@ -53,7 +114,8 @@ const NewReviewScreen = () => {
     })
 
     if (!result.canceled) {
-      setImages([...images, result.assets[0].uri])
+      const res = await uploadImage(result.assets[0])
+      setImages([...images, res?.url || ''])
     }
   }
 
@@ -64,7 +126,7 @@ const NewReviewScreen = () => {
 
   return (
     <CustomSafeAreaView className='px-4'>
-      <Bars headerLeft='close' title='New review' onLeftButtonPress={() => navigation.goBack()} />
+      <Bars headerLeft='close' title='New review' onLeftButtonPress={createAlert} />
       {/* stars  */}
       <View className='py-6'>
         <View className='flex-row justify-center'>
@@ -120,7 +182,7 @@ const NewReviewScreen = () => {
         ))}
       </ScrollView>
 
-      <Button label={'Send review'} onPress={() => navigation.goBack()} />
+      <Button label={'Send review'} onPress={createReview} />
     </CustomSafeAreaView>
   )
 }

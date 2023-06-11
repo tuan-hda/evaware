@@ -46,7 +46,11 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
           numColumns={2}
           verticalGap={24}
           horizontalGap={15}
-          onItemPress={() => navigation.navigate('Product')}
+          onItemPress={(item) =>
+            navigation.navigate('Product', {
+              id: item.id
+            })
+          }
         />
       )}
     </CustomSafeAreaView>

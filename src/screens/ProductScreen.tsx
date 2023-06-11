@@ -1,11 +1,17 @@
 import { View, Text, FlatList, ScrollView, Pressable, Dimensions } from 'react-native'
-import React, { useState } from 'react'
-import { Button, CustomSafeAreaView, ProductCardBig, SwipeSlider } from '~/components/common'
+import React, { useEffect, useState } from 'react'
+import { Button, CustomSafeAreaView, ProductCardBig, SnackBar, SwipeSlider } from '~/components/common'
 import { ChevronRight, Sale } from 'assets/icon'
-import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import { HomeNavigationProp, ProductProp } from '~/components/navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '~/components/navigation/Bars'
 import ModalProductInfo from '~/components/modal/ModalProductInfo'
+import VariationList from '~/components/product/VariationList'
+import { addToCartService } from '~/services/cart'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { addFavoriteService, deleteFavoriteService, getProductDetailService } from '~/services/product'
+import { useQuery } from '@tanstack/react-query'
 
 const youMightlike = [
   {
@@ -65,20 +71,74 @@ const imageSlider = [
 ]
 const WIDTH = Dimensions.get('window').width
 
-const ProductScreen = () => {
+const ProductScreen = ({ route }: ProductProp) => {
   const navigation = useNavigation<HomeNavigationProp>()
   const [productInfoVisible, setProductInfoVisible] = useState(false)
   const [isFaver, setIsFaver] = useState(false)
+  const [currVar, setCurrVar] = useState(0)
+  const { id } = route.params
+  const { isLoading, data } = useQuery({
+    queryKey: ['productDetail', id],
+    queryFn: async () => getProductDetailService(id)
+  })
+  const response = data?.data
+
+  useEffect(() => {
+    if (response?.is_favorited) {
+      setIsFaver(response.is_favorited)
+    }
+  }, [response?.is_favorited])
+
+  const images = response?.variations && response.variations[currVar]?.img_urls
 
   const toggle = () => setProductInfoVisible((prev) => !prev)
 
+  async function addToBag() {
+    if (response?.variations[0]?.id) {
+      const res = await addToCartService(id, response?.variations[0]?.id)
+      if (isError(res)) {
+        let text2 = 'Some error happened'
+
+        if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
+          text2 = 'Insufficient inventory'
+        }
+
+        Toast.show({
+          type: 'error',
+          text1: 'Added to cart failed',
+          text2
+        })
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Added to bag successfully'
+        })
+      }
+    }
+  }
+
+  const toggleFavorite = async () => {
+    if (!response?.id) return null
+    if (isFaver) {
+      await deleteFavoriteService(response.id)
+      setIsFaver(false)
+    } else {
+      await addFavoriteService(response.id)
+      setIsFaver(true)
+    }
+  }
+
   return (
     <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
-      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible} toggle={toggle} />
+      <ModalProductInfo
+        data={response}
+        visible={productInfoVisible}
+        setVisible={setProductInfoVisible}
+        toggle={toggle}
+      />
 
       {/* Slider */}
-      <SwipeSlider images={imageSlider} className='h-[458px]' />
-
+      {images && <SwipeSlider currVar={currVar} images={images} className='h-[458px]' />}
       <Bars
         headerLeft='return'
         headerRight='heart'
@@ -87,27 +147,20 @@ const ProductScreen = () => {
         style={{ position: 'absolute' }}
         className='px-4 pt-2'
         onLeftButtonPress={() => navigation.goBack()}
-        onRightButtonPress={() => setIsFaver(!isFaver)}
+        onRightButtonPress={toggleFavorite}
       />
 
       <View className='bg-giratina-100'>
         {/* Price and desc */}
         <View className='px-4 py-6'>
-          <Text className='mb-2 font-app-semibold text-heading2'>$150.00</Text>
-          <Text className='font-app-light text-body1 text-giratina-500'>
-            Wooden bedside table featuring a raised design on the door
-          </Text>
+          <Text className='mb-2 font-app-semibold text-heading2'>${response?.price}</Text>
+          <Text className='font-app-light text-body1 text-giratina-500'>{response?.desc}</Text>
         </View>
 
-        <View className='mx-4 flex-row'>
-          <Pressable className='h-9 flex-row items-center rounded-lg border border-giratina-300 bg-white px-4'>
-            <View className='mr-2 h-[18px] w-[18px] rounded-full border border-giratina-200 bg-[#A56506]' />
-            <Text className='font-app-medium text-body2'>Brown</Text>
-          </Pressable>
-        </View>
+        <VariationList selected={currVar} setSelected={setCurrVar} data={response} />
 
         <View className='px-4 py-6'>
-          <Button label={'Add to bag'} hasBagIcon={true} />
+          <Button onPress={addToBag} label={'Add to bag'} hasBagIcon={true} />
         </View>
       </View>
 
@@ -124,9 +177,16 @@ const ProductScreen = () => {
         <Text className='mr-4 flex-1 font-app-light text-body1'>Product information</Text>
         <ChevronRight />
       </Pressable>
-      <Pressable className='h-16 flex-row px-4 py-5' onPress={() => navigation.navigate('Reviews')}>
+      <Pressable
+        className='h-16 flex-row px-4 py-5'
+        onPress={() =>
+          navigation.navigate('Reviews', {
+            data: response
+          })
+        }
+      >
         <Text className='mr-4 flex-1 font-app-light text-body1'>Reviews</Text>
-        <Text className='text-right font-app-light text-body1 text-giratina-500'>32</Text>
+        <Text className='text-right font-app-light text-body1 text-giratina-500'>{response?.reviews_count}</Text>
       </Pressable>
 
       <Text className='p-4 font-app-semibold text-heading2'>you might also like</Text>
@@ -137,7 +197,7 @@ const ProductScreen = () => {
           <ProductCardBig
             data={item}
             style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }}
-            onPress={() => navigation.navigate('Product')}
+            onPress={() => navigation.navigate('Product', { id: 0 })}
           />
         )}
         className='m-4 h-[310px]'

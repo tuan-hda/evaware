@@ -3,6 +3,7 @@ import React from 'react'
 import { ProductCardBig } from '~/components/common'
 
 interface Item {
+  id: number
   imageURL: string
   price: number
   isFavorited: boolean
@@ -15,7 +16,7 @@ interface Props {
   numColumns: number
   verticalGap?: number
   horizontalGap?: number
-  onItemPress?: () => void
+  onItemPress?: (item: Item) => void
 }
 
 const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, onItemPress }: Props) => {
@@ -25,6 +26,7 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, 
 
     while (totalLastRows !== 0 && totalLastRows !== numOfColumns) {
       dataList.push({
+        id: 0,
         imageURL: '',
         price: 0,
         isFavorited: true,
@@ -37,13 +39,11 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, 
     return dataList
   }
 
-  const renderItem = (item: Item, index: number) => {
+  const renderItem = (item: Item, index: number, length: number) => {
     if (!item.imageURL) return <View className='flex-1 grow' />
     else {
       return (
-        <ProductCardBig
-          data={item}
-          onPress={onItemPress}
+        <View
           style={[
             {
               flexGrow: 1,
@@ -53,14 +53,18 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, 
               marginRight: horizontalGap
             }
           ]}
-        />
+        >
+          <ProductCardBig data={item} onPress={() => onItemPress && onItemPress(item)} />
+          {index === length - 2 && <View className='h-10' />}
+        </View>
       )
     }
   }
+
   return (
     <FlatList
       data={formatData(data, numColumns)}
-      renderItem={({ item, index }) => renderItem(item, index)}
+      renderItem={({ item, index }) => renderItem(item, index, data.length)}
       className='w-full pt-4'
       keyExtractor={(_, index) => index.toString()}
       numColumns={numColumns}

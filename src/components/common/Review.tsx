@@ -16,54 +16,55 @@ const DATA = {
   ]
 }
 
-interface Props {
+export interface ReviewScreenProps {
   review: {
     starNum: number
     time: string
     userAvt: string
     userName: string
     content: string
-    imageReview: string[]
+    imageReview?: string[]
   }
 }
 
-const Review = ({ review }: Props) => {
-  const [data, setData] = useState(review)
-  useEffect(() => {
-    setData(review)
-  }, [])
+const Review = ({ review }: ReviewScreenProps) => {
+  // return null
 
   return (
     <View className='py-4'>
       {/* Stars and time */}
       <View className='flex-1 flex-row'>
-        {Array.from({ length: data.starNum }, (_, index) => (
+        {Array.from({ length: review.starNum }, (_, index) => (
           <YellowStar className='mr-1' key={index} />
         ))}
-        {Array.from({ length: 5 - data.starNum }, (_, index) => (
+        {Array.from({ length: 5 - review.starNum }, (_, index) => (
           <Star className='mr-1' key={index} />
         ))}
-        <Text className='flex-1 text-right font-app-light text-body2 text-giratina-500'>{data.time}</Text>
+        <Text className='flex-1 text-right font-app-light text-body2 text-giratina-500'>{review.time}</Text>
       </View>
 
       {/* user and content  */}
       <View className='my-3'>
         <View className='flex-1 flex-row items-center'>
-          <Image source={{ uri: data.userAvt }} className='mr-2 h-6 w-6 rounded-full' resizeMode='cover' />
-          <Text className='font-app-medium text-body1'>{data.userName}</Text>
+          {review.userAvt && (
+            <Image source={{ uri: review.userAvt }} className='mr-2 h-6 w-6 rounded-full' resizeMode='cover' />
+          )}
+          <Text className='font-app-medium text-body1'>{review.userName}</Text>
         </View>
-        <Text className='mt-0.5 w-full flex-shrink font-app-regular text-body1 text-giratina-500'>{data.content}</Text>
+        <Text className='mt-0.5 w-full flex-shrink font-app text-body1 text-giratina-500'>{review.content}</Text>
       </View>
 
       {/* images */}
-      <FlatList
-        data={data.imageReview}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <Image className='mr-2 h-[54px] w-[54px] rounded-md' resizeMode='cover' source={{ uri: item }} />
-        )}
-      />
+      {review.imageReview && (
+        <FlatList
+          data={review.imageReview}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <Image className='mr-2 h-[54px] w-[54px] rounded-md' resizeMode='cover' source={{ uri: item }} />
+          )}
+        />
+      )}
     </View>
   )
 }

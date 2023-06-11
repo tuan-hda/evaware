@@ -2,8 +2,13 @@ import { View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { CustomSafeAreaView, Review, SearchBar } from '~/components/common'
 import Bars from '~/components/navigation/Bars'
-import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import { HomeNavigationProp, ReviewProp } from '~/components/navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
+import { ReviewProps } from '~/types/reviews.type'
+import { ReviewScreenProps } from '~/components/common/Review'
+import moment from 'moment'
+import { useQuery } from '@tanstack/react-query'
+import { getProductDetailService } from '~/services/product'
 
 const DATA = [
   {
@@ -40,12 +45,28 @@ const DATA = [
   }
 ]
 
-const ReviewScreen = () => {
+const ReviewScreen = ({ route }: ReviewProp) => {
   const navigation = useNavigation<HomeNavigationProp>()
-  const [data, setData] = useState(DATA)
-  useEffect(() => {
-    setData(DATA)
-  }, [DATA])
+
+  const { data: temp } = useQuery({
+    queryKey: ['productDetail', route.params.data?.id],
+    queryFn: async () => getProductDetailService(route.params.data?.id || 0)
+  })
+
+  const data = temp?.data
+
+  const translateReview = (review: ReviewProps): ReviewScreenProps => {
+    return {
+      review: {
+        starNum: review.rating,
+        content: review.content,
+        userAvt: review.created_by.avatar,
+        time: moment(review.created_at).format('YYYY-MM-DD HH:mm'),
+        userName: review.created_by.full_name,
+        imageReview: review.img_urls
+      }
+    }
+  }
 
   return (
     <CustomSafeAreaView className='flex-1 px-4'>
@@ -55,14 +76,18 @@ const ReviewScreen = () => {
         headerRight='action'
         label='New review'
         onLeftButtonPress={() => navigation.goBack()}
-        onRightButtonPress={() => navigation.navigate('NewReview')}
+        onRightButtonPress={() =>
+          navigation.navigate('NewReview', {
+            productId: data?.id || 0
+          })
+        }
         className='mb-2'
       />
       <SearchBar />
       <FlatList
         className='mt-4'
-        data={DATA}
-        renderItem={({ item }) => <Review review={item} />}
+        data={data?.reviews}
+        renderItem={({ item }) => (item ? <Review {...translateReview(item)} /> : null)}
         showsVerticalScrollIndicator={false}
       />
     </CustomSafeAreaView>

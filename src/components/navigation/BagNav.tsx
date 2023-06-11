@@ -1,5 +1,5 @@
 import React from 'react'
-import { StackNavigationProp, StackScreenProps, createStackNavigator } from '@react-navigation/stack'
+import { StackNavigationProp, StackScreenProps, TransitionPresets, createStackNavigator } from '@react-navigation/stack'
 import CartScreen from '~/screens/CartScreen'
 import DeliveryDetail from '~/screens/DeliveryDetail'
 import PaymentMethod from '~/screens/PaymentMethod'
@@ -44,7 +44,7 @@ const Stack = createStackNavigator<BagNavParamsList>()
 
 const BagNav = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
       <Stack.Screen component={CartScreen} name='Bag' />
       <Stack.Screen component={DeliveryDetail} name='DeliveryDetail' />
       <Stack.Screen component={AddressBookScreen} name='Address' />

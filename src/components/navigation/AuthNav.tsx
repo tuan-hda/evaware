@@ -1,4 +1,4 @@
-import { StackNavigationProp, createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import { StackNavigationProp, createStackNavigator, StackScreenProps, TransitionPresets } from '@react-navigation/stack'
 import { OpeningScreen } from '~/screens'
 import ForgotPasswordScreen from '~/screens/ForgotPasswordScreen'
 import LoginScreen from '~/screens/LoginScreen'
@@ -24,7 +24,7 @@ const Stack = createStackNavigator<AuthNavParamsList>()
 
 function AuthNav() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
       <Stack.Screen name='Opening' component={OpeningScreen} />
       <Stack.Screen name='Login' component={LoginScreen} />
       <Stack.Screen name='Signup' component={SignupScreen} />
