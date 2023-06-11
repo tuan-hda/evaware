@@ -181,7 +181,7 @@ const ProductScreen = ({ route }: ProductProp) => {
         className='h-16 flex-row px-4 py-5'
         onPress={() =>
           navigation.navigate('Reviews', {
-            data: response
+            id: response?.id || 0
           })
         }
       >

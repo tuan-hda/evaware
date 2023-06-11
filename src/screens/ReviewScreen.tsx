@@ -1,5 +1,5 @@
-import { View, Text, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { FlatList } from 'react-native'
+import React from 'react'
 import { CustomSafeAreaView, Review, SearchBar } from '~/components/common'
 import Bars from '~/components/navigation/Bars'
 import { HomeNavigationProp, ReviewProp } from '~/components/navigation/HomeNav'
@@ -49,21 +49,23 @@ const ReviewScreen = ({ route }: ReviewProp) => {
   const navigation = useNavigation<HomeNavigationProp>()
 
   const { data: temp } = useQuery({
-    queryKey: ['productDetail', route.params.data?.id],
-    queryFn: async () => getProductDetailService(route.params.data?.id || 0)
+    queryKey: ['productDetail', route.params.id],
+    queryFn: async () => getProductDetailService(route.params.id || 0)
   })
 
   const data = temp?.data
 
-  const translateReview = (review: ReviewProps): ReviewScreenProps => {
+  const translateReview = (review: ReviewProps) => {
     return {
       review: {
+        id: review.id,
         starNum: review.rating,
         content: review.content,
         userAvt: review.created_by.avatar,
         time: moment(review.created_at).format('YYYY-MM-DD HH:mm'),
         userName: review.created_by.full_name,
-        imageReview: review.img_urls
+        imageReview: review.img_urls,
+        email: review.created_by.email
       }
     }
   }
@@ -87,7 +89,9 @@ const ReviewScreen = ({ route }: ReviewProp) => {
       <FlatList
         className='mt-4'
         data={data?.reviews}
-        renderItem={({ item }) => (item ? <Review {...translateReview(item)} /> : null)}
+        renderItem={({ item }) =>
+          item ? <Review originalReview={item} productId={data?.id} {...translateReview(item)} /> : null
+        }
         showsVerticalScrollIndicator={false}
       />
     </CustomSafeAreaView>

@@ -1,8 +1,8 @@
 import { Alert } from 'react-native'
 
-const useAlertExit = (onOk?: () => void, onCancelled?: () => void) => {
+const useAlertExit = (onOk?: () => void, onCancelled?: () => void, title?: string, text?: string) => {
   const createAlert = () =>
-    Alert.alert('Do you want to leave?', "Your changes won't be saved", [
+    Alert.alert(title ?? 'Do you want to leave?', text ?? "Your changes won't be saved", [
       {
         text: 'Cancel',
         onPress: onCancelled,

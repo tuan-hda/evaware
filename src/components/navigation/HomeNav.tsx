@@ -6,6 +6,7 @@ import Filter from '../filter/Filter'
 import FilterOption from '../filter/FilterOption'
 import { Slider } from '../slider'
 import { ConvertedProductDetailProps } from '~/types/product.type'
+import { ReviewProps } from '~/types/reviews.type'
 
 export type HomeNavParamList = {
   HomeScreen: undefined
@@ -25,10 +26,12 @@ export type HomeNavParamList = {
   }
   Slider: undefined
   Reviews: {
-    data: ConvertedProductDetailProps | undefined
+    id: number
   }
   NewReview: {
     productId: number
+    isEdit?: boolean
+    oldReview?: ReviewProps
   }
 }
 

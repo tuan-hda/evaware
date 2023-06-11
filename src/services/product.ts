@@ -68,3 +68,11 @@ export const deleteFavoriteService = async (id: number) => {
 export const addReviewService = async (data: CreateReviewProps) => {
   return await callAxios<ReviewProps>(appService.post('/review/create', data))
 }
+
+export const updateReviewService = async (data: Partial<ReviewProps>) => {
+  return await callAxios(appService.patch('/review/' + data.id, data))
+}
+
+export const deleteReviewService = async (id: number) => {
+  return await callAxios(appService.delete('/review/' + id))
+}

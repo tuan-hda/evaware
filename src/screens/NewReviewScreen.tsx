@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Image, Platform } from 'react-native'
+import { View, Text, Pressable, ScrollView, Image, Platform, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView, TextField, TextFieldWithLabel } from '~/components/common'
 import Bars from '~/components/navigation/Bars'
@@ -12,14 +12,19 @@ import { isError } from '~/utils/callAxios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import mime from 'mime'
 import useAlertExit from '~/hooks/useAlertExit'
-import { addReviewService, getProductDetailService } from '~/services/product'
+import { addReviewService, getProductDetailService, updateReviewService } from '~/services/product'
 import useProductStore from '~/store/product'
 import { shallow } from 'zustand/shallow'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { CreateReviewProps } from '~/types/reviews.type'
+import ChooseVariationModal from '~/components/product/ChooseVariationModal'
+import Entypo from 'react-native-vector-icons/Entypo'
+import { VariationProps } from '~/types/variation.type'
+import classNames from 'classnames'
+import LoadingScreen from '~/components/common/LoadingScreen'
 
 const NewReviewScreen = ({ route }: NewReviewProp) => {
-  const { productId } = route.params
+  const { productId, isEdit, oldReview } = route.params
   const [starState, setStarState] = useState([
     {
       selected: true,
@@ -46,8 +51,9 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
   const [review, setReview] = useState('')
   const [images, setImages] = useState<string[]>([])
   const { createAlert } = useAlertExit(() => navigation.goBack())
-
+  const [visible, setVisible] = useState(false)
   const navigation = useNavigation<HomeNavigationProp>()
+  const [loading, setLoading] = useState(false)
 
   const handleSelectedStar = (i: number) => {
     setSelectedStar(i)
@@ -56,25 +62,55 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
     )
   }
 
-  const { refetch } = useQuery({
+  const show = () => setVisible(true)
+  const hide = () => setVisible(false)
+
+  const { data: temp, refetch } = useQuery({
     queryKey: ['productDetail', productId],
     queryFn: async () => getProductDetailService(productId)
   })
+  const data = temp?.data
+  const [selectedVariation, setSelectedVariation] = useState<VariationProps | undefined>(data?.variations[0])
+
+  useEffect(() => {
+    if (oldReview) {
+      setImages(oldReview.img_urls)
+      setSelectedStar(oldReview.rating - 1)
+      setReview(oldReview.content)
+      setSelectedVariation(oldReview.variation)
+    }
+  }, [oldReview])
 
   const createReview = async () => {
-    const res = await addReviewService({
-      content: review,
-      img_urls: images,
-      product: productId,
-      variation: 1,
-      rating: selectedStar + 1
-    })
-    if (isError(res)) {
-      Toast.show({
-        type: 'error',
-        text1: 'Added review failed'
+    if (isEdit) {
+      const res = await updateReviewService({
+        content: review,
+        img_urls: images,
+        rating: selectedStar + 1,
+        id: oldReview?.id
       })
-      return
+      if (isError(res)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Updated review failed'
+        })
+        return
+      }
+    } else {
+      const res = await addReviewService({
+        content: review,
+        img_urls: images,
+        product: productId,
+        variation: selectedVariation?.id || 0,
+        rating: selectedStar + 1
+      })
+      if (isError(res)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Added review failed'
+        })
+        return
+      }
     }
     refetch().then(() => {
       navigation.goBack()
@@ -91,7 +127,9 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
       name: newImageUri.split('/').pop()
     } as any)
 
+    setLoading(true)
     const res = await uploadFileService(formData)
+    setLoading(false)
     if (isError(res)) {
       Toast.show({
         type: 'error',
@@ -126,7 +164,15 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
 
   return (
     <CustomSafeAreaView className='px-4'>
-      <Bars headerLeft='close' title='New review' onLeftButtonPress={createAlert} />
+      <LoadingScreen show={loading} />
+      <ChooseVariationModal
+        selectedVariation={selectedVariation}
+        setSelectedVariation={setSelectedVariation}
+        data={data?.variations}
+        show={visible}
+        toggle={hide}
+      />
+      <Bars headerLeft='close' title={isEdit ? 'Edit review' : 'New review'} onLeftButtonPress={createAlert} />
       {/* stars  */}
       <View className='py-6'>
         <View className='flex-row justify-center'>
@@ -153,6 +199,17 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
         numberOfLines={4}
         TextfieldClassName='h-40 my-2'
       />
+
+      <View className='h-2' />
+
+      <TouchableWithoutFeedback onPress={show}>
+        <View className='flex h-16 flex-row items-center justify-between rounded-lg bg-giratina-100 px-4'>
+          <Text className={classNames('font-app text-body1 ', !selectedVariation && 'text-giratina-500')}>
+            {selectedVariation?.name}
+          </Text>
+          <Entypo name='chevron-down' size={20} color='#999' />
+        </View>
+      </TouchableWithoutFeedback>
 
       <ScrollView horizontal className='mb-6 mt-2 flex-none py-2' showsHorizontalScrollIndicator={false}>
         <Pressable

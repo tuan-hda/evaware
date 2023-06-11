@@ -1,7 +1,18 @@
-import { View, Text, Image, FlatList } from 'react-native'
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Star, YellowStar } from 'assets/icon'
-
+import useUserStore from '~/store/user'
+import { shallow } from 'zustand/shallow'
+import Entypo from 'react-native-vector-icons/Entypo'
+import SelectModal from './SelectModal'
+import { useNavigation } from '@react-navigation/native'
+import { HomeNavigationProp } from '../navigation/HomeNav'
+import useAlertExit from '~/hooks/useAlertExit'
+import { useQuery } from '@tanstack/react-query'
+import { deleteReviewService, getProductDetailService } from '~/services/product'
+import { ReviewProps } from '~/types/reviews.type'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 const DATA = {
   starNum: 4,
   time: 'Today, 12:30 pm',
@@ -17,21 +28,65 @@ const DATA = {
 }
 
 export interface ReviewScreenProps {
+  productId?: number
+  originalReview: ReviewProps
   review: {
+    id: number
     starNum: number
     time: string
     userAvt: string
     userName: string
     content: string
     imageReview?: string[]
+    email: string
   }
 }
 
-const Review = ({ review }: ReviewScreenProps) => {
+const Review = ({ review, productId, originalReview }: ReviewScreenProps) => {
+  const navigation = useNavigation<HomeNavigationProp>()
   // return null
+  const [user] = useUserStore((state) => [state.user], shallow)
+  const [visible, setVisible] = useState(false)
+  const { createAlert } = useAlertExit(deleteReview, undefined, 'Delete review?', "You can't undo this action")
+  const { refetch } = useQuery({
+    queryKey: ['productDetail', productId],
+    queryFn: async () => getProductDetailService(productId || 0)
+  })
+
+  async function deleteReview() {
+    const res = await deleteReviewService(review.id)
+    if (!isError(res)) {
+      refetch()
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: "Can't delete review"
+      })
+    }
+  }
+
+  const show = () => setVisible(true)
+  const hide = () => setVisible(false)
+  const items = [
+    {
+      value: 'Edit',
+      action: () =>
+        navigation.navigate('NewReview', {
+          productId: productId || 0,
+          isEdit: true,
+          oldReview: originalReview
+        })
+    },
+    {
+      value: 'Delete',
+      className: 'text-magikarp-400',
+      action: createAlert
+    }
+  ]
 
   return (
     <View className='py-4'>
+      <SelectModal show={visible} toggle={hide} title='options' items={items} />
       {/* Stars and time */}
       <View className='flex-1 flex-row'>
         {Array.from({ length: review.starNum }, (_, index) => (
@@ -42,18 +97,23 @@ const Review = ({ review }: ReviewScreenProps) => {
         ))}
         <Text className='flex-1 text-right font-app-light text-body2 text-giratina-500'>{review.time}</Text>
       </View>
-
       {/* user and content  */}
       <View className='my-3'>
         <View className='flex-1 flex-row items-center'>
           {review.userAvt && (
             <Image source={{ uri: review.userAvt }} className='mr-2 h-6 w-6 rounded-full' resizeMode='cover' />
           )}
-          <Text className='font-app-medium text-body1'>{review.userName}</Text>
+          <View className='flex-1 flex-row justify-between'>
+            <Text className='font-app-medium text-body1'>{review.userName}</Text>
+            {review.email === user?.email && (
+              <TouchableOpacity onPress={show}>
+                <Entypo name='dots-three-horizontal' size={16} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
         <Text className='mt-0.5 w-full flex-shrink font-app text-body1 text-giratina-500'>{review.content}</Text>
       </View>
-
       {/* images */}
       {review.imageReview && (
         <FlatList
