@@ -18,9 +18,12 @@ interface Props {
   setVisible: (visible: boolean) => void
   toggle?: () => void
   applySort?: (value: string) => void
+  fields?: {
+    name: string
+  }[]
 }
 
-const ModalSort = ({ applySort, visible, setVisible, toggle }: Props) => {
+const ModalSort = ({ applySort, visible, setVisible, toggle, fields }: Props) => {
   const [sortList, updateSort] = useSortFilterStore((state) => [state.sortList, state.updateSort], shallow)
   const [current, setCurrent] = useState(0)
 
@@ -35,8 +38,8 @@ const ModalSort = ({ applySort, visible, setVisible, toggle }: Props) => {
         <View className='rounded-t-3xl bg-white px-4 pt-14'>
           <Text className='mb-4 font-app-semibold text-heading1'>Sort by</Text>
 
-          {data.map((item, index) => (
-            <Category left={item.name} right={index === current} key={index} action={() => setCurrent(index)} />
+          {(fields ?? data).map((item, index) => (
+            <Category rounded left={item.name} right={index === current} key={index} action={() => setCurrent(index)} />
           ))}
           <View className='py-4'>
             <Button
@@ -44,7 +47,7 @@ const ModalSort = ({ applySort, visible, setVisible, toggle }: Props) => {
               className='bg-charizard-400'
               onPress={() => {
                 setVisible(false)
-                applySort && applySort(data[current].name)
+                applySort && applySort((fields ?? data)[current].name)
               }}
             />
           </View>

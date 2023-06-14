@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
-import { AppBar, CustomSafeAreaView, SmallCard } from '~/components/common'
+import { AppBar, Button, CustomSafeAreaView, SmallCard } from '~/components/common'
 import { Pressable } from 'react-native'
 import { Car, Pin } from 'assets/icon'
 import Bars from '~/components/navigation/Bars'
@@ -14,6 +14,8 @@ import { OrderDetailProps } from '~/types/order.type'
 import { addToCartService } from '~/services/cart'
 import { isError } from '~/utils/callAxios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { cancelOrderService } from '~/services/order'
+import useAlertExit from '~/hooks/useAlertExit'
 
 const sample = {
   orderID: 23124,
@@ -58,6 +60,15 @@ const OrderScreen = ({ route }: OrderProp) => {
   }, 0)
 
   const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
+
+  const cancelOrder = async () => {
+    const res = await cancelOrderService(order.id)
+    if (!isError(res)) {
+      navigation.goBack()
+    }
+  }
+
+  const { createAlert } = useAlertExit(cancelOrder, undefined, 'Cancel this order?', "You can't rollback this action")
 
   return (
     <CustomSafeAreaView className='flex-1 px-4'>
@@ -147,6 +158,10 @@ const OrderScreen = ({ route }: OrderProp) => {
             <Text className='text-right font-app-light text-body1 text-giratina-500'>$10</Text>
           </View>
         </View>
+
+        {order.status === 'In progress' && (
+          <Button onPress={createAlert} label='Cancel order' isDanger type='outline' />
+        )}
       </ScrollView>
     </CustomSafeAreaView>
   )

@@ -1,27 +1,42 @@
 import { ListProps } from '~/types/service.type'
 import { callAxios, isError } from '~/utils/callAxios'
 import { appService } from './base'
-import { ConvertedProductDetailProps, ConvertedProductProps } from '~/types/product.type'
+import { ConvertedProductDetailProps, ConvertedProductProps, StatisticProductProps } from '~/types/product.type'
 import { AxiosResponse } from 'axios'
 import { CreateReviewProps, ReviewProps } from '~/types/reviews.type'
 
-export const getAllProductsService = async (search?: string, ordering?: string) => {
+export const getAllProductsService = async (
+  search?: string,
+  ordering?: string,
+  min_price?: number,
+  max_price?: number,
+  filterQuery?: string
+) => {
   return convert(
     await callAxios<ListProps<ConvertedProductProps>>(
-      appService.get('/product', {
+      appService.get('/product?' + filterQuery, {
         params: {
           search,
-          ordering
+          ordering,
+          price__gte: min_price,
+          price__lte: max_price
         }
       })
     )
   )
 }
 
-export const getProductsByCategoryService = async (id: number, search?: string, ordering?: string) => {
+export const getProductsByCategoryService = async (
+  id: number,
+  search?: string,
+  ordering?: string,
+  min_price?: number,
+  max_price?: number,
+  filterQuery?: string
+) => {
   return convert(
     await callAxios<ListProps<ConvertedProductProps>>(
-      appService.get('/product', {
+      appService.get('/product?' + filterQuery, {
         params: {
           category__id: id,
           search,
@@ -98,4 +113,8 @@ export const updateReviewService = async (data: Partial<ReviewProps>) => {
 
 export const deleteReviewService = async (id: number) => {
   return await callAxios(appService.delete('/review/' + id))
+}
+
+export const getTopProductService = async (range_type: 'yearly' | 'monthly' | 'quarterly' | 'weekly') => {
+  return appService.get<StatisticProductProps[]>('/statistics/top-product?range_type=' + range_type)
 }

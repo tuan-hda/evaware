@@ -33,3 +33,9 @@ export interface ConvertedProductDetailProps extends ConvertedProductProps {
   variations: (VariationProps | undefined)[]
   reviews: (ReviewProps | undefined)[]
 }
+
+export interface StatisticProductProps {
+  product: ConvertedProductProps
+  sales: number
+  revenue: number
+}

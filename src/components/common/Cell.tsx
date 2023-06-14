@@ -8,20 +8,25 @@ type Props = {
   subtext?: string
   rightIcon?: React.ReactNode
   rightText?: string
+  noPadding?: boolean
+  textClassName?: string
 } & TouchableOpacityProps
 
-const Cell = ({ icon, text, subtext, rightIcon, rightText, ...props }: Props) => {
+const Cell = ({ icon, noPadding, textClassName, text, subtext, rightIcon, rightText, ...props }: Props) => {
   return (
-    <TouchableOpacity {...props} className={classNames('h-16 flex-row items-center px-4', props.className)}>
+    <TouchableOpacity
+      {...props}
+      className={classNames('h-16 flex-row items-center', props.className, !noPadding && 'px-4')}
+    >
       {icon}
       <View className={classNames('min-w-0 flex-1', icon && 'ml-4')}>
-        <Text className='font-app text-body1 text-black'>{text}</Text>
+        <Text className={classNames('text-body1 text-black', textClassName || 'font-app')}>{text}</Text>
         {subtext && <Text className='font-app text-body2 text-giratina-500'>{subtext}</Text>}
       </View>
       {(rightIcon || rightText) && (
         <View className='ml-4'>
           {rightIcon}
-          <Text className='font-app text-body1 text-giratina-500'>{rightText}</Text>
+          {rightText && <Text className='font-app text-body1 text-giratina-500'>{rightText}</Text>}
         </View>
       )}
     </TouchableOpacity>

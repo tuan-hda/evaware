@@ -24,7 +24,7 @@ const Stack = createStackNavigator<AuthNavParamsList>()
 
 function AuthNav() {
   return (
-    <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name='Opening' component={OpeningScreen} />
       <Stack.Screen name='Login' component={LoginScreen} />
       <Stack.Screen name='Signup' component={SignupScreen} />

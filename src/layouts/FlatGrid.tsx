@@ -24,9 +24,10 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, 
   const formatData = (dataList: Item[], numOfColumns: number) => {
     const totalRows = Math.floor(dataList.length / numOfColumns)
     let totalLastRows = dataList.length - totalRows * numOfColumns
+    const newDataList = [...dataList]
 
     while (totalLastRows !== 0 && totalLastRows !== numOfColumns) {
-      dataList.push({
+      newDataList.push({
         id: 0,
         imageURL: '',
         price: 0,
@@ -38,7 +39,7 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, 
       totalLastRows++
     }
 
-    return dataList
+    return newDataList
   }
 
   const renderItem = (item: Item, index: number, length: number) => {
