@@ -4,19 +4,45 @@ import Modal from 'react-native-modal'
 import { Button } from '~/components/common'
 import { VariationProps } from '~/types/variation.type'
 import classNames from 'classnames'
+import { addToCartService } from '~/services/cart'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 
 type Props = {
   show: boolean
   toggle: () => void
   data: (VariationProps | undefined)[] | undefined
-  selectedVariation: VariationProps | undefined
-  setSelectedVariation: (data: VariationProps) => void
+  selectedVariation?: VariationProps
+  setSelectedVariation?: (data: VariationProps) => void
 }
 
 const ChooseVariationModal = ({ show, toggle, data, selectedVariation, setSelectedVariation }: Props) => {
   const selectVariation = (item: VariationProps | undefined) => {
-    item && setSelectedVariation(item)
+    item && setSelectedVariation && setSelectedVariation(item)
     toggle()
+  }
+
+  const addToCart = async (productId: number, variationId: number) => {
+    const res = await addToCartService(productId, variationId)
+    if (isError(res)) {
+      let text2 = 'Some error happened'
+
+      if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
+        text2 = 'Insufficient inventory'
+      }
+
+      Toast.show({
+        type: 'error',
+        text1: 'Added to cart failed',
+        text2
+      })
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Added to bag successfully'
+      })
+      toggle()
+    }
   }
 
   return (
@@ -32,16 +58,24 @@ const ChooseVariationModal = ({ show, toggle, data, selectedVariation, setSelect
             {data?.map((item, index) => (
               <View key={item?.id} className=''>
                 <Pressable
-                  onPress={() => selectVariation(item)}
-                  className={classNames(
-                    'h-16 flex-row items-center rounded-lg border border-giratina-300 px-4',
-                    selectedVariation?.id === item?.id ? 'bg-app-black' : 'bg-white'
-                  )}
+                  disabled={item?.inventory === 0}
+                  onPress={() => {
+                    if (!setSelectedVariation && item) {
+                      addToCart(item.product, item?.id)
+                    } else {
+                      selectVariation(item)
+                    }
+                  }}
+                  className={classNames('h-16 flex-row items-center rounded-lg border border-giratina-300 px-4', {
+                    'bg-app-black': selectedVariation?.id === item?.id && item?.inventory !== 0,
+                    'bg-white': selectedVariation?.id !== item?.id && item?.inventory !== 0,
+                    'bg-giratina-300': item?.inventory === 0
+                  })}
                 >
                   <Text
                     className={classNames('font-app text-body1', selectedVariation?.id === item?.id && 'text-white')}
                   >
-                    {item?.name}
+                    {item?.name} {item?.inventory === 0 && '- Out of stock'}
                   </Text>
                 </Pressable>
                 {data.length - 1 !== index && <View className='h-4' />}

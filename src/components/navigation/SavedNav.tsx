@@ -4,10 +4,10 @@ import SavedScreen from '~/screens/SavedScreen'
 import SearchScreen from '~/screens/SearchScreen'
 import Filter from '../filter/Filter'
 import FilterOption from '../filter/FilterOption'
+import { ReviewProps } from '~/types/reviews.type'
 
 export type SavedNavParamList = {
   SavedScreen: undefined
-  Product: undefined
   Filter: undefined
   FilterOption: {
     name: string
@@ -17,8 +17,17 @@ export type SavedNavParamList = {
     }[]
   }
   Search: undefined
-  Reviews: undefined
-  NewReview: undefined
+  Product: {
+    id: number
+  }
+  Reviews: {
+    id: number
+  }
+  NewReview: {
+    productId: number
+    isEdit?: boolean
+    oldReview?: ReviewProps
+  }
 }
 
 export type SavedNavigationProp = StackNavigationProp<SavedNavParamList>

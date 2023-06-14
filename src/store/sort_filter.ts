@@ -25,11 +25,11 @@ type State = {
 
 type Action = {
   updateFilter: (filter: Filter) => void
-  updateSort:(sortName: string)=>void
-  filterClear:()=>void
-  filterOptionClear:(name: string)=>void
-  updateMin:(min: number)=>void
-  updateMax:(max: number)=>void
+  updateSort: (sortName: string) => void
+  filterClear: () => void
+  filterOptionClear: (name: string) => void
+  updateMin: (min: number) => void
+  updateMax: (max: number) => void
 }
 
 const useSortFilterStore = create(
@@ -88,15 +88,15 @@ const useSortFilterStore = create(
     ],
     sortList: [
       {
+        name: 'New first',
+        selected: false
+      },
+      {
         name: 'Price: high to low',
         selected: true
       },
       {
         name: 'Price: low to high',
-        selected: false
-      },
-      {
-        name: 'New first',
         selected: false
       },
       {
@@ -114,44 +114,44 @@ const useSortFilterStore = create(
         }
       })
     },
-    updateSort:(sortName)=>{
-      set((state)=>{
-        const sortIndex = state.sortList.findIndex((item)=>item.name === sortName)
-        if(sortIndex !== -1){
+    updateSort: (sortName) => {
+      set((state) => {
+        const sortIndex = state.sortList.findIndex((item) => item.name === sortName)
+        if (sortIndex !== -1) {
           const prevSelected = state.sortList[sortIndex].selected
           state.sortList[sortIndex].selected = !prevSelected
         }
       })
     },
     filterClear() {
-      set((state)=>{
-        state.filterList.forEach((filter)=>{
-          filter.optionsSelected.forEach((option)=>{
+      set((state) => {
+        state.filterList.forEach((filter) => {
+          filter.optionsSelected.forEach((option) => {
             option.selected = false
           })
         })
       })
     },
     filterOptionClear(name) {
-      set((state)=>{
+      set((state) => {
         const filterIndex = state.filterList.findIndex((item) => item.filterName === name)
         if (filterIndex !== -1) {
-          state.filterList[filterIndex].optionsSelected.forEach((option)=>{
+          state.filterList[filterIndex].optionsSelected.forEach((option) => {
             option.selected = false
           })
         }
       })
     },
     updateMin(min) {
-      set((state)=>{
+      set((state) => {
         state.minPrice = min
       })
     },
     updateMax(max) {
-      set((state)=>{
+      set((state) => {
         state.maxPrice = max
       })
-    },
+    }
   }))
 )
 

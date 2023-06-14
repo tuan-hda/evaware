@@ -10,23 +10,33 @@ import DetailScreen from '~/screens/DetailScreen'
 import Filter from '../filter/Filter'
 import FilterOption from '../filter/FilterOption'
 import SearchScreen from '~/screens/SearchScreen'
+import { ReviewProps } from '~/types/reviews.type'
+import { OrderProps } from '~/types/order.type'
+import { ProvinceProps } from '~/types/province.type'
+import { AddressProps } from '~/types/address.type'
 
 export type UserNavParamList = {
   UserScreen: undefined
   Address: undefined
-  AddAddress: undefined
+  AddAddress: {
+    isEdit?: boolean
+    address?: AddressProps
+  }
   ChooseAddress:
     | {
         type?: string
-        setAddress?: (address: string) => void
+        address?: ProvinceProps
+        setAddress?: (address: ProvinceProps) => void
+        data?: ProvinceProps[]
       }
     | undefined
   Setting: undefined
   PaymentMethod: undefined
   MyDetails: undefined
   MyOrders: undefined
-  OrderScreen: undefined
-  Product: undefined
+  OrderScreen: {
+    order: OrderProps
+  }
   Filter: undefined
   FilterOption: {
     name: string
@@ -36,13 +46,24 @@ export type UserNavParamList = {
     }[]
   }
   Search: undefined
-  Reviews: undefined
-  NewReview: undefined
+  Product: {
+    id: number
+  }
+  Reviews: {
+    id: number
+  }
+  NewReview: {
+    productId: number
+    isEdit?: boolean
+    oldReview?: ReviewProps
+  }
 }
 
 export type UserNavigationProp = StackNavigationProp<UserNavParamList>
 export type UserScreenProps = StackScreenProps<UserNavParamList>
 export type UserFilterOptionProp = StackScreenProps<UserNavParamList, 'FilterOption'>
+export type OrderProp = StackScreenProps<UserNavParamList, 'OrderScreen'>
+export type AddAddressProp = StackScreenProps<UserNavParamList, 'AddAddress'>
 
 const Stack = createStackNavigator<UserNavParamList>()
 

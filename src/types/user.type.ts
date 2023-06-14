@@ -1,4 +1,7 @@
-export interface UserProps {
+import { OrderProps } from './order.type'
+import { GenericData } from './service.type'
+
+export interface UserProps extends GenericData {
   email: string
   token: string
   is_superuser: boolean
@@ -8,4 +11,5 @@ export interface UserProps {
   gender: string
   phone: string
   dob: string
+  orders?: OrderProps[]
 }

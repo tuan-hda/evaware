@@ -1,18 +1,20 @@
 import { Animated, Easing, Pressable } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Modal from 'react-native-modal'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 type Props = {
   show: boolean
 }
 
-const animated = new Animated.Value(0)
 const LoadingScreen = ({ show }: Props) => {
+  const animated = useMemo(() => {
+    if (show) return new Animated.Value(0)
+    return new Animated.Value(1)
+  }, [show])
   const spin = animated.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg']
   })
-
   useEffect(() => {
     if (animated) {
       Animated.loop(
@@ -24,7 +26,7 @@ const LoadingScreen = ({ show }: Props) => {
         })
       ).start()
     }
-  }, [])
+  }, [animated])
 
   return (
     <Modal isVisible={show} className='m-0'>

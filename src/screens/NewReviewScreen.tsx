@@ -10,18 +10,16 @@ import { useNavigation } from '@react-navigation/native'
 import { uploadFileService } from '~/services/other'
 import { isError } from '~/utils/callAxios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import mime from 'mime'
 import useAlertExit from '~/hooks/useAlertExit'
 import { addReviewService, getProductDetailService, updateReviewService } from '~/services/product'
 import useProductStore from '~/store/product'
-import { shallow } from 'zustand/shallow'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { CreateReviewProps } from '~/types/reviews.type'
 import ChooseVariationModal from '~/components/product/ChooseVariationModal'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { VariationProps } from '~/types/variation.type'
 import classNames from 'classnames'
 import LoadingScreen from '~/components/common/LoadingScreen'
+import { uploadImage } from '~/utils/uploadImage'
+import { useQuery } from '@tanstack/react-query'
 
 const NewReviewScreen = ({ route }: NewReviewProp) => {
   const { productId, isEdit, oldReview } = route.params
@@ -70,7 +68,7 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
     queryFn: async () => getProductDetailService(productId)
   })
   const data = temp?.data
-  const [selectedVariation, setSelectedVariation] = useState<VariationProps | undefined>(data?.variations[0])
+  const [selectedVariation, setSelectedVariation] = useState<VariationProps | undefined>()
 
   useEffect(() => {
     if (oldReview) {
@@ -117,32 +115,6 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
     })
   }
 
-  const uploadImage = async (asset: ImagePicker.ImagePickerAsset) => {
-    const formData = new FormData()
-    const newImageUri = 'file:///' + asset.uri.split('file:/').join('')
-
-    formData.append('file', {
-      uri: newImageUri,
-      type: mime.getType(newImageUri),
-      name: newImageUri.split('/').pop()
-    } as any)
-
-    setLoading(true)
-    const res = await uploadFileService(formData)
-    setLoading(false)
-    if (isError(res)) {
-      Toast.show({
-        type: 'error',
-        text1: 'Uploaded image failed'
-      })
-      return {
-        url: ''
-      }
-    } else {
-      return res
-    }
-  }
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -152,7 +124,7 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
     })
 
     if (!result.canceled) {
-      const res = await uploadImage(result.assets[0])
+      const res = await uploadImage(result.assets[0], setLoading)
       setImages([...images, res?.url || ''])
     }
   }
@@ -205,7 +177,7 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
       <TouchableWithoutFeedback onPress={show}>
         <View className='flex h-16 flex-row items-center justify-between rounded-lg bg-giratina-100 px-4'>
           <Text className={classNames('font-app text-body1 ', !selectedVariation && 'text-giratina-500')}>
-            {selectedVariation?.name}
+            {selectedVariation?.name || 'Choose variation'}
           </Text>
           <Entypo name='chevron-down' size={20} color='#999' />
         </View>

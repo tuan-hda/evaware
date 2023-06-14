@@ -3,15 +3,15 @@ import React from 'react'
 import { AppBar, CustomSafeAreaView, RadioButton } from '~/components/common'
 import { StackScreenProps } from '@react-navigation/stack'
 import { UserNavParamList } from '~/components/navigation/UserNav'
+import { ProvinceProps } from '~/types/province.type'
 
 type Props = StackScreenProps<UserNavParamList, 'ChooseAddress'>
-
-const data = ['Quang Tri', 'Ho Chi Minh City', 'Ha Noi', 'Hai Phong', 'Soc Trang', 'Da Lat', 'Vung Tau']
-
 const ChooseAddressScreen = ({ navigation, route }: Props) => {
   const setAddress = route.params?.setAddress
+  const address = route.params?.address
+  const data = route.params?.data
 
-  const chooseAddress = (address: string) => () => {
+  const chooseAddress = (address: ProvinceProps) => () => {
     setAddress && setAddress(address)
     navigation.goBack()
   }
@@ -23,9 +23,9 @@ const ChooseAddressScreen = ({ navigation, route }: Props) => {
         data={data}
         renderItem={({ item, index }) => (
           <TouchableOpacity className='h-16 flex-row items-center px-4' onPress={chooseAddress(item)} key={index}>
-            <Text className='font-app text-body1'> {item}</Text>
+            <Text className='font-app text-body1'> {item.name}</Text>
             <View className='flex-1' />
-            {index === 0 && <RadioButton checked />}
+            {item.code === address?.code && <RadioButton checked />}
           </TouchableOpacity>
         )}
       />

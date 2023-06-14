@@ -6,6 +6,11 @@ import { AddPayment, PaymentItem } from '~/components/payment'
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import useShowNav from '~/hooks/useShowNav'
 import { useNavigation } from '@react-navigation/native'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
+import { getPaymentMethods } from '~/services/payment'
+import { useQuery } from '@tanstack/react-query'
+import { translatePaymentMethod } from '~/utils/translateAxiosObj'
+import { PaymentMethodProps } from '~/types/payment.type'
 
 const data = [
   {
@@ -34,8 +39,16 @@ const PaymentMethodScreen = () => {
   const navigation = useNavigation()
   const [show, setShow] = useState(false)
   const ref = useRef<BottomSheetModal>(null)
+  const { data: temp, refetch } = useQuery({
+    queryKey: ['payments'],
+    queryFn: getPaymentMethods
+  })
+  const data = temp?.data
+  const [oldData, setOldData] = useState<PaymentMethodProps>()
+  useRefetchOnFocus(refetch)
 
-  const present = () => {
+  const present = (editData?: PaymentMethodProps) => {
+    setOldData(editData)
     ref.current?.present()
     setShow(true)
   }
@@ -45,12 +58,12 @@ const PaymentMethodScreen = () => {
     setShow(false)
   }
 
-  useShowNav(navigation, !show)
+  useShowNav(navigation, false)
 
   // eslint-disable-next-line react/no-unstable-nested-components
   const Footer = () => (
     <View className='mt-6 px-4'>
-      <Button onPress={present} label='Add new payment method' type='secondary' />
+      <Button onPress={() => present()} label='Add new payment method' type='secondary' />
     </View>
   )
 
@@ -58,12 +71,14 @@ const PaymentMethodScreen = () => {
     <BottomSheetModalProvider>
       <CustomSafeAreaView>
         <AppBar title='Payment methods' />
-        <AddPayment close={close} ref={ref} />
+        <AddPayment data={oldData} isEdit={!!oldData} close={close} ref={ref} />
         <FlatList
           ListHeaderComponent={Header}
           ListFooterComponent={Footer}
-          renderItem={({ item, index }) => <PaymentItem isPlain {...item} index={index} />}
-          data={data}
+          renderItem={({ item, index }) => (
+            <PaymentItem onPress={() => present(item)} isPlain {...translatePaymentMethod(item)} index={index} />
+          )}
+          data={data?.results}
         />
       </CustomSafeAreaView>
     </BottomSheetModalProvider>

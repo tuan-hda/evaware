@@ -14,8 +14,8 @@ const ProductScreen = () => {
   const bagItems: BagItemProps[] = [
     {
       id: '1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2002-12-12',
+      updatedAt: '2002-12-12',
       price: 150,
       desc: 'Wooden bedside table featuring a raised design',
       img: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s',
@@ -24,8 +24,8 @@ const ProductScreen = () => {
     },
     {
       id: '1af',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2002-12-12',
+      updatedAt: '2002-12-12',
       price: 150,
       desc: 'Wooden bedside table featuring a raised design',
       img: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s',
@@ -34,8 +34,8 @@ const ProductScreen = () => {
     },
     {
       id: 'av1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: '2002-12-12',
+      updatedAt: '2002-12-12',
       price: 150,
       desc: 'Wooden bedside table featuring a raised design',
       img: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s',

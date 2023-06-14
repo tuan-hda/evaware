@@ -18,6 +18,8 @@ export interface TextFieldProps extends TextInputProps {
   control?: Control<any, any>
   name?: string
   onLeftIconPress?: () => void
+  onClear?: () => void
+  wrapperClassName?: string
 }
 
 const TextField = ({
@@ -32,14 +34,16 @@ const TextField = ({
   onLeftIconPress,
   onRightIconPress,
   TextfieldClassName,
+  onClear,
   control,
   name = '',
+  wrapperClassName,
   ...props
 }: TextFieldProps) => {
   const ref = useRef<TextInput>(null)
 
   const clear = () => {
-    ref.current?.clear()
+    onClear && onClear()
   }
 
   const styles = StyleSheet.create({
@@ -50,7 +54,7 @@ const TextField = ({
   })
 
   return (
-    <View className='w-full'>
+    <View className={wrapperClassName || 'w-full'}>
       <View
         className={classNames(
           'h-16 w-full flex-row items-center overflow-hidden rounded-lg bg-giratina-100 font-app text-body1',

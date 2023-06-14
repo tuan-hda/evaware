@@ -12,10 +12,7 @@ export type HomeNavParamList = {
   HomeScreen: undefined
   Category: undefined
   Search: undefined
-  Catalog: { catalog: string; id: number }
-  Product: {
-    id: number
-  }
+  Catalog: { catalog: string; id: number; action?: string }
   Filter: undefined
   FilterOption: {
     name: string
@@ -25,6 +22,9 @@ export type HomeNavParamList = {
     }[]
   }
   Slider: undefined
+  Product: {
+    id: number
+  }
   Reviews: {
     id: number
   }

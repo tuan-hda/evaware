@@ -5,11 +5,34 @@ import { ConvertedProductDetailProps, ConvertedProductProps } from '~/types/prod
 import { AxiosResponse } from 'axios'
 import { CreateReviewProps, ReviewProps } from '~/types/reviews.type'
 
-export const getAllProductsService = async () => {
-  return convert(await callAxios<ListProps<ConvertedProductProps>>(appService.get('/product')))
+export const getAllProductsService = async (search?: string, ordering?: string) => {
+  return convert(
+    await callAxios<ListProps<ConvertedProductProps>>(
+      appService.get('/product', {
+        params: {
+          search,
+          ordering
+        }
+      })
+    )
+  )
 }
 
-export const getProductsByCategoryService = async (id: number) => {
+export const getProductsByCategoryService = async (id: number, search?: string, ordering?: string) => {
+  return convert(
+    await callAxios<ListProps<ConvertedProductProps>>(
+      appService.get('/product', {
+        params: {
+          category__id: id,
+          search,
+          ordering
+        }
+      })
+    )
+  )
+}
+
+export const getProductsByCategoryServiceV2 = async (id: number) => {
   return convert(
     await callAxios<ListProps<ConvertedProductProps>>(
       appService.get('/product', {

@@ -1,17 +1,18 @@
 import { View, Text, Image, Pressable } from 'react-native'
 import React from 'react'
 import { FlatList } from 'react-native-gesture-handler'
+import classNames from 'classnames'
 
-interface Props {
+export interface OrderItemProps {
   date: string
   state: string
   price: number
   orderID: number
   products: string[]
-  onPress?: ()=>void
+  onPress?: () => void
 }
 
-const Order = ({ date, state, price, orderID, products, onPress }: Props) => {
+const Order = ({ date, state, price, orderID, products, onPress }: OrderItemProps) => {
   return (
     <Pressable className='py-4' onPress={onPress}>
       {/* Date and price  */}
@@ -21,7 +22,16 @@ const Order = ({ date, state, price, orderID, products, onPress }: Props) => {
       </View>
       {/* State and ID  */}
       <View className='mb-4 w-full flex-row'>
-        <Text className='mr-2 flex-1 font-app-light text-body2 text-giratina-500'>{state}</Text>
+        <Text
+          className={classNames('mr-2 flex-1 font-app-light text-body2', {
+            'text-venusaur-500': state === 'Success',
+            'text-charizard-500': state === 'In progress',
+            'text-gengar-500': state === 'Delivering',
+            'text-magikarp-400': state === 'Cancelled'
+          })}
+        >
+          {state}
+        </Text>
         <Text className='font-app-light text-body2 text-giratina-500'>#{orderID}</Text>
       </View>
       <FlatList

@@ -4,14 +4,16 @@ import Tab from '~/components/navigation/Tab'
 import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { LogBox } from 'react-native'
+import { LogBox, View } from 'react-native'
 import AuthNav from '~/components/navigation/AuthNav'
 import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import Toast from 'react-native-toast-message'
 import toastConfig from 'config/toast'
 import { AdminTab } from '~/admin/nav'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useIsFetching } from '@tanstack/react-query'
+import LoadingScreen from '~/components/common/LoadingScreen'
+import ViewWrapper from '~/layouts/ViewWrapper'
 
 const queryClient = new QueryClient()
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
@@ -60,10 +62,12 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <NavigationContainer onReady={onLayoutRootView}>
-          {getNav()}
-          <Toast config={toastConfig} position='top' />
-        </NavigationContainer>
+        <ViewWrapper>
+          <NavigationContainer onReady={onLayoutRootView}>
+            {getNav()}
+            <Toast config={toastConfig} position='top' />
+          </NavigationContainer>
+        </ViewWrapper>
       </QueryClientProvider>
     </SafeAreaProvider>
   )

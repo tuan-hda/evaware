@@ -1,15 +1,24 @@
 import React from 'react'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { BottomTabNavigationProp, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Bag, Heart, User, Evaware } from 'assets/icon'
 import BagNav from './BagNav'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Bars from './Bars'
 import HomeNav from './HomeNav'
-import UserNav from './UserNav'
+import UserNav, { UserNavigationProp } from './UserNav'
 import SavedNav from './SavedNav'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 
-const mTab = createBottomTabNavigator()
+type Props = {
+  Home: undefined
+  Cart: undefined
+  Wishlist: undefined
+  User: undefined
+}
+
+const mTab = createBottomTabNavigator<Props>()
+
+export type TabNavigationProps = BottomTabNavigationProp<Props>
 
 export default function Tab() {
   const insets = useSafeAreaInsets()
@@ -19,14 +28,7 @@ export default function Tab() {
       initialRouteName='Home'
       screenOptions={({ route }) => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? ''
-        const hideTabbar = [
-          'Product',
-          'Reviews',
-          'NewReview',
-          'Filter',
-          'FilterOption',
-          'Search',
-        ].includes(routeName)
+        const hideTabbar = ['Product', 'Reviews', 'NewReview', 'Filter', 'FilterOption', 'Search'].includes(routeName)
         return {
           headerShown: false,
           tabBarShowLabel: false,

@@ -8,19 +8,23 @@ import TextField from './TextField'
 type Props = TouchableWithoutFeedbackProps & {
   isSearching?: boolean
   onBack?: () => void
+  value?: string
+  onChangeText?: (text: string) => void
 }
 
-const SearchBar = ({ isSearching, onBack, ...props }: Props) => {
+const SearchBar = ({ isSearching, value, onChangeText, onBack, ...props }: Props) => {
   const navigation = useNavigation()
 
   if (isSearching)
     return (
       <TextField
+        value={value}
+        onChangeText={onChangeText}
         className={props.className}
         placeholder='Search something...'
         onLeftIconPress={() => (onBack ? onBack() : navigation.goBack())}
         icon={<ArrowLeft />}
-        rightIcon={<Micro />}
+        // rightIcon={<Micro />}
       />
     )
 

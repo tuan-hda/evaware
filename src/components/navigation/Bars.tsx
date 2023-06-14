@@ -46,7 +46,7 @@ const Bars = ({
   }, [isHeart])
 
   return (
-    <View className={classNames('w-full', className)} style={style}>
+    <View className={classNames('min-h-[64] w-full', className)} style={style}>
       <View className='h-14 flex-row items-center' style={{ backgroundColor }}>
         {/* Left */}
         <View className='flex-1'>

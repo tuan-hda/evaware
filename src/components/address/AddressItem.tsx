@@ -1,20 +1,28 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { AddressItemProps } from '~/types/address.type'
+import { AddressItemProps, AddressProps } from '~/types/address.type'
 import { Check, Pin } from 'assets/icon'
 
-type Props = AddressItemProps & {
-  selected?: number
-  setSelected?: (value: number) => void
+type Props = AddressProps & {
+  selected?: AddressProps
+  setSelected?: (value?: AddressProps | undefined) => void
   index?: number
   isPlain?: boolean
+  hideCheck?: boolean
+  onPress?: () => void
 }
 
-const AddressItem = ({ selected, setSelected, index, isPlain, ...item }: Props) => {
+const AddressItem = ({ onPress, selected, setSelected, hideCheck, index, isPlain, ...item }: Props) => {
   return (
     <TouchableOpacity
       disabled={isPlain}
-      onPress={() => setSelected && index !== undefined && setSelected(index)}
+      onPress={() => {
+        if (onPress) {
+          onPress()
+        } else {
+          setSelected && index !== undefined && setSelected(item)
+        }
+      }}
       className='flex-row items-center px-4 py-[9.5]'
     >
       <Pin />
@@ -23,13 +31,13 @@ const AddressItem = ({ selected, setSelected, index, isPlain, ...item }: Props) 
           {item.province}, {item.district}, {item.ward}, {item.street}
         </Text>
         <Text className='font-app text-body2 text-giratina-500'>
-          {item.name}, {item.phone}
+          {item.full_name}, {item.phone}
         </Text>
       </View>
 
-      {!isPlain && (
+      {!isPlain && !hideCheck && (
         <View>
-          {index === selected ? (
+          {item.id === selected?.id ? (
             <View className='ml-4 h-6 w-6 items-center justify-center rounded-full bg-charizard-400'>
               <Check />
             </View>

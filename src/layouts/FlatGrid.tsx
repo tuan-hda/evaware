@@ -9,6 +9,7 @@ interface Item {
   isFavorited: boolean
   desc: string
   badge: string
+  discount: number
 }
 
 interface Props {
@@ -31,7 +32,8 @@ const FlatGrid = ({ data, numColumns = 2, verticalGap = 20, horizontalGap = 20, 
         price: 0,
         isFavorited: true,
         desc: '',
-        badge: ''
+        badge: '',
+        discount: 0
       })
       totalLastRows++
     }

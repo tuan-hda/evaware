@@ -21,7 +21,10 @@ const HomeScreen = () => {
       >
         <Text className='mt-14 h-[58] font-app-semibold text-heading1 text-black'>evaware</Text>
         <View className='py-[7]'>
-          <SearchBar onPress={() => navigation.navigate('Search')} className='w-full' />
+          <SearchBar
+            onPress={() => navigation.navigate('Catalog', { catalog: 'All products', id: -1, action: 'search' })}
+            className='w-full'
+          />
         </View>
 
         <View className='w-full py-4'>

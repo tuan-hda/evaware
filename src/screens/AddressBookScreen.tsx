@@ -4,6 +4,10 @@ import { AppBar, Button, CustomSafeAreaView } from '~/components/common'
 import { AddressItem } from '~/components/address'
 import { useNavigation } from '@react-navigation/native'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
+import useShowNav from '~/hooks/useShowNav'
+import { useQuery } from '@tanstack/react-query'
+import { getAddressesService } from '~/services/address'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 
 const data = [
   {
@@ -38,11 +42,18 @@ const data = [
 
 const AddressBookScreen = () => {
   const navigation = useNavigation<UserNavigationProp>()
+  useShowNav(navigation, false)
+  const { data: temp, refetch } = useQuery({
+    queryKey: ['address'],
+    queryFn: getAddressesService
+  })
+  const data = temp?.data
+  useRefetchOnFocus(refetch)
 
   const Footer = useCallback(
     () => (
       <View className='mt-6 px-4'>
-        <Button onPress={() => navigation.navigate('AddAddress')} label='Add new address' type='secondary' />
+        <Button onPress={() => navigation.navigate('AddAddress', {})} label='Add new address' type='secondary' />
       </View>
     ),
     [navigation]
@@ -51,7 +62,22 @@ const AddressBookScreen = () => {
   return (
     <CustomSafeAreaView className='bg-white'>
       <AppBar title='Address book' />
-      <FlatList ListFooterComponent={Footer} data={data} renderItem={({ item }) => <AddressItem isPlain {...item} />} />
+      <FlatList
+        ListFooterComponent={Footer}
+        data={data?.results}
+        renderItem={({ item }) => (
+          <AddressItem
+            onPress={() =>
+              navigation.navigate('AddAddress', {
+                address: item,
+                isEdit: true
+              })
+            }
+            hideCheck
+            {...item}
+          />
+        )}
+      />
     </CustomSafeAreaView>
   )
 }

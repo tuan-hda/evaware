@@ -3,20 +3,26 @@ import React from 'react'
 import { Button, TextField } from '../common'
 import { useNavigation } from '@react-navigation/native'
 import { BagNavigationProp } from '../navigation/BagNav'
+import { useQuery } from '@tanstack/react-query'
+import { getCartItemsService } from '~/services/cart'
 
 const BagFooter = () => {
   const navigation = useNavigation<BagNavigationProp>()
+  const { data } = useQuery({
+    queryKey: ['cart'],
+    queryFn: async () => getCartItemsService()
+  })
+
+  let subtotal = data?.data.results.reduce((prev, curr) => {
+    return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
+  }, 0)
 
   return (
     <View className='bg-white px-4 pb-4'>
-      <View className='pb-4 pt-6'>
-        <View className='mt-1 flex-row justify-between'>
-          <Text className='font-app text-body1 text-giratina-500'>Subtotal</Text>
-          <Text className='font-app text-body1 text-giratina-500'>$440,00</Text>
-        </View>
+      <View className='pb-4 pt-2'>
         <View className='flex-row justify-between'>
           <Text className='font-app-semibold text-heading2'>total</Text>
-          <Text className='font-app-semibold text-heading2'>$420.50</Text>
+          <Text className='font-app-semibold text-heading2'>${subtotal}</Text>
         </View>
       </View>
 
