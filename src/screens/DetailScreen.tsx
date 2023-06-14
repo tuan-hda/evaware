@@ -70,7 +70,7 @@ const DetailScreen = () => {
 
   useEffect(() => {
     if (data) {
-      reset({ ...data, dob: data.dob.trim() })
+      reset({ ...data, dob: data.dob?.trim() })
       setAvt(data.avatar)
     }
   }, [data, reset])

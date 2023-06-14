@@ -25,7 +25,7 @@ type State = {
   filterList: Filter[]
   minPrice?: number
   maxPrice?: number
-  sort?: string
+  sort: string
   sortList: Sort[]
   filterData?: FilterListProps[]
   min_price: number
@@ -49,6 +49,7 @@ type Action = {
 
 const useSortFilterStore = create(
   immer<State & Action>((set) => ({
+    sort: '-id',
     setFilteredProducts: (data) => {
       set((state) => {
         state.filteredProducts = data

@@ -1,7 +1,12 @@
 import { ListProps } from '~/types/service.type'
 import { callAxios, isError } from '~/utils/callAxios'
 import { appService } from './base'
-import { ConvertedProductDetailProps, ConvertedProductProps, StatisticProductProps } from '~/types/product.type'
+import {
+  ConvertedProductDetailProps,
+  ConvertedProductProps,
+  CreateProductProps,
+  StatisticProductProps
+} from '~/types/product.type'
 import { AxiosResponse } from 'axios'
 import { CreateReviewProps, ReviewProps } from '~/types/reviews.type'
 
@@ -19,7 +24,8 @@ export const getAllProductsService = async (
           search,
           ordering,
           price__gte: min_price,
-          price__lte: max_price
+          price__lte: max_price,
+          count: 100
         }
       })
     )
@@ -40,7 +46,10 @@ export const getProductsByCategoryService = async (
         params: {
           category__id: id,
           search,
-          ordering
+          ordering,
+          price__gte: min_price,
+          price__lte: max_price,
+          count: 100
         }
       })
     )
@@ -87,8 +96,20 @@ export const convertProduct = <T extends ConvertedProductProps>(product: T): T =
   }
 }
 
-export const getProductDetailService = async (id: number) => {
-  return appService.get<ConvertedProductDetailProps>('/product/' + id)
+export const getProductDetailService = async (id: number, include_delete?: boolean) => {
+  return appService.get<ConvertedProductDetailProps>('/product/' + id, {
+    params: {
+      include_delete
+    }
+  })
+}
+
+export const createProductService = async (data: CreateProductProps) => {
+  return callAxios(appService.post('/product/create', data))
+}
+
+export const updateProductService = async (id: number, data: Partial<CreateProductProps>) => {
+  return callAxios(appService.patch('/product/' + id, data))
 }
 
 export const addFavoriteService = async (id: number) => {
@@ -115,6 +136,6 @@ export const deleteReviewService = async (id: number) => {
   return await callAxios(appService.delete('/review/' + id))
 }
 
-export const getTopProductService = async (range_type: 'yearly' | 'monthly' | 'quarterly' | 'weekly') => {
+export const getTopProductService = async (range_type: 'yearly' | 'monthly' | 'quarterly' | 'weekly' | string) => {
   return appService.get<StatisticProductProps[]>('/statistics/top-product?range_type=' + range_type)
 }

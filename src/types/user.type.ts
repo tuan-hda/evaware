@@ -13,3 +13,5 @@ export interface UserProps extends GenericData {
   dob: string
   orders?: OrderProps[]
 }
+
+export interface GeneralUserProps extends Omit<UserProps, 'orders'> {}

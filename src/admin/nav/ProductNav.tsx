@@ -1,13 +1,17 @@
-import { StackNavigationProp, createStackNavigator } from '@react-navigation/stack'
+import { StackNavigationProp, StackScreenProps, createStackNavigator } from '@react-navigation/stack'
 import ProductDetail from '../screens/ProductDetail'
 import ProductDrawer from './ProductDrawer'
 
 export type ProductNavParamsList = {
   ProductDrawer: undefined
-  ProductDetail: undefined
+  ProductDetail: {
+    isEdit?: boolean
+    id?: number
+  }
 }
 
 export type ProductNavigationProp = StackNavigationProp<ProductNavParamsList>
+export type DetailProp = StackScreenProps<ProductNavParamsList, 'ProductDetail'>
 
 const Stack = createStackNavigator<ProductNavParamsList>()
 

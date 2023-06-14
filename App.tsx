@@ -14,6 +14,7 @@ import { AdminTab } from '~/admin/nav'
 import { QueryClient, QueryClientProvider, useIsFetching } from '@tanstack/react-query'
 import LoadingScreen from '~/components/common/LoadingScreen'
 import ViewWrapper from '~/layouts/ViewWrapper'
+import SuperUserTab from '~/admin/nav/SuperUserTab'
 
 const queryClient = new QueryClient()
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
@@ -55,7 +56,8 @@ export default function App() {
 
   const getNav = () => {
     if (!user) return <AuthNav />
-    if (user.is_staff || user.is_superuser) return <AdminTab />
+    if (user.is_superuser) return <SuperUserTab />
+    if (user.is_staff) return <AdminTab />
     return <Tab />
   }
 

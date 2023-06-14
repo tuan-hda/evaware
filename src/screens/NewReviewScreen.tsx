@@ -138,6 +138,7 @@ const NewReviewScreen = ({ route }: NewReviewProp) => {
     <CustomSafeAreaView className='px-4'>
       <LoadingScreen show={loading} />
       <ChooseVariationModal
+        noDisabled
         selectedVariation={selectedVariation}
         setSelectedVariation={setSelectedVariation}
         data={data?.variations}

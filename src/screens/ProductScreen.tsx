@@ -1,7 +1,7 @@
 import { View, Text, FlatList, ScrollView, Pressable, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView, ProductCardBig, SnackBar, SwipeSlider } from '~/components/common'
-import { ChevronRight, Sale } from 'assets/icon'
+import { ChevronRight, Sale, YellowStar } from 'assets/icon'
 import { HomeNavigationProp, ProductProp } from '~/components/navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '~/components/navigation/Bars'
@@ -205,7 +205,7 @@ const ProductScreen = ({ route }: ProductProp) => {
         <ChevronRight />
       </Pressable>
       <Pressable
-        className='h-16 flex-row px-4 py-5'
+        className='h-16 flex-row items-center px-4 py-5'
         onPress={() =>
           navigation.navigate('Reviews', {
             id: response?.id || 0
@@ -213,7 +213,9 @@ const ProductScreen = ({ route }: ProductProp) => {
         }
       >
         <Text className='mr-4 flex-1 font-app-light text-body1'>Reviews</Text>
-        <Text className='text-right font-app-light text-body1 text-giratina-500'>{response?.reviews_count}</Text>
+        <Text className='text-right font-app-light text-body1 text-giratina-500'>
+          {response?.reviews_count} ({response?.avg_rating} <YellowStar className='mt-1' />)
+        </Text>
       </Pressable>
 
       <Text className='p-4 font-app-semibold text-heading2'>you might also like</Text>

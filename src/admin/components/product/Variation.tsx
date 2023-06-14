@@ -1,18 +1,20 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, Pressable } from 'react-native'
 import React from 'react'
+import { VariationProps } from '~/types/variation.type'
 
-const Variation = () => {
+const Variation = ({ data, ...props }: { data?: VariationProps; onPress?: () => void }) => {
   return (
-    <View>
+    <Pressable onPress={props.onPress} className='relative'>
       <Image
         source={{
-          uri: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s'
+          uri: data?.img_urls[0]
         }}
         className='h-[140] w-[120] rounded-lg'
       />
-      <Text className='mt-0.5 w-[120] font-app-regular text-[13px] text-black'>Red, 20 x 90 cm, has windows</Text>
-      <Text className=' font-app text-body3 text-black'>6 qoh</Text>
-    </View>
+      <Text className='mt-0.5 w-[120] font-app-regular text-[13px] text-black'>{data?.name}</Text>
+      <Text className=' font-app text-body3 text-black'>{data?.inventory} qoh</Text>
+      {data?.is_deleted && <View className='absolute h-full w-full rounded-lg bg-giratina-500/90' />}
+    </Pressable>
   )
 }
 

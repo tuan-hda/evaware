@@ -14,9 +14,10 @@ type Props = {
   data: (VariationProps | undefined)[] | undefined
   selectedVariation?: VariationProps
   setSelectedVariation?: (data: VariationProps) => void
+  noDisabled?: boolean
 }
 
-const ChooseVariationModal = ({ show, toggle, data, selectedVariation, setSelectedVariation }: Props) => {
+const ChooseVariationModal = ({ show, toggle, data, selectedVariation, setSelectedVariation, noDisabled }: Props) => {
   const selectVariation = (item: VariationProps | undefined) => {
     item && setSelectedVariation && setSelectedVariation(item)
     toggle()
@@ -58,7 +59,7 @@ const ChooseVariationModal = ({ show, toggle, data, selectedVariation, setSelect
             {data?.map((item, index) => (
               <View key={item?.id} className=''>
                 <Pressable
-                  disabled={item?.inventory === 0}
+                  disabled={item?.inventory === 0 && !noDisabled}
                   onPress={() => {
                     if (!setSelectedVariation && item) {
                       addToCart(item.product, item?.id)
@@ -67,15 +68,15 @@ const ChooseVariationModal = ({ show, toggle, data, selectedVariation, setSelect
                     }
                   }}
                   className={classNames('h-16 flex-row items-center rounded-lg border border-giratina-300 px-4', {
-                    'bg-app-black': selectedVariation?.id === item?.id && item?.inventory !== 0,
-                    'bg-white': selectedVariation?.id !== item?.id && item?.inventory !== 0,
-                    'bg-giratina-300': item?.inventory === 0
+                    'bg-app-black': selectedVariation?.id === item?.id && (item?.inventory !== 0 || noDisabled),
+                    'bg-white': selectedVariation?.id !== item?.id && item?.inventory !== 0 && !noDisabled,
+                    'bg-giratina-300': item?.inventory === 0 && !noDisabled
                   })}
                 >
                   <Text
                     className={classNames('font-app text-body1', selectedVariation?.id === item?.id && 'text-white')}
                   >
-                    {item?.name} {item?.inventory === 0 && '- Out of stock'}
+                    {item?.name} {item?.inventory === 0 && !noDisabled && '- Out of stock'}
                   </Text>
                 </Pressable>
                 {data.length - 1 !== index && <View className='h-4' />}

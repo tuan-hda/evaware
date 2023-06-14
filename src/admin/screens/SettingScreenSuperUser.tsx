@@ -4,7 +4,6 @@ import { Button, Cell, CustomSafeAreaView, Title } from '~/components/common'
 import { Bag, Card, Pin, Setting, SignOut, User } from 'assets/icon'
 import { TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { UserNavigationProp } from '~/components/navigation/UserNav'
 import Modal from 'react-native-modal'
 import { sendEmailVerification, signOut } from 'firebase/auth'
 import useUserStore from '~/store/user'
@@ -15,9 +14,10 @@ import { useQuery } from '@tanstack/react-query'
 import { getAltCurrentUserProfileService } from '~/services/user'
 import LoadingScreen from '~/components/common/LoadingScreen'
 import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
-const SettingScreen = () => {
+import { SuperUserNavProp } from '../nav/SuperUserNav'
+const SettingScreenSuperUser = () => {
   const [show, setShow] = useState(false)
-  const navigation = useNavigation<UserNavigationProp>()
+  const navigation = useNavigation<SuperUserNavProp>()
   const [logOut] = useUserStore((state) => [state.logOut], shallow)
 
   const {
@@ -81,10 +81,14 @@ const SettingScreen = () => {
         onPress={() => navigation.navigate('MyDetails')}
         icon={<User fill='#000' width={24} height={24} />}
       />
-
+      <Cell
+        text='Manage Users'
+        onPress={() => navigation.navigate('ManageUser')}
+        icon={<User fill='#000' width={24} height={24} />}
+      />
       <Cell text='Sign Out' icon={<SignOut fill='#000' width={24} height={24} />} onPress={toggle} />
     </CustomSafeAreaView>
   )
 }
 
-export default SettingScreen
+export default SettingScreenSuperUser

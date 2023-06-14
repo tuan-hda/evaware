@@ -93,7 +93,7 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   const applySort = (sortType: string) => {
     switch (sortType) {
       case 'New first':
-        setSort('-created_at')
+        setSort('-id')
         break
       case 'Price: high to low':
         setSort('-price')

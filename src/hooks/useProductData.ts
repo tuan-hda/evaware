@@ -14,17 +14,22 @@ const useProductData = (
 ) => {
   const [response, setResponse] = useState<ListProps<ConvertedProductProps>>()
 
+  let searchQuery = search
+  if (!searchQuery) {
+    searchQuery = undefined
+  }
+
   const fetch = useCallback(async () => {
     let res
     if (id === -1) {
-      res = await getAllProductsService(search, sort, minPrice, maxPrice, filterQuery)
+      res = await getAllProductsService(searchQuery, sort, minPrice, maxPrice, filterQuery)
     } else {
-      res = await getProductsByCategoryService(id, search, sort, minPrice, maxPrice, filterQuery)
+      res = await getProductsByCategoryService(id, searchQuery, sort, minPrice, maxPrice, filterQuery)
     }
     if (!isError(res)) {
       setResponse(res)
     }
-  }, [filterQuery, id, maxPrice, minPrice, search, sort])
+  }, [filterQuery, id, maxPrice, minPrice, searchQuery, sort])
 
   useEffect(() => {
     fetch()

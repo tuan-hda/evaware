@@ -1,74 +1,89 @@
 import { View, Text, ViewProps, TouchableWithoutFeedback, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Status from '../components/order/Status'
 import { ChevronRight } from 'assets/icon'
 import classNames from 'classnames'
 import { useNavigation } from '@react-navigation/native'
-import { OrderNavigationProp } from '~/admin/nav/OrderNav'
-import { AppBar, Button, CustomSafeAreaView } from '~/components/common'
+import { OrderDetailProp, OrderNavigationProp } from '~/admin/nav/OrderNav'
+import { AppBar, Button, CustomSafeAreaView, SmallCard } from '~/components/common'
 import { BagItem } from '~/components/bag'
 import { BagItemProps } from '~/types/bagItem.type'
 import useShowNav from '~/hooks/useShowNav'
 import SelectModal from '~/components/common/SelectModal'
+import moment from 'moment'
+import { createOrderFromCartService, getOrdersService, updateStatusOrderService } from '~/services/order'
+import { useQuery } from '@tanstack/react-query'
 
 type Props = ViewProps
 
-const OrderDetail = ({ ...props }: Props) => {
+const OrderDetail = ({ route, ...props }: Props & OrderDetailProp) => {
   const navigation = useNavigation<OrderNavigationProp>()
   useShowNav(navigation, false)
   const [show, setShow] = useState(false)
+  const [status, setStatus] = useState('')
+  const { order } = route.params
 
+  useEffect(() => {
+    setStatus(order.status)
+  }, [order])
+  const { refetch } = useQuery({
+    queryKey: ['user'],
+    queryFn: getOrdersService
+  })
   const toggle = () => setShow((prev) => !prev)
-  const bagItems: BagItemProps[] = [
+
+  const update = async (status: string) => {
+    await updateStatusOrderService(order.id, status)
+    refetch()
+    setStatus(status)
+  }
+  const items = [
     {
-      id: '1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      price: 150,
-      desc: 'Wooden bedside table featuring a raised design',
-      img: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s',
-      qty: 3,
-      variation: 'Long blue'
+      value: 'Success',
+      className: 'text-venusaur-500',
+      action: async () => {
+        update('Success')
+      }
     },
     {
-      id: '1af',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      price: 150,
-      desc: 'Wooden bedside table featuring a raised design',
-      img: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s',
-      qty: 3,
-      variation: 'Long blue'
+      value: 'Delivering',
+      className: 'text-gengar-500',
+      action: async () => {
+        update('Delivering')
+      }
     },
     {
-      id: 'av1',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      price: 150,
-      desc: 'Wooden bedside table featuring a raised design',
-      img: 'https://www.ikea.com/images/storage-and-organisation-1c37e9ac223e6a594db850986fdf93b2.png?f=s',
-      qty: 3,
-      variation: 'Long blue'
+      value: 'Cancelled',
+      className: 'text-magikarp-500',
+      action: async () => {
+        update('Cancelled')
+      }
+    },
+    {
+      value: 'In progress',
+      className: 'text-charizard-500',
+      action: async () => {
+        update('Cancelled')
+      }
     }
   ]
 
-  const items = [
-    { value: 'Success', className: 'text-venusaur-500', action: () => {} },
-    { value: 'Delivering', className: 'text-gengar-500', action: () => {} },
-    { value: 'Cancelled', className: 'text-magikarp-500', action: () => {} }
-  ]
+  const subtotal = order.order_details.reduce((prev, curr) => {
+    return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
+  }, 0)
+  const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
 
   return (
     <CustomSafeAreaView>
       <AppBar title='ORDER102' />
-      <SelectModal selected='Success' title='Update status' show={show} toggle={toggle} items={items} />
+      <SelectModal selected={status} title='Update status' show={show} toggle={toggle} items={items} />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 12 }}>
         <View className={classNames('w-full px-4')}>
           <View className='mb-2 flex-row items-center justify-between'>
             <View>
               <Text className='font-app-medium text-body1'>Status</Text>
-              <Status type='text' status='success' className='mr-1' />
+              <Status type='text' status={status} className='mr-1' />
             </View>
 
             <Button size='small' onPress={toggle} label='Update' />
@@ -76,61 +91,80 @@ const OrderDetail = ({ ...props }: Props) => {
 
           <View className='mt-1 flex-row justify-between rounded-lg bg-giratina-100 p-2'>
             <Text className='font-app text-sm text-black/60'>Current status</Text>
-            <Text className='font-app-regular text-sm text-black'>12 Jul 2020</Text>
+            <Text className='font-app-regular text-sm text-black'>
+              {moment.utc(order.updated_at).format('YYYY-MM-DD HH:mm')}
+            </Text>
           </View>
-          <View className='mt-1 flex-row justify-between rounded-lg p-2'>
+          {/* <View className='mt-1 flex-row justify-between rounded-lg p-2'>
             <Text className='font-app text-sm text-black/60'>Shipping date</Text>
             <Text className='font-app-regular text-sm text-black'>12 Jul 2020</Text>
-          </View>
-          <View className='mt-1 flex-row justify-between rounded-lg bg-giratina-100 p-2'>
+          </View> */}
+          <View className='mt-1 flex-row justify-between rounded-lg p-2'>
             <Text className='font-app text-sm text-black/60'>Order date</Text>
-            <Text className='font-app-regular text-sm text-black'>12 Jul 2020</Text>
+            <Text className='font-app-regular text-sm text-black'>
+              {moment.utc(order.created_at).format('YYYY-MM-DD HH:mm')}
+            </Text>
           </View>
 
           <Text className='mb-2 mt-6 font-app-medium text-body1'>Detail</Text>
 
           <View className='flex-row justify-between rounded-lg bg-giratina-100 p-2'>
             <Text className='font-app text-sm text-black/60'>Customer</Text>
-            <Text className='font-app-regular text-sm text-black'>Hoang Dinh Anh Tuan</Text>
+            <Text className='font-app-regular text-sm text-black'>{order.full_name}</Text>
           </View>
           <View className='mt-1 flex-row justify-between rounded-lg p-2'>
             <Text className='font-app text-sm text-black/60'>Email</Text>
             <Text className='ml-4 font-app-regular text-sm text-black' numberOfLines={1} ellipsizeMode='tail'>
-              hdatdragon2@gmail.com
+              {order.email}
             </Text>
           </View>
           <View className='mt-1 flex-row justify-between rounded-lg bg-giratina-100 p-2'>
             <Text className='font-app text-sm text-black/60'>Phone</Text>
-            <Text className='font-app-regular text-sm text-black'>0849167234</Text>
+            <Text className='font-app-regular text-sm text-black'>{order.phone}</Text>
           </View>
-          <View className='mt-1 flex-row justify-between rounded-lg p-2'>
+          <View className='mt-1 justify-between rounded-lg p-2'>
             <Text className='font-app text-sm text-black/60'>Address</Text>
-            <Text className='font-app-regular text-sm text-black'>KTX Khu A</Text>
+            <Text className='font-app-regular text-sm text-black'>
+              {order.province}, {order.district}, {order.ward}, {order.street}
+            </Text>
           </View>
 
           <Text className='mb-2 mt-6 font-app-medium text-body1'>Order</Text>
 
-          {bagItems.map((item, index) => (
-            <View key={index}>
-              <BagItem disableButton {...item} key={index} />
-              {index !== bagItems.length - 1 && <View className='h-2' />}
+          {order.order_details.map((item, index) => (
+            <View key={index} className='mb-6 w-full'>
+              <SmallCard
+                qty={item.qty}
+                noOrderAgain
+                variation={item.variation.name}
+                price={item.price}
+                desc={item.product.desc}
+                image={item.variation.img_urls[0]}
+                // onPress={() =>
+                //   navigation.navigate('Product', {
+                //     id: item.product.id
+                //   })
+                // }
+              />
             </View>
           ))}
           <View className='mt-2 flex-row justify-between rounded-lg'>
             <Text className='font-app text-sm text-black/60'>Subtotal</Text>
-            <Text className='font-app-regular text-sm text-black'>$90.5</Text>
+            <Text className='font-app-regular text-sm text-black'>${subtotal}</Text>
           </View>
           <View className='mt-2 flex-row justify-between rounded-lg'>
             <Text className='font-app text-sm text-black/60'>Delivery fee</Text>
-            <Text className='font-app-regular text-sm text-black'>$10.5</Text>
+            <Text className='font-app-regular text-sm text-black'>$10</Text>
           </View>
-          <View className='mt-2 flex-row justify-between rounded-lg'>
-            <Text className='font-app text-sm text-black/60'>Discount</Text>
-            <Text className='font-app-regular text-sm text-black'>-$20.5</Text>
-          </View>
+          {order.voucher && (
+            <View className='mt-2 flex-row justify-between rounded-lg'>
+              <Text className='font-app text-sm text-black/60'>Discount ({order.voucher.code})</Text>
+              <Text className='font-app-regular text-sm text-black'>-${discountAmount}</Text>
+            </View>
+          )}
           <View className='mt-2 flex-row justify-between rounded-lg'>
             <Text className='font-app text-heading2 text-black/60'>Total</Text>
-            <Text className='font-app-regular text-heading2 text-black'>$200.5</Text>
+            <Text className='font-app-regular text-heading2 text-black'>${order.total}</Text>
           </View>
         </View>
       </ScrollView>

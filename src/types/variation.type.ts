@@ -6,3 +6,10 @@ export interface VariationProps extends SoftGenericData {
   img_urls: string[]
   product: number
 }
+
+export interface CreateVariationProps {
+  inventory: number
+  name: string
+  img_urls: string[]
+  product: number
+}

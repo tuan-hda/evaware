@@ -15,6 +15,27 @@ export interface ProductProps extends GenericData {
   variations_count: number
   category: CategoryProps
   is_favorited: boolean
+  width?: number
+  height?: number
+  depth?: number
+  weight?: number
+  material?: string
+  more_info?: string
+}
+
+export interface CreateProductProps {
+  name: string
+  desc: string
+  discount?: number
+  price: number
+  thumbnail: string
+  width?: number
+  height?: number
+  depth?: number
+  weight?: number
+  material?: string
+  more_info?: string
+  category: number
 }
 
 export interface ConvertedProductProps extends ProductProps {
