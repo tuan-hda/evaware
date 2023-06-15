@@ -4,10 +4,12 @@ import ProductDrawer from './ProductDrawer'
 
 export type ProductNavParamsList = {
   ProductDrawer: undefined
-  ProductDetail: {
-    isEdit?: boolean
-    id?: number
-  }
+  ProductDetail:
+    | {
+        isEdit?: boolean
+        id?: number
+      }
+    | undefined
 }
 
 export type ProductNavigationProp = StackNavigationProp<ProductNavParamsList>

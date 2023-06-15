@@ -52,7 +52,9 @@ const ProductItem = ({ is_deleted, thumbnail, price, desc, paddingBottom, ...dat
             )}
           </View>
           <View className='flex-row items-baseline'>
-            <Text className='font-app-medium text-body1 text-black'>${Number((1 - data.discount / 100) * price)}</Text>
+            <Text className='font-app-medium text-body1 text-black'>
+              ${Number((1 - data.discount / 100) * price).toFixed(2)}
+            </Text>
             {data.discount !== 0 && (
               <Text className='ml-2 text-right font-app text-body2 text-giratina-500 line-through'>
                 ${Number(price)}

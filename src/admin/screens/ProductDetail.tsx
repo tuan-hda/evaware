@@ -55,7 +55,8 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
     reset,
     setValue
   } = useForm<CreateProductProps>({ resolver: yupResolver(validationSchema) })
-  const { isEdit, id } = route.params
+  const isEdit = route.params?.isEdit
+  const id = route.params?.id
 
   const navigation = useNavigation<ProductNavigationProp>()
   const ref = useRef<BottomSheetModal>(null)
@@ -68,14 +69,14 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
   const [loading, setLoading] = useState(false)
 
   const { refetch: productRefetch, data: temp } = useQuery({
-    queryKey: ['productDetail', id],
+    queryKey: ['productDetail', id ?? ''],
     queryFn: async () => {
-      if (!id) return
+      if (!id) return {}
       return getProductDetailService(id, true)
     }
   })
   useRefetchOnFocus(productRefetch)
-  const [data, setData] = useState<ConvertedProductDetailProps>()
+  const [data, setData] = useState<ConvertedProductDetailProps | undefined | null>()
 
   useEffect(() => {
     setData(temp?.data)
@@ -166,8 +167,9 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
     if (x === undefined || x === null) res = addVariationService({ ...dataA, product: id || -1 })
     else res = updateVariationService(x, { ...dataA, product: id || -1 })
     if (!isError(res)) {
-      await productRefetch()
-      setData(temp?.data)
+      res = await productRefetch()
+      setData(res.data?.data)
+      console.log(res.data?.data.variations.length)
       ref.current?.close()
       setCurVar(undefined)
     }

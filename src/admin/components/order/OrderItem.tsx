@@ -42,7 +42,7 @@ const OrderItem = ({ ...props }: Props) => {
         <View className='mt-1 flex-row justify-between rounded-lg p-2'>
           <Text className='font-app text-sm text-black/60'>Orders</Text>
           <Text className='ml-4 font-app-regular text-sm text-black' numberOfLines={1} ellipsizeMode='tail'>
-            {props.data.order_details.reduce((prev, curr) => prev + curr.product.name, '')}
+            {props.data.order_details.map((item) => item.product.name).join(', ')}
           </Text>
         </View>
         <View className='mt-1 flex-row justify-between rounded-lg bg-giratina-100 p-2'>

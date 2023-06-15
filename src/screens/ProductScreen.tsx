@@ -105,7 +105,7 @@ const ProductScreen = ({ route }: ProductProp) => {
 
   async function addToBag() {
     if (response?.variations[0]?.id) {
-      const res = await addToCartService(id, response?.variations[0]?.id)
+      const res = await addToCartService(id, response?.variations[currVar || 0]?.id || -1)
       if (isError(res)) {
         let text2 = 'Some error happened'
 
@@ -138,6 +138,8 @@ const ProductScreen = ({ route }: ProductProp) => {
       setIsFaver(true)
     }
   }
+
+  const price = (response?.price || 0) * (1 - (response?.discount || 0) / 100)
 
   return (
     <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
@@ -174,11 +176,9 @@ const ProductScreen = ({ route }: ProductProp) => {
         {/* Price and desc */}
         <View className='px-4 pb-6'>
           <View className='flex-row items-baseline'>
-            <Text className='mb-2 font-app-semibold text-heading2'>${Number(response?.price)}</Text>
-            {response?.price !== 0 && (
-              <Text className='ml-2 font-app-medium text-body2 text-giratina-500 line-through'>
-                ${(response?.price || 0) * (1 - (response?.discount || 0) / 100)}
-              </Text>
+            <Text className='mb-2 font-app-semibold text-heading2'>${Number(price)}</Text>
+            {response?.discount !== 0 && (
+              <Text className='ml-2 font-app-medium text-body2 text-giratina-500 line-through'>${response?.price}</Text>
             )}
           </View>
           <Text className='font-app-light text-body1 text-giratina-500'>{response?.desc}</Text>

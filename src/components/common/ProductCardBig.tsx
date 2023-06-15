@@ -46,7 +46,7 @@ const ProductCardBig = ({ data, style, onPress }: Props) => {
   }
 
   const screenWidth = (Dimensions.get('window').width - 32) / 2 - 8
-
+  const finalPrice = price * (1 - (data?.discount || 0) / 100)
   return (
     <View
       style={[
@@ -71,14 +71,12 @@ const ProductCardBig = ({ data, style, onPress }: Props) => {
         </Pressable>
       </View>
       <View className='mb-1 flex-row items-center'>
-        <Text className='mr-2 flex-1 font-app-medium text-body1'>${Number(price)}</Text>
+        <Text className='mr-2 flex-1 font-app-medium text-body1'>${Number(finalPrice)}</Text>
         {data?.discount !== 0 && (
-          <Text className='ml-2 font-app-medium text-body2 text-giratina-500 line-through'>
-            ${price * (1 - (data?.discount || 0) / 100)}
-          </Text>
+          <Text className='ml-2 font-app-medium text-body2 text-giratina-500 line-through'>${price}</Text>
         )}
       </View>
-      <Text numberOfLines={2} className='font-app-medium text-body3 text-giratina-500'>
+      <Text numberOfLines={1} className='font-app-medium text-body3 text-giratina-500'>
         {desc}
       </Text>
       {badge && (

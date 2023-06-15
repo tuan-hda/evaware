@@ -68,6 +68,8 @@ const AddPayment = forwardRef(({ close, onOk, curVar, onUpdate }: Props, ref: Re
         curVar?.id
       )
     reset()
+    setValue('inventory', 0)
+    setImages([])
   }
 
   const deleteVar = async () => {

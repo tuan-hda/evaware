@@ -21,13 +21,13 @@ const CustomerRate = () => {
       <View className='mt-4 flex-row'>
         <View
           style={{
-            width: data[0] + '%'
+            width: (data[0] || '50') + '%'
           }}
           className='h-3 w-[70%] bg-charizard-200'
         />
         <View
           style={{
-            width: data[1] + '%'
+            width: (data[1] || '50') + '%'
           }}
           className='h-3 w-[30%] bg-charizard-400'
         />
