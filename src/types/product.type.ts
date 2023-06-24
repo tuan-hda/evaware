@@ -17,7 +17,7 @@ export interface ProductProps extends GenericData {
   is_favorited: boolean
   width?: number
   height?: number
-  depth?: number
+  length?: number
   weight?: number
   material?: string
   more_info?: string
@@ -26,13 +26,13 @@ export interface ProductProps extends GenericData {
 export interface CreateProductProps {
   name: string
   desc: string
-  discount?: number
-  price: number
+  discount?: number | string
+  price: number | string
   thumbnail: string
-  width?: number
-  height?: number
-  depth?: number
-  weight?: number
+  width?: number | string
+  height?: number | string
+  length?: number | string
+  weight?: number | string
   material?: string
   more_info?: string
   category: number

@@ -108,7 +108,7 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   }
 
   const getType = (keyName: string) => {
-    if (['width', 'height', 'depth'].includes(keyName)) return ' cm'
+    if (['width', 'height', 'length'].includes(keyName)) return ' cm'
     else if (keyName === 'weight') return 'kg'
     else return ''
   }

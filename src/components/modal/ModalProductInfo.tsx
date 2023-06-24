@@ -44,7 +44,7 @@ const ModalProductInfo = ({ visible, setVisible, toggle, data }: Props) => {
               <Text className='my-4 font-app-semibold text-heading2'>Measurements</Text>
               <Category left={'Height:'} right={data?.height + ' cm'} />
               <Category left={'Width:'} right={data?.width + ' cm'} />
-              <Category left={'Depth:'} right={data?.depth + ' cm'} />
+              <Category left={'Length:'} right={data?.length + ' cm'} />
               <Category left={'Weight:'} right={data?.weight + ' kg'} />
 
               <Text className='my-4 font-app-semibold text-heading2'>Composition</Text>

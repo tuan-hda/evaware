@@ -56,8 +56,7 @@ export default function App() {
 
   const getNav = () => {
     if (!user) return <AuthNav />
-    if (user.is_superuser) return <SuperUserTab />
-    if (user.is_staff) return <AdminTab />
+    if (user.is_superuser || user.is_superuser) return <AdminTab />
     return <Tab />
   }
 

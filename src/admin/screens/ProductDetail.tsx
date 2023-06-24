@@ -41,7 +41,7 @@ const validationSchema = yup.object({
   discount: yup.number().min(0, 'Must bigger than 0').max(100, 'Must smaller than 100'),
   width: yup.number(),
   height: yup.number(),
-  depth: yup.number(),
+  length: yup.number(),
   weight: yup.number(),
   material: yup.string(),
   more_info: yup.string()
@@ -56,7 +56,7 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
     setValue
   } = useForm<CreateProductProps>({ resolver: yupResolver(validationSchema) })
   const isEdit = route.params?.isEdit
-  const id = route.params?.id
+  const id = route.params?.id || -1
 
   const navigation = useNavigation<ProductNavigationProp>()
   const ref = useRef<BottomSheetModal>(null)
@@ -71,7 +71,6 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
   const { refetch: productRefetch, data: temp } = useQuery({
     queryKey: ['productDetail', id ?? ''],
     queryFn: async () => {
-      if (!id) return {}
       return getProductDetailService(id, true)
     }
   })
@@ -90,7 +89,7 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
       setCur(category)
       setValue('price', String(rest.price))
       setValue('discount', String(rest.discount))
-      setValue('depth', String(rest.depth))
+      setValue('length', String(rest.length))
       setValue('width', String(rest.width))
       setValue('height', String(rest.height))
       setValue('weight', String(rest.weight))
@@ -307,11 +306,11 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
                 <View className='w-4' />
                 <View className='flex-1'>
                   <TextFieldWithLabel
-                    name='height'
+                    name='length'
                     control={control}
-                    error={errors.height?.message}
+                    error={errors.length?.message}
                     keyboardType='decimal-pad'
-                    label='Height (cm)'
+                    label='Length (cm)'
                   />
                 </View>
               </View>
@@ -320,11 +319,11 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
               <View className='flex-row'>
                 <View className='flex-1'>
                   <TextFieldWithLabel
-                    name='depth'
+                    name='height'
                     control={control}
-                    error={errors.depth?.message}
+                    error={errors.height?.message}
                     keyboardType='decimal-pad'
-                    label='Depth (cm)'
+                    label='Height (cm)'
                   />
                 </View>
                 <View className='w-4' />
