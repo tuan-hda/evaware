@@ -1,11 +1,20 @@
 import { View, Text, FlatList, ScrollView, Pressable, Dimensions } from 'react-native'
-import React, { useState } from 'react'
-import { Button, CustomSafeAreaView, ProductCardBig, SwipeSlider } from '~/components/common'
-import { ChevronRight, Sale } from 'assets/icon'
-import { HomeNavigationProp } from '~/components/navigation/HomeNav'
+import React, { useEffect, useState } from 'react'
+import { Button, CustomSafeAreaView, ProductCardBig, SnackBar, SwipeSlider } from '~/components/common'
+import { ChevronRight, Sale, YellowStar } from 'assets/icon'
+import { HomeNavigationProp, ProductProp } from '~/components/navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '~/components/navigation/Bars'
 import ModalProductInfo from '~/components/modal/ModalProductInfo'
+import VariationList from '~/components/product/VariationList'
+import { addToCartService, getCartItemsService } from '~/services/cart'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { addFavoriteService, deleteFavoriteService, getProductDetailService } from '~/services/product'
+import { useQuery } from '@tanstack/react-query'
+import LoadingScreen from '~/components/common/LoadingScreen'
+import useShowNav from '~/hooks/useShowNav'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 
 const youMightlike = [
   {
@@ -58,27 +67,96 @@ const youMightlike = [
     badge: 'new'
   }
 ]
-const imageSlider = [
-  'https://cdn.pixabay.com/photo/2016/09/01/19/53/pocket-watch-1637396_960_720.jpg',
-  'https://cdn.pixabay.com/photo/2020/04/19/21/25/field-5065671_960_720.jpg',
-  'https://cdn.pixabay.com/photo/2016/11/22/04/19/snow-1848346_960_720.png'
-]
+
 const WIDTH = Dimensions.get('window').width
 
-const ProductScreen = () => {
+const ProductScreen = ({ route }: ProductProp) => {
   const navigation = useNavigation<HomeNavigationProp>()
   const [productInfoVisible, setProductInfoVisible] = useState(false)
   const [isFaver, setIsFaver] = useState(false)
+  const [currVar, setCurrVar] = useState(0)
+  const id = route.params.id
+  const {
+    refetch: productRefetch,
+    isLoading,
+    data
+  } = useQuery({
+    queryKey: ['productDetail', id],
+    queryFn: async () => getProductDetailService(id)
+  })
+  useRefetchOnFocus(productRefetch)
+  const response = data?.data
+  useShowNav(navigation, false)
+
+  useEffect(() => {
+    if (response?.is_favorited) {
+      setIsFaver(response.is_favorited)
+    }
+  }, [response?.is_favorited])
+
+  const images = response?.variations && response.variations[currVar]?.img_urls
 
   const toggle = () => setProductInfoVisible((prev) => !prev)
 
+  const { refetch } = useQuery({
+    queryKey: ['cart'],
+    queryFn: async () => getCartItemsService()
+  })
+
+  async function addToBag() {
+    if (response?.variations[0]?.id) {
+      const res = await addToCartService(id, response?.variations[currVar || 0]?.id || -1)
+      if (isError(res)) {
+        let text2 = 'Some error happened'
+
+        if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
+          text2 = 'Insufficient inventory'
+        }
+
+        Toast.show({
+          type: 'error',
+          text1: 'Added to cart failed',
+          text2
+        })
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Added to bag successfully'
+        })
+        refetch()
+      }
+    }
+  }
+
+  const toggleFavorite = async () => {
+    if (!response?.id) return null
+    if (isFaver) {
+      await deleteFavoriteService(response.id)
+      setIsFaver(false)
+    } else {
+      await addFavoriteService(response.id)
+      setIsFaver(true)
+    }
+  }
+
+  const price = (response?.price || 0) * (1 - (response?.discount || 0) / 100)
+
   return (
     <ScrollView className='relative mt-6 flex-1 bg-white' showsVerticalScrollIndicator={false}>
-      <ModalProductInfo visible={productInfoVisible} setVisible={setProductInfoVisible} toggle={toggle} />
+      <LoadingScreen show={isLoading} />
+      <ModalProductInfo
+        data={response}
+        visible={productInfoVisible}
+        setVisible={setProductInfoVisible}
+        toggle={toggle}
+      />
 
       {/* Slider */}
-      <SwipeSlider images={imageSlider} className='h-[458px]' />
-
+      {images ? (
+        <SwipeSlider currVar={currVar} images={images} className='h-[458px]' />
+      ) : (
+        <View className='h-16 bg-giratina-100' />
+      )}
       <Bars
         headerLeft='return'
         headerRight='heart'
@@ -87,27 +165,29 @@ const ProductScreen = () => {
         style={{ position: 'absolute' }}
         className='px-4 pt-2'
         onLeftButtonPress={() => navigation.goBack()}
-        onRightButtonPress={() => setIsFaver(!isFaver)}
+        onRightButtonPress={toggleFavorite}
       />
 
       <View className='bg-giratina-100'>
+        <Text className='ml-4  flex-1 pb-2 pt-4 font-app-semibold text-heading2' numberOfLines={1}>
+          {response?.name}
+        </Text>
+
         {/* Price and desc */}
-        <View className='px-4 py-6'>
-          <Text className='mb-2 font-app-semibold text-heading2'>$150.00</Text>
-          <Text className='font-app-light text-body1 text-giratina-500'>
-            Wooden bedside table featuring a raised design on the door
-          </Text>
+        <View className='px-4 pb-6'>
+          <View className='flex-row items-baseline'>
+            <Text className='mb-2 font-app-semibold text-heading2'>${Number(price)}</Text>
+            {response?.discount !== 0 && (
+              <Text className='ml-2 font-app-medium text-body2 text-giratina-500 line-through'>${response?.price}</Text>
+            )}
+          </View>
+          <Text className='font-app-light text-body1 text-giratina-500'>{response?.desc}</Text>
         </View>
 
-        <View className='mx-4 flex-row'>
-          <Pressable className='h-9 flex-row items-center rounded-lg border border-giratina-300 bg-white px-4'>
-            <View className='mr-2 h-[18px] w-[18px] rounded-full border border-giratina-200 bg-[#A56506]' />
-            <Text className='font-app-medium text-body2'>Brown</Text>
-          </Pressable>
-        </View>
+        <VariationList selected={currVar} setSelected={setCurrVar} data={response} />
 
         <View className='px-4 py-6'>
-          <Button label={'Add to bag'} hasBagIcon={true} />
+          <Button onPress={addToBag} label={'Add to bag'} hasBagIcon={true} />
         </View>
       </View>
 
@@ -124,25 +204,34 @@ const ProductScreen = () => {
         <Text className='mr-4 flex-1 font-app-light text-body1'>Product information</Text>
         <ChevronRight />
       </Pressable>
-      <Pressable className='h-16 flex-row px-4 py-5' onPress={() => navigation.navigate('Reviews')}>
+      <Pressable
+        className='h-16 flex-row items-center px-4 py-5'
+        onPress={() =>
+          navigation.navigate('Reviews', {
+            id: response?.id || 0
+          })
+        }
+      >
         <Text className='mr-4 flex-1 font-app-light text-body1'>Reviews</Text>
-        <Text className='text-right font-app-light text-body1 text-giratina-500'>32</Text>
+        <Text className='text-right font-app-light text-body1 text-giratina-500'>
+          {response?.reviews_count} ({response?.avg_rating} <YellowStar className='mt-1' />)
+        </Text>
       </Pressable>
 
       <Text className='p-4 font-app-semibold text-heading2'>you might also like</Text>
-      <FlatList
+      {/* <FlatList
         data={youMightlike}
         horizontal={true}
         renderItem={({ item }) => (
           <ProductCardBig
-            data={item}
+            data={{ ...item, id: -1 }}
             style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }}
-            onPress={() => navigation.navigate('Product')}
+            onPress={() => navigation.navigate('Product', { id: 0 })}
           />
         )}
         className='m-4 h-[310px]'
         showsHorizontalScrollIndicator={false}
-      />
+      /> */}
     </ScrollView>
   )
 }

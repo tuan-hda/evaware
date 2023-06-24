@@ -11,9 +11,11 @@ import { BagItemProps } from '~/types/bagItem.type'
 import useShowNav from '~/hooks/useShowNav'
 import SelectModal from '~/components/common/SelectModal'
 import { UserItem } from '../components/user'
-import { UserNavigationProp } from '~/components/navigation/UserNav'
-import { SettingNavigationProp } from '../nav/SettingNav'
+import { SuperUserNavProp } from '../nav/SuperUserNav'
 import SortFilter from '~/components/common/SortFilter'
+import { useQuery } from '@tanstack/react-query'
+import { getAllUsersService } from '~/services/user'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 
 type Props = ViewProps
 
@@ -21,8 +23,14 @@ const ManageUserScreen = ({ ...props }: Props) => {
   const list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 1, 1, 1, 1]
   const [focus, setFocus] = useState(false)
   const toggle = () => setFocus((prev) => !prev)
-  const navigation = useNavigation<SettingNavigationProp>()
-  useShowNav(navigation, false)
+  const navigation = useNavigation<SuperUserNavProp>()
+
+  const { data: temp, refetch } = useQuery({
+    queryKey: ['all-user'],
+    queryFn: getAllUsersService
+  })
+  const data = temp?.data
+  useRefetchOnFocus(refetch)
 
   return (
     <CustomSafeAreaView>
@@ -32,11 +40,15 @@ const ManageUserScreen = ({ ...props }: Props) => {
           <SearchBar onBack={toggle} onPress={!focus ? toggle : undefined} isSearching={focus} className='w-full' />
           <SortFilter />
         </View>
-        {list.map((item, index) => (
+        {data?.results.map((item, index) => (
           <View key={index} className='mx-4'>
             <UserItem
-              onPress={() => navigation.navigate('UserDetail')}
-              role={index % 8 === 1 ? 'admin' : index % 8 === 2 ? 'staff' : 'customer'}
+              data={item}
+              onPress={() =>
+                navigation.navigate('ChangeRole', {
+                  data: item
+                })
+              }
             />
           </View>
         ))}

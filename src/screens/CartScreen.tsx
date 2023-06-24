@@ -6,15 +6,18 @@ import { BagItemProps } from '~/types/bagItem.type'
 import useShowNav from '~/hooks/useShowNav'
 import { useNavigation } from '@react-navigation/native'
 import useBagStore from '~/store/bag'
-import {shallow} from 'zustand/shallow'
+import { shallow } from 'zustand/shallow'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
+import { getCartItemsService } from '~/services/cart'
+import { useQuery } from '@tanstack/react-query'
 
 const CartScreen = () => {
-  const [bagList] = useBagStore((state) => [state.bagList], shallow)
-  const [data, setData] = useState(bagList)
-
-  useEffect(() => {
-    setData(bagList)
-  }, [bagList])
+  const { data, refetch } = useQuery({
+    queryKey: ['cart'],
+    queryFn: async () => getCartItemsService()
+  })
+  useRefetchOnFocus(refetch)
+  const response = data?.data
 
   const navigation = useNavigation()
 
@@ -22,7 +25,7 @@ const CartScreen = () => {
 
   return (
     <CustomSafeAreaView className='flex-1 bg-white'>
-      {data.length === 0 ? <EmptyBag /> : <Bag />}
+      {response?.results.length === 0 ? <EmptyBag /> : <Bag />}
     </CustomSafeAreaView>
   )
 }

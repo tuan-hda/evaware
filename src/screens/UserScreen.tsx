@@ -11,22 +11,36 @@ import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import { auth } from 'firebaseConfig'
 import Toast from 'react-native-toast-message'
+import { useQuery } from '@tanstack/react-query'
+import { getAltCurrentUserProfileService } from '~/services/user'
+import LoadingScreen from '~/components/common/LoadingScreen'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 const UserScreen = () => {
   const [show, setShow] = useState(false)
   const navigation = useNavigation<UserNavigationProp>()
   const [logOut] = useUserStore((state) => [state.logOut], shallow)
 
+  const {
+    data: temp,
+    refetch,
+    isLoading
+  } = useQuery({
+    queryKey: ['user'],
+    queryFn: getAltCurrentUserProfileService
+  })
+  const data = temp?.data
+  useRefetchOnFocus(refetch)
   const toggle = () => setShow((prev) => !prev)
 
   const logout = () => {
     toggle()
-    signOut(auth).then(() => {
-      logOut()
-    })
+    logOut()
   }
 
   return (
     <CustomSafeAreaView>
+      <LoadingScreen show={isLoading} />
+
       <Modal isVisible={show} onBackdropPress={toggle}>
         <View className='max-w-[320] rounded-lg bg-white px-4 pb-6 pt-8'>
           <Text className='text-center font-app-semibold text-heading2 text-black'>
@@ -51,20 +65,20 @@ const UserScreen = () => {
         <View className='rounded-full border border-giratina-200'>
           <Image
             source={{
-              uri: 'https://bizweb.dktcdn.net/100/411/628/products/0c397e47a610f901872d4a8830e7431c.jpg?v=1635488019853'
+              uri: data?.avatar || 'https://d2xnk96i50sp3r.cloudfront.net/user_default.png'
             }}
             className='h-9 w-9 rounded-full'
           />
         </View>
         <View className='ml-4'>
-          <Text className='font-app-medium text-body1 text-black'>Dua Lipa</Text>
-          <Text className='font-app text-body2 text-giratina-500'>0123 456 789</Text>
+          <Text className='font-app-medium text-body1 text-black'>{data?.full_name}</Text>
+          {data?.phone && <Text className='font-app text-body2 text-giratina-500'>{data?.phone}</Text>}
         </View>
       </View>
 
       <Cell
         text='My Orders'
-        rightText='14'
+        rightText={String(data && data.orders ? data.orders.length : 0)}
         onPress={() => navigation.navigate('MyOrders')}
         icon={<Bag fill='#000' width={24} height={24} />}
       />

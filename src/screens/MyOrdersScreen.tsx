@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { CustomSafeAreaView, SearchBar } from '~/components/common'
 import { DirectionVertical, Filter } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
@@ -8,6 +8,13 @@ import Bars from '~/components/navigation/Bars'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
 import { useNavigation } from '@react-navigation/native'
 import ModalSort from '~/components/modal/ModalSort'
+import { useQuery } from '@tanstack/react-query'
+import { getAltCurrentUserProfileService } from '~/services/user'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
+import { OrderProps } from '~/types/order.type'
+import { OrderItemProps } from '~/components/common/Order'
+import moment from 'moment'
+import useShowNav from '~/hooks/useShowNav'
 const DATA = [
   {
     orderID: 23124,
@@ -60,31 +67,104 @@ const DATA = [
 
 const MyOrdersScreen = () => {
   const navigation = useNavigation<UserNavigationProp>()
-  const [data, setData] = useState(DATA)
+
+  const { data: temp, refetch } = useQuery({
+    queryKey: ['user'],
+    queryFn: getAltCurrentUserProfileService
+  })
+  const data = temp?.data
+  useRefetchOnFocus(refetch)
+  useShowNav(navigation, true)
+
+  const translateOrder = (order: OrderProps): OrderItemProps => {
+    return {
+      ...order,
+      date: moment(order.created_at).format('YYYY-MM-DD HH:mm'),
+      orderID: order.id,
+      price: Number(order.total),
+      products: order.order_details.map((item) => item.variation.img_urls[0]),
+      state: order.status
+    }
+  }
+
+  const [sortedOrder, setSortedOrder] = useState<OrderProps[]>([])
+  const [currentSort, setCurrentSort] = useState('')
+
+  const applySort = useCallback(
+    (currentOrder: string) => {
+      setCurrentSort(currentOrder)
+      let newData: OrderProps[] | undefined
+      switch (currentOrder) {
+        case 'Old first':
+          newData = data?.orders?.sort((a, b) => (a.created_at > b.updated_at ? 1 : -1))
+          break
+        case 'Total: low to high':
+          newData = data?.orders?.sort((a, b) => -a.total + b.total)
+          break
+        case 'Total: high to low': {
+          newData = data?.orders?.sort((a, b) => a.total - b.total)
+          break
+        }
+        case 'Status': {
+          newData = data?.orders?.sort((a, b) => (a.status > b.status ? -1 : 1))
+          break
+        }
+        default:
+          newData = data?.orders?.sort((a, b) => (a.created_at < b.updated_at ? 1 : -1))
+          break
+      }
+      if (newData) setSortedOrder(newData)
+    },
+    [data?.orders]
+  )
+
+  useEffect(() => {
+    applySort(currentSort)
+  }, [currentSort, applySort])
 
   const [sortVisible, setSortVisible] = useState(false)
   const toggle = () => setSortVisible((prev) => !prev)
+  const fields = [
+    {
+      name: 'New first'
+    },
+    {
+      name: 'Old first'
+    },
+    {
+      name: 'Total: low to high'
+    },
+    {
+      name: 'Total: high to low'
+    },
+    {
+      name: 'Status'
+    }
+  ]
 
   return (
     <CustomSafeAreaView className='flex-1 items-center bg-white px-4 pt-2'>
-      <ModalSort visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
-      <Bars headerLeft='return' title='My orders' onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
-      <SearchBar onPress={() => navigation.navigate('Search')} />
+      <ModalSort
+        applySort={applySort}
+        fields={fields}
+        visible={sortVisible}
+        setVisible={setSortVisible}
+        toggle={toggle}
+      />
+      <Bars
+        headerLeft='return'
+        title='My orders'
+        onLeftButtonPress={() => navigation.navigate('UserScreen')}
+        className='mb-2'
+      />
       {/* Sort and filter */}
-      <View className='mb-2 mt-4 flex-row'>
+      <View className='mb-2 flex-row'>
         <Pressable
-          className='mr-[15px] flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
+          className='flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
           onPress={() => setSortVisible(true)}
         >
           <Text className='my-2 mr-1 font-app-medium text-body2'>Sort</Text>
           <DirectionVertical />
-        </Pressable>
-        <Pressable
-          className='flex-1 flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => navigation.navigate('Filter')}
-        >
-          <Text className='my-2 mr-1 font-app-medium text-body2'>Filter</Text>
-          <Filter />
         </Pressable>
       </View>
 
@@ -92,15 +172,15 @@ const MyOrdersScreen = () => {
       <FlatList
         className='w-full'
         showsVerticalScrollIndicator={false}
-        data={data}
+        data={sortedOrder}
         renderItem={({ item }) => (
           <Order
-            date={item.date}
-            state={item.state}
-            price={item.price}
-            orderID={item.orderID}
-            products={item.products}
-            onPress={() => navigation.navigate('OrderScreen')}
+            {...translateOrder(item)}
+            onPress={() =>
+              navigation.navigate('OrderScreen', {
+                order: item
+              })
+            }
           />
         )}
       />

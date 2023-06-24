@@ -8,13 +8,20 @@ type Props = PaymentItemProps & {
   setSelected?: (value: number) => void
   index?: number
   isPlain?: boolean
+  onPress?: () => void
 }
 
-const PaymentItem = ({ selected, setSelected, index, isPlain, ...item }: Props) => {
+const PaymentItem = ({ onPress, selected, setSelected, index, isPlain, ...item }: Props) => {
   return (
     <TouchableOpacity
-      disabled={isPlain}
-      onPress={() => setSelected && index !== undefined && setSelected(index)}
+      disabled={isPlain && !onPress}
+      onPress={() => {
+        if (onPress) {
+          onPress()
+        } else {
+          setSelected && index !== undefined && setSelected(index)
+        }
+      }}
       className='h-16 flex-row items-center justify-between px-4'
     >
       <Image
@@ -30,7 +37,7 @@ const PaymentItem = ({ selected, setSelected, index, isPlain, ...item }: Props) 
 
       <View className='ml-4 flex-1'>
         <Text className='font-app text-body1'>
-          {item.provider} {item.number}
+          {item.provider} {item.number?.slice(-4)}
         </Text>
         <Text className='font-app text-body2 text-giratina-500'>{item.exp}</Text>
       </View>

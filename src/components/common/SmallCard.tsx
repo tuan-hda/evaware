@@ -9,14 +9,29 @@ interface Props {
   desc: string
   image: string
   style?: string
+  qty?: number
   containerClassName?: string
   onPress?: () => void
-  onButtonClearPress?:()=>void
+  onButtonClearPress?: () => void
+  moveToBag?: () => void
+  variation?: string
+  noOrderAgain?: boolean
 }
 
 const styles = ['order', 'saved']
 
-const SmallCard = ({ price, desc, image, style = 'order', containerClassName, onPress, onButtonClearPress }: Props) => {
+const SmallCard = ({
+  price,
+  variation,
+  moveToBag,
+  desc,
+  image,
+  style = 'order',
+  containerClassName,
+  onPress,
+  onButtonClearPress,
+  ...props
+}: Props) => {
   const checkedStyle = styles.includes(style) ? style : styles[0]
   const buttonLabel = checkedStyle === 'order' ? 'Order again' : 'Move to bag'
 
@@ -27,9 +42,15 @@ const SmallCard = ({ price, desc, image, style = 'order', containerClassName, on
         <View className='flex-1 flex-row'>
           <View className='mr-2 flex-1'>
             <Text className='mb-1 font-app-medium text-body1'>${price}</Text>
-            <Text className='h-0 w-full flex-1 font-app-light text-body3 text-giratina-500' numberOfLines={2}>
+            <Text className='w-full font-app-light text-body3 text-giratina-500' numberOfLines={1}>
               {desc}
             </Text>
+            {variation && (
+              <Text className='mt-1 w-full font-app-light text-body3 text-giratina-500' numberOfLines={2}>
+                Variation: {variation}
+              </Text>
+            )}
+            {props.noOrderAgain && <Text className='mt-1 font-app text-body3 text-black/75'>Qty: {props.qty}</Text>}
           </View>
           {checkedStyle === 'saved' && (
             <Pressable onPress={onButtonClearPress}>
@@ -39,7 +60,7 @@ const SmallCard = ({ price, desc, image, style = 'order', containerClassName, on
         </View>
 
         <View className='flex-row'>
-          <Button size='small' label={buttonLabel} />
+          {!props.noOrderAgain && <Button size='small' onPress={moveToBag} label={buttonLabel} />}
           <View className='flex-1' />
         </View>
       </View>

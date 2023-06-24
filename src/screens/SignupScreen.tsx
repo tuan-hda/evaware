@@ -14,6 +14,8 @@ import useUserStore from '~/store/user'
 import { shallow } from 'zustand/shallow'
 import { auth } from 'firebaseConfig'
 import Toast from 'react-native-toast-message'
+import { signUpService } from '~/services/auth'
+import { isError, toastSignUpError } from '~/utils/callAxios'
 
 const validationSchema = yup.object({
   email: yup.string().required('Required').email('Invalid email'),
@@ -33,23 +35,24 @@ const SignupScreen = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm<FormValues>({ resolver: yupResolver(validationSchema) })
-  const [setUser] = useUserStore((state) => [state.setUser], shallow)
   const [secure, setSecure] = useState([true, true])
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    createUserWithEmailAndPassword(auth, data.email, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user
-        setUser(user)
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const response = await signUpService(data.email, data.password)
+    if (!isError(response)) {
+      Toast.show({
+        type: 'success',
+        text1: 'Signed up successfully',
+        text2: 'Please sign in'
       })
-      .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.log(errorCode, errorMessage)
-        Toast.show({ type: 'error', text1: 'Sign up failed', text2: errorMessage })
-      })
+      navigation.navigate('Login')
+      reset()
+    } else {
+      toastSignUpError(response)
+    }
   }
 
   const navigation = useNavigation<AuthNavigationProp>()

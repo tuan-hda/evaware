@@ -1,7 +1,18 @@
-import { View, Text, Image, FlatList } from 'react-native'
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Star, YellowStar } from 'assets/icon'
-
+import useUserStore from '~/store/user'
+import { shallow } from 'zustand/shallow'
+import Entypo from 'react-native-vector-icons/Entypo'
+import SelectModal from './SelectModal'
+import { useNavigation } from '@react-navigation/native'
+import { HomeNavigationProp } from '../navigation/HomeNav'
+import useAlertExit from '~/hooks/useAlertExit'
+import { useQuery } from '@tanstack/react-query'
+import { deleteReviewService, getProductDetailService } from '~/services/product'
+import { ReviewProps } from '~/types/reviews.type'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
 const DATA = {
   starNum: 4,
   time: 'Today, 12:30 pm',
@@ -16,54 +27,104 @@ const DATA = {
   ]
 }
 
-interface Props {
+export interface ReviewScreenProps {
+  productId?: number
+  originalReview: ReviewProps
   review: {
+    id: number
     starNum: number
     time: string
     userAvt: string
     userName: string
     content: string
-    imageReview: string[]
+    imageReview?: string[]
+    email: string
   }
 }
 
-const Review = ({ review }: Props) => {
-  const [data, setData] = useState(review)
-  useEffect(() => {
-    setData(review)
-  }, [])
+const Review = ({ review, productId, originalReview }: ReviewScreenProps) => {
+  const navigation = useNavigation<HomeNavigationProp>()
+  // return null
+  const [user] = useUserStore((state) => [state.user], shallow)
+  const [visible, setVisible] = useState(false)
+  const { createAlert } = useAlertExit(deleteReview, undefined, 'Delete review?', "You can't undo this action")
+  const { refetch } = useQuery({
+    queryKey: ['productDetail', productId],
+    queryFn: async () => getProductDetailService(productId || 0)
+  })
+
+  async function deleteReview() {
+    const res = await deleteReviewService(review.id)
+    if (!isError(res)) {
+      refetch()
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: "Can't delete review"
+      })
+    }
+  }
+
+  const show = () => setVisible(true)
+  const hide = () => setVisible(false)
+  const items = [
+    {
+      value: 'Edit',
+      action: () =>
+        navigation.navigate('NewReview', {
+          productId: productId || 0,
+          isEdit: true,
+          oldReview: originalReview
+        })
+    },
+    {
+      value: 'Delete',
+      className: 'text-magikarp-400',
+      action: createAlert
+    }
+  ]
 
   return (
     <View className='py-4'>
+      <SelectModal show={visible} toggle={hide} title='options' items={items} />
       {/* Stars and time */}
       <View className='flex-1 flex-row'>
-        {Array.from({ length: data.starNum }, (_, index) => (
+        {Array.from({ length: review.starNum }, (_, index) => (
           <YellowStar className='mr-1' key={index} />
         ))}
-        {Array.from({ length: 5 - data.starNum }, (_, index) => (
+        {Array.from({ length: 5 - review.starNum }, (_, index) => (
           <Star className='mr-1' key={index} />
         ))}
-        <Text className='flex-1 text-right font-app-light text-body2 text-giratina-500'>{data.time}</Text>
+        <Text className='flex-1 text-right font-app-light text-body2 text-giratina-500'>{review.time}</Text>
       </View>
-
       {/* user and content  */}
       <View className='my-3'>
         <View className='flex-1 flex-row items-center'>
-          <Image source={{ uri: data.userAvt }} className='mr-2 h-6 w-6 rounded-full' resizeMode='cover' />
-          <Text className='font-app-medium text-body1'>{data.userName}</Text>
+          {review.userAvt && (
+            <Image source={{ uri: review.userAvt }} className='mr-2 h-6 w-6 rounded-full' resizeMode='cover' />
+          )}
+          <View className='flex-1 flex-row justify-between'>
+            <Text className='font-app-medium text-body1'>{review.userName}</Text>
+            {review.email === user?.email && (
+              <TouchableOpacity onPress={show}>
+                <Entypo name='dots-three-horizontal' size={16} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-        <Text className='mt-0.5 w-full flex-shrink font-app-regular text-body1 text-giratina-500'>{data.content}</Text>
+        <Text className='mt-0.5 w-full flex-shrink font-app text-body1 text-giratina-500'>{review.content}</Text>
       </View>
-
       {/* images */}
-      <FlatList
-        data={data.imageReview}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <Image className='mr-2 h-[54px] w-[54px] rounded-md' resizeMode='cover' source={{ uri: item }} />
-        )}
-      />
+      {review.imageReview && (
+        <FlatList
+          data={review.imageReview}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <Image className='mr-2 h-[54px] w-[54px] rounded-md' resizeMode='cover' source={{ uri: item }} />
+          )}
+        />
+      )}
     </View>
   )
 }

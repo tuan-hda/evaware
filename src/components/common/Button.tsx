@@ -141,7 +141,8 @@ const Button = ({
           {
             'border-2': type === 'outline' && size === 'large',
             border: type === 'outline' && size === 'small',
-            'border-giratina-500': type === 'outline' && disabled
+            'border-giratina-500': type === 'outline' && disabled && !isDanger,
+            'border-magikarp-400': type === 'outline' && disabled && isDanger
           },
           className
         )}
@@ -162,7 +163,8 @@ const Button = ({
                   },
                   {
                     'text-black': !disabled && !isDanger,
-                    'text-giratina-500': disabled
+                    'text-giratina-500': disabled,
+                    'text-magikarp-400': isDanger
                   }
                 )}
               >
@@ -172,7 +174,7 @@ const Button = ({
           </View>
         )}
 
-        {hasBagIcon && (
+        {hasBagIcon && !loading && (
           <BagSvg
             width={size === 'large' ? 24 : 18}
             height={size === 'large' ? 24 : 18}

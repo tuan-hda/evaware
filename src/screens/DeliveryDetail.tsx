@@ -1,27 +1,32 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView, NavBar } from '~/components/common'
 import { useNavigation } from '@react-navigation/native'
 import { BagNavigationProp } from '~/components/navigation/BagNav'
 import { AddressItem } from '~/components/address'
 import useShowNav from '~/hooks/useShowNav'
+import { useQuery } from '@tanstack/react-query'
+import { getAddressesService } from '~/services/address'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
+import useCartStore from '~/store/cart'
+import { shallow } from 'zustand/shallow'
 
-const data = [
-  {
-    id: 'abc',
-    province: 'TP HCM',
-    address: 'Phường Linh Trung',
-    city: 'HCM',
-    ward: 'Phường Linh Trung',
-    description: 'KTX Khu A DHQG',
-    district: 'Thủ Đức',
-    email: 'hdatdragon2@gmail.com',
-    phone: '0987654321',
-    zip: 123123,
-    name: 'Hanna Gouse',
-    street: 'Tạ Quang Bửu'
-  }
-]
+// const data = [
+//   {
+//     id: 'abc',
+//     province: 'TP HCM',
+//     address: 'Phường Linh Trung',
+//     city: 'HCM',
+//     ward: 'Phường Linh Trung',
+//     description: 'KTX Khu A DHQG',
+//     district: 'Thủ Đức',
+//     email: 'hdatdragon2@gmail.com',
+//     phone: '0987654321',
+//     zip: 123123,
+//     name: 'Hanna Gouse',
+//     street: 'Tạ Quang Bửu'
+//   }
+// ]
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -46,18 +51,29 @@ const Footer = () => {
 }
 
 const DeliveryDetail = () => {
-  const [selected, setSelected] = useState(0)
+  const [currentAddress, setAddress] = useCartStore((state) => [state.currentAddress, state.setAddress], shallow)
+  const { data: temp, refetch } = useQuery({
+    queryKey: ['address'],
+    queryFn: getAddressesService
+  })
+  const data = temp?.data
+  useRefetchOnFocus(refetch)
+  useEffect(() => {
+    setAddress(data?.results[0])
+  }, [data, setAddress])
+  const navigation = useNavigation()
+  useShowNav(navigation, false)
 
   return (
     <CustomSafeAreaView className='bg-white'>
       <NavBar step={1} total={3} />
 
       <FlatList
-        data={data}
+        data={data?.results}
         ListFooterComponent={Footer}
         ListHeaderComponent={Header}
         renderItem={({ item, index }) => (
-          <AddressItem {...item} index={index} selected={selected} setSelected={setSelected} />
+          <AddressItem {...item} index={index} selected={currentAddress} setSelected={setAddress} />
         )}
       />
     </CustomSafeAreaView>

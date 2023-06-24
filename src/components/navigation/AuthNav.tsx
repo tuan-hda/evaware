@@ -1,4 +1,4 @@
-import { StackNavigationProp, createStackNavigator, StackScreenProps } from '@react-navigation/stack'
+import { StackNavigationProp, createStackNavigator, StackScreenProps, TransitionPresets } from '@react-navigation/stack'
 import { OpeningScreen } from '~/screens'
 import ForgotPasswordScreen from '~/screens/ForgotPasswordScreen'
 import LoginScreen from '~/screens/LoginScreen'

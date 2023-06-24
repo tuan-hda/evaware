@@ -1,12 +1,21 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { FlatList, ScrollView } from 'react-native-gesture-handler'
-import { AppBar, CustomSafeAreaView, SmallCard } from '~/components/common'
+import { AppBar, Button, CustomSafeAreaView, SmallCard } from '~/components/common'
 import { Pressable } from 'react-native'
 import { Car, Pin } from 'assets/icon'
 import Bars from '~/components/navigation/Bars'
 import { useNavigation } from '@react-navigation/native'
-import { UserNavigationProp } from '~/components/navigation/UserNav'
+import { OrderProp, UserNavigationProp } from '~/components/navigation/UserNav'
+import moment from 'moment'
+import classNames from 'classnames'
+import ChooseVariationModal from '~/components/product/ChooseVariationModal'
+import { OrderDetailProps } from '~/types/order.type'
+import { addToCartService } from '~/services/cart'
+import { isError } from '~/utils/callAxios'
+import { Toast } from 'react-native-toast-message/lib/src/Toast'
+import { cancelOrderService } from '~/services/order'
+import useAlertExit from '~/hooks/useAlertExit'
 
 const sample = {
   orderID: 23124,
@@ -33,12 +42,38 @@ const sample = {
   ]
 }
 
-const OrderScreen = () => {
+const OrderScreen = ({ route }: OrderProp) => {
   const navigation = useNavigation<UserNavigationProp>()
-  const { date, state, price, orderID, products } = sample
+  const { order } = route.params
+  const [currentSaved, setCurrentSaved] = useState<OrderDetailProps>()
+  const [visible, setVisible] = useState(false)
+
+  const show = (orderDetail: OrderDetailProps) => {
+    setCurrentSaved(orderDetail)
+    setVisible(true)
+  }
+
+  const hide = () => setVisible(false)
+
+  const subtotal = order.order_details.reduce((prev, curr) => {
+    return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
+  }, 0)
+
+  const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
+
+  const cancelOrder = async () => {
+    const res = await cancelOrderService(order.id)
+    if (!isError(res)) {
+      navigation.goBack()
+    }
+  }
+
+  const { createAlert } = useAlertExit(cancelOrder, undefined, 'Cancel this order?', "You can't rollback this action")
+
   return (
     <CustomSafeAreaView className='flex-1 px-4'>
-      <Bars headerLeft='return' onLeftButtonPress={() => navigation.goBack()} title={'Order #' + orderID} />
+      <Bars headerLeft='return' onLeftButtonPress={() => navigation.goBack()} title={'Order #' + order.id} />
+      <ChooseVariationModal data={currentSaved ? currentSaved.product.variations : []} show={visible} toggle={hide} />
       <ScrollView
         className='flex-1 bg-white'
         contentContainerStyle={{ alignItems: 'center' }}
@@ -46,18 +81,35 @@ const OrderScreen = () => {
       >
         {/* Header  1*/}
         <View className='w-full pb-8 pt-4'>
-          <Text className='w-full font-app-semibold text-heading2'>{date}</Text>
-          <Text className='mt-2 font-app-light text-body2 text-giratina-500'>{state}</Text>
+          <Text className='w-full font-app-semibold text-heading2'>
+            {moment(order.created_at).format('YYYY-MM-DD HH:mm')}
+          </Text>
+          <Text
+            className={classNames('mr-2 flex-1 font-app-light text-body2', {
+              'text-venusaur-500': order.status === 'Success',
+              'text-charizard-500': order.status === 'In progress',
+              'text-gengar-500': order.status === 'Delivering',
+              'text-magikarp-400': order.status === 'Cancelled'
+            })}
+          >
+            {order.status}
+          </Text>
         </View>
 
         {/* Producrt */}
-        {products.map((item, index) => (
+        {order.order_details.map((item, index) => (
           <View key={index} className='mb-6 w-full'>
             <SmallCard
+              moveToBag={() => show(item)}
+              variation={item.variation.name}
               price={item.price}
-              desc={item.desc}
-              image={item.image}
-              onPress={() => navigation.navigate('Product')}
+              desc={item.product.desc}
+              image={item.variation.img_urls[0]}
+              onPress={() =>
+                navigation.navigate('Product', {
+                  id: item.product.id
+                })
+              }
             />
           </View>
         ))}
@@ -72,11 +124,15 @@ const OrderScreen = () => {
         </Pressable>
 
         {/* Address */}
-        <Pressable className='mb-2 h-16 w-full flex-row items-center'>
+        <Pressable className='mb-2 h-16 flex-row items-center'>
           <Pin />
-          <View>
-            <Text className='ml-4 font-app-light text-body1'>London, 221B Baker Street</Text>
-            <Text className='ml-4 font-app-light text-body2 text-giratina-500'>Hanna Gouse, +7 932 123-43-23</Text>
+          <View className='min-w-0 flex-1 flex-shrink pl-4'>
+            <Text className='font-app-light text-body1'>
+              {order.province}, {order.district}, {order.ward}, {order.street}
+            </Text>
+            <Text className='font-app-light text-body2 text-giratina-500'>
+              {order.full_name}, {order.phone}
+            </Text>
           </View>
         </Pressable>
 
@@ -84,14 +140,28 @@ const OrderScreen = () => {
         <View className='w-full flex-row py-4'>
           <View className='flex-1'>
             <Text className='mb-1 font-app-semibold text-heading2'>total</Text>
-            <Text className='font-app-light text-body1 text-giratina-500'>Promocode</Text>
+            <Text className='font-app-light text-body1 text-giratina-500'>Subtotal</Text>
+            {order.voucher && (
+              <Text className='font-app-light text-body1 text-giratina-500'>
+                Promocode {'(' + order.voucher.code + ')'}
+              </Text>
+            )}
+            <Text className='font-app-light text-body1 text-giratina-500'>Delivery fee</Text>
           </View>
 
           <View>
-            <Text className='mb-1 text-right font-app-semibold text-heading2'>$420.50</Text>
-            <Text className='text-right font-app-light text-body1 text-giratina-500'>−$25.00</Text>
+            <Text className='mb-1 text-right font-app-semibold text-heading2'>${Number(order.total)}</Text>
+            <Text className='text-right font-app-light text-body1 text-giratina-500'>${subtotal}</Text>
+            {order.voucher && (
+              <Text className='text-right font-app-light text-body1 text-giratina-500'>-${discountAmount}</Text>
+            )}
+            <Text className='text-right font-app-light text-body1 text-giratina-500'>$10</Text>
           </View>
         </View>
+
+        {order.status === 'In progress' && (
+          <Button onPress={createAlert} label='Cancel order' isDanger type='outline' />
+        )}
       </ScrollView>
     </CustomSafeAreaView>
   )

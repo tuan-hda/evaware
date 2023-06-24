@@ -1,13 +1,16 @@
 import { View, Text } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import RnRangeSlider from 'rn-range-slider'
-import { Button, Category, CustomSafeAreaView } from '~/components/common'
-import { HomeNavigationProp } from '../navigation/HomeNav'
+import { Button, Category, Cell, CustomSafeAreaView } from '~/components/common'
+import { FilterProp, HomeNavigationProp } from '../navigation/HomeNav'
 import { useNavigation } from '@react-navigation/native'
 import Bars from '../navigation/Bars'
 import { useSelector } from 'react-redux'
 import useSortFilterStore from '~/store/sort_filter'
 import { shallow } from 'zustand/shallow'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import useProductData from '~/hooks/useProductData'
+import { useDebounce } from 'use-debounce'
 
 const DATA = [
   {
@@ -62,11 +65,12 @@ const DATA = [
   }
 ]
 
-type FilterListProps =
+export type FilterListProps =
   | {
       name: string
       selected: {
         name: string
+        value: string | number
         selected: boolean
       }[]
     }
@@ -98,12 +102,63 @@ const getFilterList = (filterList: FilterListProps) => {
   }
 }
 
-const Filter = () => {
+const Filter = ({ route }: FilterProp) => {
   const navigation = useNavigation<HomeNavigationProp>()
-  const [filterList, filterClear, updateMin, updateMax] = useSortFilterStore(
-    (state) => [state.filterList, state.filterClear, state.updateMin, state.updateMax],
+
+  const [
+    filterData,
+    filterList,
+    filterClear,
+    updateMin,
+    updateMax,
+    minPrice,
+    maxPrice,
+    toggleFilter,
+    min_price,
+    max_price,
+    sort,
+    setFilteredProducts
+  ] = useSortFilterStore(
+    (state) => [
+      state.filterData,
+      state.filterList,
+      state.filterClear,
+      state.updateMin,
+      state.updateMax,
+      state.minPrice,
+      state.maxPrice,
+      state.toggleFilter,
+      state.min_price,
+      state.max_price,
+      state.sort,
+      state.setFilteredProducts
+    ],
     shallow
   )
+
+  const filterQuery = useMemo(() => {
+    let res = ''
+    filterData?.forEach((item) => {
+      item?.selected.forEach((item2) => {
+        if (item2.selected) {
+          if (item.name === 'variation') {
+            res += `&variation__name=${item2.value}`
+          } else {
+            res += `&${item.name}=${item2.value}`
+          }
+        }
+      })
+    })
+    return res.length > 0 ? res.slice(1) : res
+  }, [filterData])
+
+  const [minv] = useDebounce(minPrice, 500)
+  const [maxv] = useDebounce(maxPrice, 500)
+
+  const { response: product } = useProductData(-1, undefined, sort, minv, maxv, filterQuery)
+
+  // useEffect(() => {}, [filterData])
+
   const [data, setData] = useState(filterList)
 
   useEffect(() => {
@@ -120,46 +175,73 @@ const Filter = () => {
         onLeftButtonPress={() => navigation.goBack()}
         onRightButtonPress={filterClear}
       />
-      <View className='mt-4 flex-row'>
-        <Text className='flex-1 font-app-medium text-body1'>${0}</Text>
-        <Text className='flex-1 text-right font-app-medium text-body1'>${700}</Text>
-      </View>
-      {/* RangerSlider */}
-      <View className='relative w-full'>
-        <View className='absolute bottom-0 h-[2px] w-full bg-giratina-200' />
-        <RnRangeSlider
-          className='h-[28px] w-full'
-          min={0}
-          max={700}
-          step={1}
-          renderThumb={() => <View className='h-4 w-8 rounded bg-charizard-400' />}
-          renderRail={() => <View className='h-[2px] w-full bg-giratina-200' />}
-          renderRailSelected={() => <View className='h-[2px] w-full bg-charizard-400' />}
-          renderLabel={(value) => <Text>${value}</Text>}
-          onValueChanged={(low, high) => {
-            updateMin(low)
-            updateMax(high)
-          }}
-        />
-      </View>
-      {/* ListItem */}
-      <View className='mt-4 w-full flex-1'>
-        {data.map((item, index) => (
+      <ScrollView className='w-full flex-1' showsVerticalScrollIndicator={false}>
+        <View className='mt-4 flex-row'>
+          <Text className='flex-1 font-app-medium text-body1'>${Number(minPrice)}</Text>
+          <Text className='flex-1 text-right font-app-medium text-body1'>${Number(maxPrice)}</Text>
+        </View>
+
+        {/* RangerSlider */}
+        <View className='relative w-full'>
+          <View className='absolute bottom-0 h-[2px] w-full bg-giratina-200' />
+          <RnRangeSlider
+            className='h-[28px] w-full'
+            min={min_price}
+            max={max_price}
+            low={minPrice}
+            high={maxPrice}
+            step={1}
+            renderThumb={() => <View className='h-4 w-8 rounded bg-charizard-400' />}
+            renderRail={() => <View className='h-[2px] w-full bg-giratina-200' />}
+            renderRailSelected={() => <View className='h-[2px] w-full bg-charizard-400' />}
+            renderLabel={(value) => <Text>${value}</Text>}
+            onValueChanged={(low, high) => {
+              updateMin(low)
+              updateMax(high)
+            }}
+          />
+        </View>
+
+        {/* ListItem */}
+        {/* <View className='mt-4 w-full flex-1'>
+        {filterData.map((item, index) => (
           <Category
             key={index}
-            left={item.filterName}
-            right={getSelected(item.optionsSelected)}
+            left={item?.name || ''}
+            right={getSelected(item?.selected || [])}
             action={() =>
               navigation.navigate('FilterOption', {
-                name: item.filterName,
-                selected: item.optionsSelected
+                name: item?.name || '',
+                selected: item?.selected || []
               })
             }
           />
         ))}
-      </View>
-
-      <Button label={'Show 25 items'} onPress={() => navigation.goBack()} />
+      </View> */}
+        <View className='mt-4 w-full flex-1'>
+          {filterData?.map((item, index) => (
+            <View key={index}>
+              <Cell textClassName='font-app-medium' noPadding disabled text={item?.name.toUpperCase()} />
+              {item?.selected.map((item2, index2: number) => (
+                <Category
+                  key={index2}
+                  left={item2.name}
+                  right={item2.selected}
+                  action={() => toggleFilter(index, index2)}
+                />
+              ))}
+              {index !== filterData.length - 1 && <View className='w-full border-t border-giratina-300' />}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      <Button
+        label={`Show ${product?.results.length} items`}
+        onPress={() => {
+          navigation.goBack()
+          if (product) setFilteredProducts(product)
+        }}
+      />
     </CustomSafeAreaView>
   )
 }

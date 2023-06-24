@@ -4,9 +4,10 @@ import { Button, CustomSafeAreaView } from '~/components/common'
 import { Friendly } from 'assets/icon'
 import { BagNavigationProp } from '~/components/navigation/BagNav'
 import { useNavigation } from '@react-navigation/native'
+import { TabNavigationProps } from '~/components/navigation/Tab'
 
 const SuccessScreen = () => {
-  const navigation = useNavigation<BagNavigationProp>()
+  const navigation = useNavigation<TabNavigationProps>()
 
   return (
     <CustomSafeAreaView className='h-full w-full justify-between bg-charizard-300 p-4'>
@@ -24,7 +25,15 @@ const SuccessScreen = () => {
         type='outline'
         label='To my orders'
         className='self-end'
-        onPress={() => navigation.navigate('MyOrders')}
+        onPress={() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Bag' }]
+          })
+          navigation.navigate('User', {
+            screen: 'MyOrders'
+          })
+        }}
       />
     </CustomSafeAreaView>
   )
