@@ -12,58 +12,58 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import useProductData from '~/hooks/useProductData'
 import { useDebounce } from 'use-debounce'
 
-const DATA = [
-  {
-    name: 'Category',
-    selected: [
-      {
-        name: 'Furniture',
-        selected: true
-      },
-      {
-        name: 'Lighting',
-        selected: false
-      },
-      {
-        name: 'Rugs',
-        selected: true
-      },
-      {
-        name: 'Mirrors',
-        selected: false
-      },
-      {
-        name: 'Blankets',
-        selected: true
-      }
-    ]
-  },
-  {
-    name: 'Product type',
-    selected: [
-      {
-        name: 'Furniture',
-        selected: true
-      },
-      {
-        name: 'Lighting',
-        selected: false
-      }
-    ]
-  },
-  {
-    name: 'Color',
-    selected: []
-  },
-  {
-    name: 'Size',
-    selected: []
-  },
-  {
-    name: 'Quality',
-    selected: []
-  }
-]
+// const DATA = [
+//   {
+//     name: 'Category',
+//     selected: [
+//       {
+//         name: 'Furniture',
+//         selected: true
+//       },
+//       {
+//         name: 'Lighting',
+//         selected: false
+//       },
+//       {
+//         name: 'Rugs',
+//         selected: true
+//       },
+//       {
+//         name: 'Mirrors',
+//         selected: false
+//       },
+//       {
+//         name: 'Blankets',
+//         selected: true
+//       }
+//     ]
+//   },
+//   {
+//     name: 'Product type',
+//     selected: [
+//       {
+//         name: 'Furniture',
+//         selected: true
+//       },
+//       {
+//         name: 'Lighting',
+//         selected: false
+//       }
+//     ]
+//   },
+//   {
+//     name: 'Color',
+//     selected: []
+//   },
+//   {
+//     name: 'Size',
+//     selected: []
+//   },
+//   {
+//     name: 'Quality',
+//     selected: []
+//   }
+// ]
 
 export type FilterListProps =
   | {
@@ -76,34 +76,36 @@ export type FilterListProps =
     }
   | undefined
 
-const getSelected = (
-  arr: {
-    name: string
-    selected: boolean
-  }[]
-) => {
-  const selectedList = arr.filter((item) => item.selected)
-  if (selectedList.length == arr.length || selectedList.length == 0) return 'All'
-  else if (selectedList.length == 1) return selectedList[0].name
-  else return selectedList.length.toString()
-}
+// const getSelected = (
+//   arr: {
+//     name: string
+//     selected: boolean
+//   }[]
+// ) => {
+//   const selectedList = arr.filter((item) => item.selected)
+//   if (selectedList.length == arr.length || selectedList.length == 0) return 'All'
+//   else if (selectedList.length == 1) return selectedList[0].name
+//   else return selectedList.length.toString()
+// }
 
-const getFilterList = (filterList: FilterListProps) => {
-  if (filterList) {
-    const { name, selected } = filterList
+// const getFilterList = (filterList: FilterListProps) => {
+//   if (filterList) {
+//     const { name, selected } = filterList
 
-    const newData = [...DATA]
-    const item = newData.find((item) => item.name === name)
-    if (item) {
-      const newItem = { name: name, selected: selected }
-      newData[newData.indexOf(item)] = newItem
-      return newData
-    }
-  }
-}
+//     const newData = [...DATA]
+//     const item = newData.find((item) => item.name === name)
+//     if (item) {
+//       const newItem = { name: name, selected: selected }
+//       newData[newData.indexOf(item)] = newItem
+//       return newData
+//     }
+//   }
+// }
 
 const Filter = ({ route }: FilterProp) => {
   const navigation = useNavigation<HomeNavigationProp>()
+  let id = route.params?.id
+  if (!id) id = -1
 
   const [
     filterData,
@@ -139,13 +141,16 @@ const Filter = ({ route }: FilterProp) => {
   const filterQuery = useMemo(() => {
     let res = ''
     filterData?.forEach((item) => {
-      item?.selected.forEach((item2) => {
-        if (item2.selected) {
-          if (item.name === 'variation') {
-            res += `&variation__name=${item2.value}`
-          } else {
-            res += `&${item.name}=${item2.value}`
-          }
+      const filterItems = item?.selected.filter((x) => x.selected)
+      if (filterItems?.length && filterItems.length > 0) {
+        const name = item?.name === 'variation' ? 'variation__name' : item?.name
+        res += `&${name}=`
+      }
+
+      filterItems?.forEach((item2, index) => {
+        res += item2.value
+        if (index !== filterItems.length - 1) {
+          res += '|'
         }
       })
     })
@@ -155,7 +160,7 @@ const Filter = ({ route }: FilterProp) => {
   const [minv] = useDebounce(minPrice, 500)
   const [maxv] = useDebounce(maxPrice, 500)
 
-  const { response: product } = useProductData(-1, undefined, sort, minv, maxv, filterQuery)
+  const { response: product } = useProductData(id, undefined, sort, minv, maxv, filterQuery)
 
   // useEffect(() => {}, [filterData])
 
@@ -236,7 +241,7 @@ const Filter = ({ route }: FilterProp) => {
         </View>
       </ScrollView>
       <Button
-        label={`Show ${product?.results.length} items`}
+        label={`Show ${product?.results.length || 0} items`}
         onPress={() => {
           navigation.goBack()
           if (product) setFilteredProducts(product)
