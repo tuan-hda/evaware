@@ -15,6 +15,8 @@ const PromotionScreen = () => {
   }
 
   const bagItems = [1, 2, 3, 4, 5, 6, 6, 7]
+  // const { response: categories } = useCategoryData()
+
 
   const navigation = useNavigation<ProductDrawerNavigationProp>()
 

@@ -10,16 +10,19 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native'
 import { ProductDrawerNavigationProp } from '../nav/ProductDrawer'
 import { AddCategory } from '../components/categories'
+import useCategoryData from '~/hooks/useCategoryData'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 
 const CategoriesScreen = () => {
-  const list = [1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4]
+  const list = [1, 2]
   const [show, setShow] = useState(false)
   const toggleShow = () => {
     setShow((prev) => !prev)
   }
 
   const navigation = useNavigation<ProductDrawerNavigationProp>()
-
+  const { response: categories, fetch } = useCategoryData()
+  useRefetchOnFocus(fetch)
   return (
     <CustomSafeAreaView>
       <AddCategory show={show} toggle={toggleShow} />
@@ -35,9 +38,9 @@ const CategoriesScreen = () => {
             <MaterialCommunityIcons name='menu-open' size={32} />
           </TouchableOpacity>
         </View>
-        {list.map((item, index) => (
+        {categories?.results.map((item, index) => (
           <View className='w-full' key={index}>
-            <Cell text='Sofas' />
+            <Cell text={item.name} />
           </View>
         ))}
 

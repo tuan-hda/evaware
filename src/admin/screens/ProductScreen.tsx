@@ -130,7 +130,7 @@ const ProductScreen = () => {
         </View>
         <View className='my-2 flex-row'>
           <Pressable
-            className='mr-[15px] h-9 flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
+            className='h-9 flex-1 grow flex-row items-center justify-center rounded bg-giratina-100'
             onPress={() => setSortVisible(true)}
           >
             <Text className='mr-1 font-app-medium text-body2'>Sort</Text>
