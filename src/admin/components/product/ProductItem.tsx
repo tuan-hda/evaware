@@ -28,12 +28,12 @@ const ProductItem = ({ is_deleted, thumbnail, price, desc, paddingBottom, ...dat
         })
       }
     >
-      <View className='flex-row' style={{ paddingBottom }}>
+      <View className='flex-row items-center rounded-lg bg-giratina-100' style={{ paddingBottom }}>
         <Image
           source={{
             uri: thumbnail
           }}
-          className='h-[115] w-[94] rounded-lg'
+          className='my-2 ml-2 h-[115] w-[94] rounded-lg'
         />
         <View className={classNames('ml-4 mr-2 flex-1')}>
           <View className='flex-row justify-between'>

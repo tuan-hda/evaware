@@ -10,6 +10,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from '@react-navigation/native'
 import { ProductDrawerNavigationProp } from '../nav/ProductDrawer'
 import { AddCategory } from '../components/categories'
+import { FlatList } from 'react-native-gesture-handler'
+import useCategoryData from '~/hooks/useCategoryData'
 
 const CategoriesScreen = () => {
   const list = [1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4]
@@ -18,33 +20,28 @@ const CategoriesScreen = () => {
     setShow((prev) => !prev)
   }
 
+  const { response: categories } = useCategoryData()
   const navigation = useNavigation<ProductDrawerNavigationProp>()
 
   return (
-    <CustomSafeAreaView>
+    <CustomSafeAreaView className='flex-1 bg-white pb-4'>
       <AddCategory show={show} toggle={toggleShow} />
-      <ScrollView
-        className='flex-1 bg-white pb-4'
-        contentContainerStyle={{
-          alignItems: 'center'
-        }}
-      >
-        <View className='mt-14 w-full  flex-row items-center justify-between  px-4'>
-          <Text className='h-[58] text-left font-app-semibold text-heading1'>categories</Text>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <MaterialCommunityIcons name='menu-open' size={32} />
-          </TouchableOpacity>
-        </View>
-        {list.map((item, index) => (
-          <View className='w-full' key={index}>
-            <Cell text='Sofas' />
-          </View>
-        ))}
-
-        <View className='w-full p-4'>
-          <Button onPress={toggleShow} label='Add category' />
-        </View>
-      </ScrollView>
+      <View className='mt-14 w-full  flex-row items-center justify-between  px-4'>
+        <Text className='h-[58] text-left font-app-semibold text-heading1'>categories</Text>
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+          <MaterialCommunityIcons name='menu-open' size={32} />
+        </TouchableOpacity>
+      </View>
+      <FlatList
+        className='w-full flex-1'
+        data={categories?.results}
+        renderItem={({ item }) => <Cell text={item.name} />}
+        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View className='h-4' />}
+      />
+      <View className='w-full p-4'>
+        <Button onPress={toggleShow} label='Add category' />
+      </View>
     </CustomSafeAreaView>
   )
 }

@@ -19,7 +19,7 @@ import ModalSort from '~/components/modal/ModalSort'
 import { DirectionVertical } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
 
-const ProductScreen = () => {
+const CategoryProductScreen = () => {
   const [sortVisible, setSortVisible] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [text, setText] = useState('')
@@ -112,14 +112,6 @@ const ProductScreen = () => {
     <CustomSafeAreaView className='flex-1 bg-white px-4'>
       <ModalSort applySort={applySort} visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
 
-      {!focus && (
-        <View className='mt-14 w-full  flex-row items-center justify-between'>
-          <Text className='h-[58] text-left font-app-semibold text-heading1'>products</Text>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <MaterialCommunityIcons name='menu-open' size={32} />
-          </TouchableOpacity>
-        </View>
-      )}
       <View className={classNames(focus && 'mt-4')}>
         <SearchBar onBack={toggle} onPress={!focus ? toggle : undefined} isSearching={focus} className='w-full' />
       </View>
@@ -161,4 +153,4 @@ const ProductScreen = () => {
   )
 }
 
-export default ProductScreen
+export default CategoryProductScreen
