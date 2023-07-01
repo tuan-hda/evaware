@@ -13,7 +13,11 @@ export type HomeNavParamList = {
   Category: undefined
   Search: undefined
   Catalog: { catalog: string; id: number; action?: string }
-  Filter: undefined
+  Filter:
+    | {
+        id: number
+      }
+    | undefined
   FilterOption: {
     name: string
     selected: {

@@ -168,7 +168,7 @@ const ProductDetail = ({ route, ...props }: Props & DetailProp) => {
     if (!isError(res)) {
       res = await productRefetch()
       setData(res.data?.data)
-      console.log(res.data?.data.variations.length)
+      // console.log(res.data?.data.variations.length)
       ref.current?.close()
       setCurVar(undefined)
     }

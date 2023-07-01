@@ -13,6 +13,7 @@ const useProductData = (
   filterQuery?: string
 ) => {
   const [response, setResponse] = useState<ListProps<ConvertedProductProps>>()
+  const [loading, setLoading] = useState(false)
 
   let searchQuery = search
   if (!searchQuery) {
@@ -21,11 +22,13 @@ const useProductData = (
 
   const fetch = useCallback(async () => {
     let res
+    setLoading(true)
     if (id === -1) {
       res = await getAllProductsService(searchQuery, sort, minPrice, maxPrice, filterQuery)
     } else {
       res = await getProductsByCategoryService(id, searchQuery, sort, minPrice, maxPrice, filterQuery)
     }
+    setLoading(false)
     if (!isError(res)) {
       setResponse(res)
     }
@@ -35,7 +38,7 @@ const useProductData = (
     fetch()
   }, [fetch])
 
-  return { response, fetch }
+  return { response, fetch, loading }
 }
 
 export default useProductData

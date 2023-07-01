@@ -19,6 +19,7 @@ import { immer } from 'zustand/middleware/immer'
 import { produce } from 'immer'
 import useSortFilterStore from '~/store/sort_filter'
 import { shallow } from 'zustand/shallow'
+import LoadingScreen from '~/components/common/LoadingScreen'
 
 const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   const { catalog, id } = route.params
@@ -60,13 +61,16 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   const filterQuery = useMemo(() => {
     let res = ''
     filterData?.forEach((item) => {
-      item?.selected.forEach((item2) => {
-        if (item2.selected) {
-          if (item.name === 'variation') {
-            res += `&variation__name=${item2.value}`
-          } else {
-            res += `&${item.name}=${item2.value}`
-          }
+      const filterItems = item?.selected.filter((x) => x.selected)
+      if (filterItems?.length && filterItems.length > 0) {
+        const name = item?.name === 'variation' ? 'variation__name' : item?.name
+        res += `&${name}=`
+      }
+
+      filterItems?.forEach((item2, index) => {
+        res += item2.value
+        if (index !== filterItems.length - 1) {
+          res += '|'
         }
       })
     })
@@ -76,7 +80,7 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   const [minv] = useDebounce(minPrice, 500)
   const [maxv] = useDebounce(maxPrice, 500)
 
-  const { response: product, fetch } = useProductData(id, value, sort, minv, maxv, filterQuery)
+  const { response: product, fetch, loading } = useProductData(id, value, sort, minv, maxv, filterQuery)
   useRefetchOnFocus(fetch)
 
   useEffect(() => {
@@ -116,7 +120,7 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
   useEffect(() => {
     ;(async () => {
       try {
-        const res = (await getFilterService()).data
+        const res = (await getFilterService(id)).data
         const { max_price, min_price, ...response } = res
         const newFilters = Object.keys(response).map((keyName: keyof Omit<FilterProps, 'min_price' | 'max_price'>) => {
           return {
@@ -133,17 +137,19 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
         setFilterData(newFilters)
         setMaxPrice(max_price)
         setMinPrice(min_price)
+        filterClear()
       } catch (error) {
         if (isAxiosError(error)) console.log(JSON.stringify(error?.response || error))
         else console.log(error)
       }
     })()
-  }, [id, setFilterData, setMaxPrice, setMinPrice])
+  }, [id, setFilterData, setMaxPrice, setMinPrice, filterClear])
 
   const finalData = filteredProducts
 
   return (
     <CustomSafeAreaView className='items-center bg-white px-4'>
+      <LoadingScreen show={loading} />
       <ModalSort applySort={applySort} visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
       <Bars headerLeft='return' title={catalog} onLeftButtonPress={() => navigation.goBack()} className='mb-2' />
       <SearchBar
@@ -167,7 +173,11 @@ const CatalogScreen = ({ navigation, route }: CatalogProp) => {
         </Pressable>
         <Pressable
           className='h-9 flex-1 flex-row items-center justify-center rounded bg-giratina-100'
-          onPress={() => navigation.navigate('Filter')}
+          onPress={() =>
+            navigation.navigate('Filter', {
+              id
+            })
+          }
         >
           <Text className='mr-1 font-app-medium text-body2'>Filter</Text>
           <Filter />

@@ -37,7 +37,7 @@ const HomeScreen = () => {
         </View>
 
         <View className='w-full py-4'>
-          {categories?.results.map((item, index) => (
+          {categories?.results.slice(0, 4).map((item, index) => (
             <View key={item.id}>
               <TouchableOpacity onPress={() => navigation.navigate('Catalog', { catalog: item.name, id: item.id })}>
                 <HomeCategory name={item.name} img_url={item.img_url} key={item.id} />

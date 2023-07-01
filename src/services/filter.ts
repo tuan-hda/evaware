@@ -5,12 +5,13 @@ export interface FilterProps {
   min_price: number
   width: number[]
   height: number[]
-  depth: number[]
+  length: number[]
   weight: number[]
   material: string[]
   variation: string[]
 }
 
-export const getFilterService = async () => {
-  return appService.get<FilterProps>('/filter/get-filters')
+export const getFilterService = async (id?: number) => {
+  if (!id || id === -1) return appService.get<FilterProps>('/filter/get-filters')
+  return appService.get<FilterProps>('/filter/get-filters/' + id)
 }
