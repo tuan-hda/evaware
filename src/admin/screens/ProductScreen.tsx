@@ -154,9 +154,11 @@ const ProductScreen = () => {
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View className='h-4' />}
       />
-      <View className='h-4' />
-      <Button label='Add product' onPress={() => navigation.navigate('ProductDetail', {})} />
-      <View className='h-4' />
+      {!focus && (
+        <View className='py-4'>
+          <Button label='Add product' onPress={() => navigation.navigate('ProductDetail', {})} />
+        </View>
+      )}
     </CustomSafeAreaView>
   )
 }

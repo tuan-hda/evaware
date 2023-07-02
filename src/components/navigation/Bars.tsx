@@ -17,6 +17,7 @@ interface Props {
   titleUnder?: boolean
   style?: StyleProp<ViewStyle>
   className?: string | undefined
+  icon?: React.ReactNode
 }
 
 const LEFT = ['none', 'return', 'close']
@@ -34,7 +35,8 @@ const Bars = ({
   onRightButtonPress = () => console.log('Right button pressed!'),
   titleUnder = false,
   style,
-  className
+  className,
+  icon
 }: Props) => {
   const checkHeaderLeft = LEFT.includes(headerLeft) ? headerLeft : LEFT[0]
   const checkHeaderRight = RIGHT.includes(headerRight) ? headerRight : LEFT[0]
@@ -122,9 +124,16 @@ const Bars = ({
         </View>
       </View>
       {titleUnder && (
-        <View className='items-start px-4 pb-4'>
-          {title && <Text className='font-app-semibold text-heading1'>{title}</Text>}
-          {subTitle && <Text className='mt-1 font-app-regular text-body1 text-giratina-500'>{subTitle}</Text>}
+        <View className='flex-row items-center'>
+          <View className='flex-1 items-start pb-4'>
+            {title && (
+              <Text className='w-full pr-4 text-left font-app-semibold text-heading1' numberOfLines={1}>
+                {title}
+              </Text>
+            )}
+            {subTitle && <Text className='mt-1 font-app-regular text-body1 text-giratina-500'>{subTitle}</Text>}
+          </View>
+          {icon}
         </View>
       )}
     </View>

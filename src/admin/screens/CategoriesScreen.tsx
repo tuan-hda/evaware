@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Pressable } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Pressable, Image } from 'react-native'
 import React, { useState } from 'react'
 import { Button, Cell, CustomSafeAreaView } from '~/components/common'
 import { SearchBar } from '~/components/common'
@@ -12,16 +12,19 @@ import { ProductDrawerNavigationProp } from '../nav/ProductDrawer'
 import { AddCategory } from '../components/categories'
 import { FlatList } from 'react-native-gesture-handler'
 import useCategoryData from '~/hooks/useCategoryData'
+import { ProductNavigationProp } from '../nav/ProductNav'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 
 const CategoriesScreen = () => {
-  const list = [1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4]
   const [show, setShow] = useState(false)
   const toggleShow = () => {
     setShow((prev) => !prev)
   }
 
-  const { response: categories } = useCategoryData()
-  const navigation = useNavigation<ProductDrawerNavigationProp>()
+  const { response: categories, fetch } = useCategoryData()
+  useRefetchOnFocus(fetch)
+
+  const navigation = useNavigation<ProductDrawerNavigationProp & ProductNavigationProp>()
 
   return (
     <CustomSafeAreaView className='flex-1 bg-white pb-4'>
@@ -35,7 +38,20 @@ const CategoriesScreen = () => {
       <FlatList
         className='w-full flex-1'
         data={categories?.results}
-        renderItem={({ item }) => <Cell text={item.name} />}
+        renderItem={({ item }) => (
+          <Cell
+            icon={
+              <Image
+                source={{
+                  uri: item.img_url
+                }}
+                className='h-9 w-9 rounded-full'
+              />
+            }
+            text={item.name}
+            onPress={() => navigation.navigate('CategoryProduct', { id: item.id })}
+          />
+        )}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View className='h-4' />}
       />

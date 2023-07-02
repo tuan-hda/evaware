@@ -14,14 +14,21 @@ import useProductData from '~/hooks/useProductData'
 import useSortFilterStore from '~/store/sort_filter'
 import { shallow } from 'zustand/shallow'
 import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
-import { ProductNavigationProp } from '../nav/ProductNav'
+import { CategoryProp, ProductNavigationProp } from '../nav/ProductNav'
 import ModalSort from '~/components/modal/ModalSort'
 import { DirectionVertical } from 'assets/icon'
 import { FlatList } from 'react-native-gesture-handler'
+import Bars from '~/components/navigation/Bars'
+import useCategoryData from '~/hooks/useCategoryData'
+import { AddCategory } from '../components/categories'
+import useCategoryDetailData from '~/hooks/useCategoryDetailData'
 
-const CategoryProductScreen = () => {
+const CategoryProductScreen = ({ route }: CategoryProp) => {
   const [sortVisible, setSortVisible] = useState(false)
-  const [isSearching, setIsSearching] = useState(false)
+  const [showToggle, setShowToggle] = useState(false)
+  const toggleShow = () => {
+    setShowToggle((prev) => !prev)
+  }
   const [text, setText] = useState('')
   const [value] = useDebounce(text, 1000)
   const [
@@ -76,7 +83,10 @@ const CategoryProductScreen = () => {
   const [minv] = useDebounce(minPrice, 500)
   const [maxv] = useDebounce(maxPrice, 500)
 
-  const { response: product, fetch } = useProductData(-1, value, sort, minv, maxv, filterQuery)
+  const id = route.params?.id || -1
+  const { response: category, fetch: categoryFetch } = useCategoryDetailData(id)
+  const { response: product, fetch } = useProductData(id, value, sort, minv, maxv, filterQuery)
+
   useRefetchOnFocus(fetch)
 
   useEffect(() => {
@@ -84,9 +94,11 @@ const CategoryProductScreen = () => {
       setFilteredProducts(product)
     }
   }, [product, setFilteredProducts])
-
-  const show = () => setIsSearching(true)
-  const hide = () => setIsSearching(false)
+  useEffect(() => {
+    if (category) {
+      categoryFetch()
+    }
+  }, [showToggle])
 
   const applySort = (sortType: string) => {
     switch (sortType) {
@@ -111,7 +123,20 @@ const CategoryProductScreen = () => {
   return (
     <CustomSafeAreaView className='flex-1 bg-white px-4'>
       <ModalSort applySort={applySort} visible={sortVisible} setVisible={setSortVisible} toggle={toggle} />
+      <AddCategory show={showToggle} toggle={toggleShow} data={category} />
 
+      {!focus && (
+        <Bars
+          title={category?.name}
+          headerRight='action'
+          label='Edit'
+          subTitle={product?.results.length.toString() + ' products'}
+          titleUnder={true}
+          headerLeft='return'
+          onLeftButtonPress={() => navigation.goBack()}
+          onRightButtonPress={toggleShow}
+        />
+      )}
       <View className={classNames(focus && 'mt-4')}>
         <SearchBar onBack={toggle} onPress={!focus ? toggle : undefined} isSearching={focus} className='w-full' />
       </View>
@@ -123,13 +148,6 @@ const CategoryProductScreen = () => {
           <Text className='mr-1 font-app-medium text-body2'>Sort</Text>
           <DirectionVertical />
         </Pressable>
-        {/* <Pressable
-            className='h-9 flex-1 flex-row items-center justify-center rounded bg-giratina-100'
-            onPress={() => navigation.navigate('Filter')}
-          >
-            <Text className='mr-1 font-app-medium text-body2'>Filter</Text>
-            <Filter />
-          </Pressable> */}
       </View>
       <FlatList
         className='w-full flex-1'
@@ -146,9 +164,6 @@ const CategoryProductScreen = () => {
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View className='h-4' />}
       />
-      <View className='h-4' />
-      <Button label='Add product' onPress={() => navigation.navigate('ProductDetail', {})} />
-      <View className='h-4' />
     </CustomSafeAreaView>
   )
 }
