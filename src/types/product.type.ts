@@ -53,10 +53,17 @@ export interface ConvertedProductProps extends ProductProps {
 export interface ConvertedProductDetailProps extends ConvertedProductProps {
   variations: (VariationProps | undefined)[]
   reviews: (ReviewProps | undefined)[]
+  recomm_items: ConvertedProductProps[]
+  recomm_id: string
 }
 
 export interface StatisticProductProps {
   product: ConvertedProductProps
   sales: number
   revenue: number
+}
+
+export interface RecommendProps {
+  results: ConvertedProductProps[]
+  recomm_id: string
 }

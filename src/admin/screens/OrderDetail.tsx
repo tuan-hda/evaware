@@ -13,6 +13,7 @@ import SelectModal from '~/components/common/SelectModal'
 import moment from 'moment'
 import { createOrderFromCartService, getOrdersService, updateStatusOrderService } from '~/services/order'
 import { useQuery } from '@tanstack/react-query'
+import { convertMoney } from '~/utils/money'
 
 type Props = ViewProps
 
@@ -68,9 +69,11 @@ const OrderDetail = ({ route, ...props }: Props & OrderDetailProp) => {
     }
   ]
 
-  const subtotal = order.order_details.reduce((prev, curr) => {
-    return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
-  }, 0)
+  const subtotal = convertMoney(
+    order.order_details.reduce((prev, curr) => {
+      return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
+    }, 0) || 0
+  )
   const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
 
   return (
