@@ -6,7 +6,7 @@ import AddRectangle from '../product/AddRectangle'
 import * as ImagePicker from 'expo-image-picker'
 import { uploadImage } from '~/utils/uploadImage'
 import { CategoryProps } from '~/types/category.type'
-import { addCategoryService, updateCategoryService } from '~/services/category'
+import { addCategoryService, deleteCategoryService, updateCategoryService } from '~/services/category'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -72,13 +72,29 @@ const AddCategory = ({ show, toggle, data }: Props) => {
   }
 
   const updateCategory = async (data: CategoryProps) => {
-    const res = await updateCategoryService({...data, img_url: img})
+    const res = await updateCategoryService({ ...data, img_url: img })
     if (!isError(res)) {
       Toast.show({
         type: 'success',
         text1: 'Update category successfully!'
       })
       toggle()
+    }
+  }
+
+  const deleteCategory = async (id: number) => {
+    const res = await deleteCategoryService(id)
+    if (!isError(res)) {
+      Toast.show({
+        type: 'success',
+        text1: 'Delete category successfully!'
+      })
+      toggle()
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: res.error.data.detail
+      })
     }
   }
 
@@ -93,6 +109,12 @@ const AddCategory = ({ show, toggle, data }: Props) => {
     if (isEdit) {
       updateCategory(data)
     } else createCategory(data)
+  }
+  const onDelete = () => {
+    if (isEdit) {
+      deleteCategory(data.id)
+    }
+    toggle()
   }
 
   return (
@@ -129,7 +151,7 @@ const AddCategory = ({ show, toggle, data }: Props) => {
           <View className='h-4' />
           <Button onPress={handleSubmit(onSubmit)} label='Save' />
           <View className='h-4' />
-          <Button onPress={toggle} type='secondary' label='Cancel' />
+          <Button onPress={onDelete} type='secondary' isDanger={isEdit} label={isEdit ? 'Delete' : 'Cancel'} />
         </Pressable>
       </Pressable>
     </Modal>

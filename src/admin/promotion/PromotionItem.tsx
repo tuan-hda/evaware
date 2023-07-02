@@ -1,18 +1,19 @@
 import { View, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import React from 'react'
+import { VoucherProps } from '~/types/voucher.type'
 
-type Props = TouchableOpacityProps
+type Props = {data:VoucherProps}&TouchableOpacityProps
 
-const PromotionItem = ({ ...props }: Props) => {
+const PromotionItem = ({ data,...props }: Props) => {
   return (
     <TouchableOpacity {...props} className='h-16 flex-row items-center justify-between'>
       <View>
-        <Text className='font-app-medium text-body1'>QOH123</Text>
-        <Text className='font-app text-body3'>12/07/23 - 12/07/23</Text>
+        <Text className='font-app-medium text-body1'>{data.code}</Text>
+        <Text className='font-app text-body3'>{data.from_date} - {data.to_date}</Text>
       </View>
 
       <View className='items'>
-        <Text className='text-right font-app text-body1 text-gengar-400'>10%</Text>
+        <Text className='text-right font-app text-body1 text-gengar-400'>{data.discount}%</Text>
         <Text className='text-right font-app text-body3'>230 left</Text>
       </View>
     </TouchableOpacity>

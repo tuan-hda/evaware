@@ -17,3 +17,6 @@ export const addCategoryService = async (data:CategoryProps) => {
 export const updateCategoryService = async (data:CategoryProps) => {
   return await callAxios<CategoryProps>(appService.patch('/category/' + data.id,data))
 }
+export const deleteCategoryService = async (id:number) => {
+  return await callAxios<CategoryProps>(appService.delete('/category'+ '/' + id))
+}

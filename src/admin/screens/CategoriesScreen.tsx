@@ -21,7 +21,7 @@ const CategoriesScreen = () => {
     setShow((prev) => !prev)
   }
 
-  const { response: categories, fetch } = useCategoryData()
+  const { response: categories, fetch } = useCategoryData(show)
   useRefetchOnFocus(fetch)
 
   const navigation = useNavigation<ProductDrawerNavigationProp & ProductNavigationProp>()
@@ -37,7 +37,7 @@ const CategoriesScreen = () => {
       </View>
       <FlatList
         className='w-full flex-1'
-        data={categories?.results}
+        data={categories?.results.filter((item) => !item.is_deleted)}
         renderItem={({ item }) => (
           <Cell
             icon={

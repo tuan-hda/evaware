@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, TouchableOpacity, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ScrollView, TouchableOpacity, Pressable, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView } from '~/components/common'
 import { BagItemProps } from '~/types/bagItem.type'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -7,48 +7,45 @@ import { useNavigation } from '@react-navigation/native'
 import { ProductDrawerNavigationProp } from '../nav/ProductDrawer'
 import PromotionItem from '../promotion/PromotionItem'
 import AddPromotion from '../promotion/AddPromotion'
+import useVoucherData from '~/hooks/useVoucherData'
+import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
+import { VoucherProps } from '~/types/voucher.type'
 
 const PromotionScreen = () => {
   const [show, setShow] = useState(false)
-  const toggleShow = () => {
-    setShow((prev) => !prev)
+  const [selected, setSelected] = useState<VoucherProps>()
+  const toggleShow = () => setShow((prev) => !prev)
+
+  const checkSelected = (item?: VoucherProps) => {
+    setSelected(item)
+    toggleShow()
   }
 
-  const bagItems = [1, 2, 3, 4, 5, 6, 6, 7]
+  const { response: vouchers, fetch } = useVoucherData(show)
+  useRefetchOnFocus(fetch)
 
   const navigation = useNavigation<ProductDrawerNavigationProp>()
 
   return (
-    <CustomSafeAreaView>
-      <AddPromotion show={show} toggle={toggleShow} />
+    <CustomSafeAreaView className='flex-1 bg-white px-4'>
+      <AddPromotion show={show} toggle={toggleShow} data={selected} />
+      <View className='mt-14 w-full  flex-row items-center justify-between'>
+        <Text className='h-[58] text-left font-app-semibold text-heading1'>promotion</Text>
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+          <MaterialCommunityIcons name='menu-open' size={32} />
+        </TouchableOpacity>
+      </View>
 
-      <ScrollView
-        className='flex-1 bg-white px-4'
-        contentContainerStyle={{
-          alignItems: 'center',
-          flexGrow: 1,
-          marginBottom: 16
-        }}
-      >
-        <View className='mt-14 w-full  flex-row items-center justify-between'>
-          <Text className='h-[58] text-left font-app-semibold text-heading1'>promotion</Text>
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <MaterialCommunityIcons name='menu-open' size={32} />
-          </TouchableOpacity>
-        </View>
+      <FlatList
+        className='flex-1'
+        data={vouchers?.results.filter((item) => !item.is_deleted)}
+        renderItem={({ item }) => <PromotionItem data={item} onPress={() => checkSelected(item)} />}
+        showsVerticalScrollIndicator={false}
+      />
 
-        {bagItems.map((item, index) => (
-          <View key={index} className='w-full'>
-            <PromotionItem />
-          </View>
-        ))}
-
-        <View className='h-4  flex-1' />
-
-        <Button onPress={toggleShow} label='Add promotion' />
-
-        <View className='h-4 ' />
-      </ScrollView>
+      <View className='py-4'>
+        <Button onPress={() => checkSelected()} label='Add promotion' />
+      </View>
     </CustomSafeAreaView>
   )
 }
