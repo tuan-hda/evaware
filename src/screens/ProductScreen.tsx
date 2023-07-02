@@ -10,7 +10,7 @@ import VariationList from '~/components/product/VariationList'
 import { addToCartService, getCartItemsService } from '~/services/cart'
 import { isError } from '~/utils/callAxios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import { addFavoriteService, deleteFavoriteService, getProductDetailService } from '~/services/product'
+import { addFavoriteService, convertProduct, deleteFavoriteService, getProductDetailService } from '~/services/product'
 import { useQuery } from '@tanstack/react-query'
 import LoadingScreen from '~/components/common/LoadingScreen'
 import useShowNav from '~/hooks/useShowNav'
@@ -76,13 +76,14 @@ const ProductScreen = ({ route }: ProductProp) => {
   const [isFaver, setIsFaver] = useState(false)
   const [currVar, setCurrVar] = useState(0)
   const id = route.params.id
+  const recomm_id = route.params.recomm_id
   const {
     refetch: productRefetch,
     isLoading,
     data
   } = useQuery({
     queryKey: ['productDetail', id],
-    queryFn: async () => getProductDetailService(id)
+    queryFn: async () => getProductDetailService(id, undefined, recomm_id)
   })
   useRefetchOnFocus(productRefetch)
   const response = data?.data
@@ -185,7 +186,20 @@ const ProductScreen = ({ route }: ProductProp) => {
         </View>
 
         <VariationList selected={currVar} setSelected={setCurrVar} data={response} />
-
+        <Text className='p-4 font-app-semibold text-heading2'>you might also like</Text>
+        {/* <FlatList
+        data={youMightlike}
+        horizontal={true}
+        renderItem={({ item }) => (
+          <ProductCardBig
+            data={{ ...item, id: -1 }}
+            style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }}
+            onPress={() => navigation.navigate('Product', { id: 0 })}
+          />
+        )}
+        className='m-4 h-[310px]'
+        showsHorizontalScrollIndicator={false}
+      /> */}
         <View className='px-4 py-6'>
           <Button onPress={addToBag} label={'Add to bag'} hasBagIcon={true} />
         </View>
@@ -219,19 +233,19 @@ const ProductScreen = ({ route }: ProductProp) => {
       </Pressable>
 
       <Text className='p-4 font-app-semibold text-heading2'>you might also like</Text>
-      {/* <FlatList
-        data={youMightlike}
+      <FlatList
+        data={data?.data.recomm_items}
         horizontal={true}
         renderItem={({ item }) => (
           <ProductCardBig
-            data={{ ...item, id: -1 }}
-            style={{ marginRight: 15, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }}
-            onPress={() => navigation.navigate('Product', { id: 0 })}
+            data={convertProduct({ ...item })}
+            style={{ marginRight: 36, width: (WIDTH - 32 - 15) / 2, aspectRatio: 0.62 }}
+            onPress={() => navigation.navigate('Product', { id: item.id, recomm_id: data?.data.recomm_id })}
           />
         )}
         className='m-4 h-[310px]'
         showsHorizontalScrollIndicator={false}
-      /> */}
+      />
     </ScrollView>
   )
 }

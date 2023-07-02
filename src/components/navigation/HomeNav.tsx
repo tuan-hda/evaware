@@ -28,6 +28,7 @@ export type HomeNavParamList = {
   Slider: undefined
   Product: {
     id: number
+    recomm_id?: string
   }
   Reviews: {
     id: number

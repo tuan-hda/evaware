@@ -1,32 +1,55 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CustomSafeAreaView, SearchBar } from '~/components/common'
 import { Clear, Clock, Dissatisfied } from 'assets/icon'
-
-const data = ['Wood chaid', 'Dark wood']
+import { useDebounce } from 'use-debounce'
+import { convertProduct, searchPersonalizedProductsService } from '~/services/product'
+import { isError } from '~/utils/callAxios'
+import { RecommendProps } from '~/types/product.type'
+import FlatGrid from '~/layouts/FlatGrid'
+import { useNavigation } from '@react-navigation/native'
+import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 
 const SearchScreen = () => {
+  const [query, setQuery] = useState('')
+  const [debounceQuery] = useDebounce(query, 500)
+  const [data, setData] = useState<RecommendProps>()
+  const navigation = useNavigation<HomeNavigationProp>()
+
+  useEffect(() => {
+    ;(async () => {
+      const response = await searchPersonalizedProductsService(debounceQuery)
+      if (isError(response)) {
+        return
+      } else {
+        setData(response)
+      }
+    })()
+  }, [debounceQuery])
+
   return (
     <CustomSafeAreaView className='relative bg-white'>
       <View className='w-full px-4 py-2'>
-        <SearchBar isSearching />
+        <SearchBar isSearching value={query} onChangeText={(text) => setQuery(text)} />
       </View>
       <View className='h-2' />
-      <FlatList
-        data={data}
-        renderItem={({ item, index }) => (
-          <View className='flex-row items-center pr-4' key={index}>
-            <TouchableOpacity className='h-16 min-w-0 flex-1 flex-row items-center pl-4'>
-              <Clock />
-              <Text className='ml-4 min-w-0 font-app text-body1 text-black'>{item}</Text>
-              <View className='flex-1' />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Clear className='flex-shrink-0' fill='#9e9e9e' />
-            </TouchableOpacity>
-          </View>
+
+      <View className='flex-1 px-4'>
+        {data && (
+          <FlatGrid
+            data={data.results.map((item) => convertProduct(item))}
+            numColumns={2}
+            verticalGap={24}
+            horizontalGap={15}
+            onItemPress={(item) =>
+              navigation.navigate('Product', {
+                id: item.id,
+                recomm_id: data.recomm_id
+              })
+            }
+          />
         )}
-      />
+      </View>
 
       {/* <FlatList
         data={data}
@@ -37,7 +60,6 @@ const SearchScreen = () => {
           </TouchableOpacity>
         )}
       /> */}
-
       {/* <View className='flex-1 items-center justify-center'>
         <View className='items-center'>
           <Dissatisfied />

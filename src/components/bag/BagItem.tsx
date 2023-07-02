@@ -92,7 +92,6 @@ const BagItem = ({
 
         {disableButton ? (
           <View>
-            <Text className='mt-1 font-app text-body3 text-black'>Variation: Hel</Text>
             <Text className='mt-1 font-app text-body3 text-black'>Qty: {qty}</Text>
           </View>
         ) : (
