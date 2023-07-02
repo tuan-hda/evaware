@@ -14,6 +14,7 @@ import { ReviewProps } from '~/types/reviews.type'
 import { OrderProps } from '~/types/order.type'
 import { ProvinceProps } from '~/types/province.type'
 import { AddressProps } from '~/types/address.type'
+import PointScreen from '~/screens/PointScreen'
 
 export type UserNavParamList = {
   UserScreen: undefined
@@ -57,6 +58,7 @@ export type UserNavParamList = {
     isEdit?: boolean
     oldReview?: ReviewProps
   }
+  Points: undefined
 }
 
 export type UserNavigationProp = StackNavigationProp<UserNavParamList>
@@ -84,6 +86,7 @@ const UserNav = () => (
     <Stack.Screen name='Search' component={SearchScreen} />
     <Stack.Screen name='Reviews' component={ReviewScreen} />
     <Stack.Screen name='NewReview' component={NewReviewScreen} />
+    <Stack.Screen name='Points' component={PointScreen} />
   </Stack.Navigator>
 )
 

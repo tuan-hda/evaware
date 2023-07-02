@@ -42,6 +42,7 @@ const Bag = () => {
         renderItem={({ item }) => (
           <BagItem
             {...translateCartItem(item)}
+            img={item.variation.img_urls[0]}
             onPress={() =>
               navigation.navigate('Product', {
                 id: item.product.id
