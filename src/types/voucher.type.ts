@@ -5,4 +5,6 @@ export interface VoucherProps extends SoftGenericData {
   discount: number
   from_date: string
   to_date: string
+  level?: number
+  owner_id?: number
 }

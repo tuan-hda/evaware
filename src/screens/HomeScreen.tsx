@@ -12,12 +12,11 @@ import { useQuery } from '@tanstack/react-query'
 const HomeScreen = () => {
   const navigation = useNavigation<HomeNavigationProp>()
   const { response: categories } = useCategoryData()
-  const { data: temp, refetch } = useQuery({
-    queryKey: ['user'],
+  const { data: temp } = useQuery({
+    queryKey: ['personalized-search'],
     queryFn: () => getRecommendProductsService(6)
   })
   const data = temp?.data
-  useRefetchOnFocus(refetch)
 
   return (
     <CustomSafeAreaView className='bg-white'>

@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { Button, Cell, CustomSafeAreaView, Title } from '~/components/common'
-import { Bag, Card, Pin, Setting, SignOut, User } from 'assets/icon'
+import { Bag, Bubble, Card, Pin, Setting, SignOut, User } from 'assets/icon'
 import { TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { UserNavigationProp } from '~/components/navigation/UserNav'
@@ -76,6 +76,12 @@ const UserScreen = () => {
         </View>
       </View>
 
+      <Cell
+        text='My Points'
+        rightText={String(data?.points)}
+        onPress={() => navigation.navigate('Points')}
+        icon={<Bubble width={24} height={24} />}
+      />
       <Cell
         text='My Orders'
         rightText={String(data && data.orders ? data.orders.length : 0)}
