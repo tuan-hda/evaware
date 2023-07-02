@@ -5,6 +5,7 @@ import {
   ConvertedProductDetailProps,
   ConvertedProductProps,
   CreateProductProps,
+  RecommendProps,
   StatisticProductProps
 } from '~/types/product.type'
 import { AxiosResponse } from 'axios'
@@ -96,10 +97,11 @@ export const convertProduct = <T extends ConvertedProductProps>(product: T): T =
   }
 }
 
-export const getProductDetailService = async (id: number, include_delete?: boolean) => {
+export const getProductDetailService = async (id: number, include_delete?: boolean, recomm_id?: string) => {
   return appService.get<ConvertedProductDetailProps>('/product/' + id, {
     params: {
-      include_delete
+      include_delete,
+      recomm_id
     }
   })
 }
@@ -138,4 +140,22 @@ export const deleteReviewService = async (id: number) => {
 
 export const getTopProductService = async (range_type: 'yearly' | 'monthly' | 'quarterly' | 'weekly' | string) => {
   return appService.get<StatisticProductProps[]>('/statistics/top-product?range_type=' + range_type)
+}
+
+export const getRecommendProductsService = async (count: number) => {
+  return appService.get<RecommendProps>('/product/recommend', {
+    params: {
+      count
+    }
+  })
+}
+
+export const searchPersonalizedProductsService = async (query: string) => {
+  return callAxios<RecommendProps>(
+    appService.get<RecommendProps>('/product/recommend/search', {
+      params: {
+        query
+      }
+    })
+  )
 }

@@ -1,5 +1,6 @@
 import { OrderProps } from './order.type'
 import { GenericData } from './service.type'
+import { VoucherProps } from './voucher.type'
 
 export interface UserProps extends GenericData {
   email: string
@@ -12,6 +13,8 @@ export interface UserProps extends GenericData {
   phone: string
   dob: string
   orders?: OrderProps[]
+  points: number
+  reward_vouchers: VoucherProps[]
 }
 
 export interface GeneralUserProps extends Omit<UserProps, 'orders'> {}

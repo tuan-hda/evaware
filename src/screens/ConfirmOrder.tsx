@@ -19,6 +19,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { VoucherProps } from '~/types/voucher.type'
 import { createOrderFromCartService } from '~/services/order'
 import { CreateOrderProps } from '~/types/order.type'
+import { convertMoney } from '~/utils/money'
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -42,10 +43,11 @@ const ConfirmOrder = () => {
 
   const navigation = useNavigation<BagNavigationProp>()
 
-  let subtotal =
+  let subtotal = convertMoney(
     data?.data.results.reduce((prev, curr) => {
       return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
     }, 0) || 0
+  )
 
   const discountAmount = ((appliedVoucher?.discount || 0) / 100) * subtotal
 

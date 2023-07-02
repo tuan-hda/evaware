@@ -6,18 +6,17 @@ import { useNavigation } from '@react-navigation/native'
 import { HomeNavigationProp } from '~/components/navigation/HomeNav'
 import useCategoryData from '~/hooks/useCategoryData'
 import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
-import { convertProduct, getTopProductService } from '~/services/product'
+import { convertProduct, getRecommendProductsService, getTopProductService } from '~/services/product'
 import { useQuery } from '@tanstack/react-query'
 
 const HomeScreen = () => {
   const navigation = useNavigation<HomeNavigationProp>()
   const { response: categories } = useCategoryData()
-  const { data: temp, refetch } = useQuery({
-    queryKey: ['user'],
-    queryFn: () => getTopProductService('yearly')
+  const { data: temp } = useQuery({
+    queryKey: ['personalized-search'],
+    queryFn: () => getRecommendProductsService(6)
   })
-  const data = temp?.data || []
-  useRefetchOnFocus(refetch)
+  const data = temp?.data
 
   return (
     <CustomSafeAreaView className='bg-white'>
@@ -30,10 +29,7 @@ const HomeScreen = () => {
       >
         <Text className='mt-14 h-[58] font-app-semibold text-heading1 text-black'>evaware</Text>
         <View className='py-[7]'>
-          <SearchBar
-            onPress={() => navigation.navigate('Catalog', { catalog: 'All products', id: -1, action: 'search' })}
-            className='w-full'
-          />
+          <SearchBar onPress={() => navigation.navigate('Search')} className='w-full' />
         </View>
 
         <View className='w-full py-4'>
@@ -50,19 +46,20 @@ const HomeScreen = () => {
         <Button label='View all categories' onPress={() => navigation.navigate('Category')} />
 
         <View className='w-full py-4'>
-          <Text className='mt-4 font-app-semibold text-heading2 text-black'>popular</Text>
+          <Text className='mt-4 font-app-semibold text-heading2 text-black'>recommend for you</Text>
         </View>
 
         <View className='flex-row flex-wrap justify-between py-4'>
-          {Array.isArray(data) &&
-            data.map((item, index) => (
+          {Array.isArray(data?.results) &&
+            data?.results.map((item, index) => (
               <View key={index} className='mb-6 w-[calc(50%)] flex-row'>
                 {index % 2 === 1 && <View className='w-2' />}
                 <ProductCardBig
-                  data={convertProduct(item.product)}
+                  data={convertProduct(item)}
                   onPress={() =>
                     navigation.navigate('Product', {
-                      id: item.product.id
+                      id: item.id,
+                      recomm_id: data.recomm_id
                     })
                   }
                 />

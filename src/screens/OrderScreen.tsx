@@ -16,6 +16,7 @@ import { isError } from '~/utils/callAxios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { cancelOrderService } from '~/services/order'
 import useAlertExit from '~/hooks/useAlertExit'
+import { convertMoney } from '~/utils/money'
 
 const sample = {
   orderID: 23124,
@@ -55,9 +56,11 @@ const OrderScreen = ({ route }: OrderProp) => {
 
   const hide = () => setVisible(false)
 
-  const subtotal = order.order_details.reduce((prev, curr) => {
-    return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
-  }, 0)
+  const subtotal = convertMoney(
+    order.order_details.reduce((prev, curr) => {
+      return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
+    }, 0) || 0
+  )
 
   const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
 

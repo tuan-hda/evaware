@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { BagNavigationProp } from '../navigation/BagNav'
 import { useQuery } from '@tanstack/react-query'
 import { getCartItemsService } from '~/services/cart'
+import { convertMoney } from '~/utils/money'
 
 const BagFooter = () => {
   const navigation = useNavigation<BagNavigationProp>()
@@ -13,9 +14,11 @@ const BagFooter = () => {
     queryFn: async () => getCartItemsService()
   })
 
-  let subtotal = data?.data.results.reduce((prev, curr) => {
-    return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
-  }, 0)
+  let subtotal = convertMoney(
+    data?.data.results.reduce((prev, curr) => {
+      return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
+    }, 0) || 0
+  )
 
   return (
     <View className='bg-white px-4 pb-4'>
