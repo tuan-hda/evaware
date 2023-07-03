@@ -20,6 +20,7 @@ type Props = {
 }
 const validationSchema = yup.object({
   code: yup.string().required('This is required'),
+  inventory: yup.number().required('This is required'),
   discount: yup.number().required('This is required'),
   from_date: yup.string().required('This is required'),
   to_date: yup.string().required('This is required')
@@ -43,12 +44,14 @@ const AddPromotion = ({ show, toggle, data }: Props) => {
     if (data) {
       reset(data)
       setValue('code', String(data.code))
+      setValue('inventory', String(data.inventory))
       setValue('discount', String(data.discount))
       setValue('from_date', String(data.from_date))
       setValue('to_date', String(data.to_date))
     } else {
       reset(data)
       setValue('code', String(''))
+      setValue('inventory', String(''))
       setValue('discount', String(''))
       setValue('from_date', String(''))
       setValue('to_date', String(''))
@@ -145,9 +148,15 @@ const AddPromotion = ({ show, toggle, data }: Props) => {
           <Text className='mb-6 mt-4 h-[58] w-full text-left font-app-semibold text-heading1 text-black'>
             add promotion
           </Text>
-          <View className='flex-row'>
+          <TextFieldWithLabel label='Code' name='code' control={control} error={errors.code?.message} />
+          <View className='mt-4 flex-row'>
             <View className='flex-1'>
-              <TextFieldWithLabel label='Code' name='code' control={control} error={errors.code?.message} />
+              <TextFieldWithLabel
+                label='Inventory'
+                name='inventory'
+                control={control}
+                error={errors.inventory?.message}
+              />
             </View>
             <View className='w-4' />
             <View className='relative flex-1'>
