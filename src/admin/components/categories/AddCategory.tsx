@@ -114,7 +114,6 @@ const AddCategory = ({ show, toggle, data }: Props) => {
     if (isEdit) {
       deleteCategory(data.id)
     }
-    toggle()
   }
 
   return (

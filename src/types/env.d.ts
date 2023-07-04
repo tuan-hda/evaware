@@ -8,4 +8,6 @@ declare module '@env' {
   export const MEASUREMENT_ID: string
   export const APP_ID: string
   export const BASE_URL: string
+  export const PAYPAL_USERNAME: string
+  export const PAYPAL_PASSWORD: string
 }

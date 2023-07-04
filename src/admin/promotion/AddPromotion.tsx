@@ -8,10 +8,9 @@ import { VoucherProps } from '~/types/voucher.type'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { addVoucherService, updateVoucherService } from '~/services/voucher'
+import { addVoucherService, deleteVoucherService, updateVoucherService } from '~/services/voucher'
 import { isError } from '~/utils/callAxios'
 import { Toast } from 'react-native-toast-message/lib/src/Toast'
-import { deleteAddressService } from '~/services/address'
 
 type Props = {
   show: boolean
@@ -80,7 +79,7 @@ const AddPromotion = ({ show, toggle, data }: Props) => {
   }
 
   const deleteVoucher = async (id: number) => {
-    const res = await deleteAddressService(id)
+    const res = await deleteVoucherService(id)
     if (!isError(res)) {
       Toast.show({
         type: 'success',
@@ -127,7 +126,6 @@ const AddPromotion = ({ show, toggle, data }: Props) => {
     if (isEdit) {
       deleteVoucher(data.id)
     }
-    toggle()
   }
 
   return (

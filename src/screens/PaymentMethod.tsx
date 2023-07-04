@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Button, CustomSafeAreaView, NavBar } from '~/components/common'
 import { FlatList } from 'react-native'
@@ -42,12 +42,47 @@ const Header = () => (
 
 const Footer = () => {
   const navigation = useNavigation<BagNavigationProp>()
-
+  const [currentPaymentMethod, setPaymentMethod] = useCartStore(
+    (state) => [state.currentPaymentMethod, state.setPaymentMethod],
+    shallow
+  )
+  const paymentWithPayPal = () => {
+    const paypal: PaymentMethodProps = {
+      id: 1,
+      created_at: '2023-06-24T07:01:47.820482Z',
+      updated_at: '2023-06-24T07:01:47.820506Z',
+      number: '',
+      name: '',
+      exp: '',
+      provider: {
+        id: 2,
+        created_at: '2023-05-30T02:49:34.220175Z',
+        updated_at: '2023-05-30T02:49:34.220175Z',
+        is_deleted: false,
+        img_url:
+          'https://firebasestorage.googleapis.com/v0/b/evaware-893a5.appspot.com/o/payment_providers%2Femblem-Paypal.jpg?alt=media&token=2318ad74-0a14-4645-88a0-47d912efdcb5',
+        name: 'PayPal',
+        method: 'Card'
+      }
+    }
+    setPaymentMethod(paypal)
+    navigation.navigate('ConfirmOrder')
+  }
   return (
     <View>
       <View className='mt-10 px-4'>
         <Button label='Add new card' onPress={() => navigation.navigate('PaymentMethodBook')} type='secondary' />
       </View>
+      <View className='px-4'>
+        <Pressable
+          onPress={paymentWithPayPal}
+          className='mt-4 h-16 flex-1 flex-row items-center justify-center rounded-lg bg-[#FFC439] px-4'
+        >
+          <Text className='text-2xl font-semibold text-[#253b80]'>Pay</Text>
+          <Text className='text-2xl font-semibold text-[#179bd7]'>Pal</Text>
+        </Pressable>
+      </View>
+
       <View className='mt-4 px-4 pb-4'>
         <Button label='Continue' onPress={() => navigation.navigate('ConfirmOrder')} />
       </View>
