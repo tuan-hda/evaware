@@ -20,6 +20,8 @@ import { VoucherProps } from '~/types/voucher.type'
 import { createOrderFromCartService } from '~/services/order'
 import { CreateOrderProps } from '~/types/order.type'
 import { convertMoney } from '~/utils/money'
+import { createPayPalPayment, executePayPalPayment } from '~/services/payment'
+import WebView from 'react-native-webview'
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -33,6 +35,7 @@ const ConfirmOrder = () => {
     shallow
   )
   const [voucher, setVoucher] = useState('')
+  const [approvalUrl, setApprovalUrl] = useState('')
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherProps>()
   const { data, refetch } = useQuery({
     queryKey: ['cart'],
@@ -72,6 +75,28 @@ const ConfirmOrder = () => {
     }
   }
 
+  const onNavigationStateChange = async (webviewState) => {
+    console.log('WebviewState', webviewState)
+    if (webviewState.url.includes('https://example.com/0')) {
+      setApprovalUrl('')
+      const { PayerID, paymentId } = webviewState.url
+      const executeRes = await executePayPalPayment(paymentId, PayerID)
+      Toast.show({
+        type: 'success',
+        text1: 'Payment seccessfully!',
+        text2: `PaymentID: ${executeRes.id}`
+      })
+      navigation.navigate('Success')
+    }
+    if (webviewState.url.includes('https://example.com/1')) {
+      setApprovalUrl('')
+      Toast.show({
+        type: 'error',
+        text1: 'Payment failed!'
+      })
+    }
+  }
+
   const createOrder = async () => {
     if (!currentAddress || !currentPaymentMethod) return
     const { id, created_at, updated_at, ...address } = currentAddress
@@ -86,97 +111,124 @@ const ConfirmOrder = () => {
       createData.voucher_code = appliedVoucher.code
     }
 
-    const res = await createOrderFromCartService(createData)
-
-    if (isError(res)) {
-      let text2 = 'Some error happened'
-
-      if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
-        text2 = 'Insufficient inventory'
+    if (currentPaymentMethod.provider.name === 'PayPal') {
+      const paypayRes = await createPayPalPayment(createData)
+      if (!isError(paypayRes)) {
+        setApprovalUrl(paypayRes?.approvalUrl)
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Payment failed!'
+        })
       }
-
-      Toast.show({
-        type: 'error',
-        text1: 'Made order failed',
-        text2
-      })
     } else {
-      navigation.navigate('Success')
+      const res = await createOrderFromCartService(createData)
+
+      if (isError(res)) {
+        let text2 = 'Some error happened'
+
+        if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
+          text2 = 'Insufficient inventory'
+        }
+
+        Toast.show({
+          type: 'error',
+          text1: 'Made order failed',
+          text2
+        })
+      } else {
+        navigation.navigate('Success')
+      }
     }
   }
 
   return (
     <CustomSafeAreaView className='bg-white'>
       <NavBar step={3} total={3} />
-      <ScrollView>
-        <Header />
-        <View className='justify-center p-4'>
-          <Text className='font-app-semibold text-heading2 text-black'>bag</Text>
-        </View>
-        <View className='px-4'>
-          {bags?.results.map((item, index) => (
-            <BagItem
-              {...translateCartItem(item)}
-              key={index}
-              disableButton
-              paddingBottom={index < bags.results.length - 1 ? 24 : 16}
-            />
-          ))}
-        </View>
+      <View className='h-full w-full flex-1'>
+        {approvalUrl !== '' && (
+          <WebView
+            className='w-full flex-1'
+            source={{ uri: approvalUrl }}
+            onNavigationStateChange={onNavigationStateChange}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            startInLoadingState={false}
+          />
+        )}
+      </View>
 
-        <View className='justify-center px-4 pt-4'>
-          <Text className='font-app-semibold text-heading2 text-black'>delivery address</Text>
-        </View>
-        {currentAddress && <AddressItem isPlain {...currentAddress} />}
-
-        <View className='justify-center px-4 pt-4'>
-          <Text className='font-app-semibold text-heading2 text-black'>payment method</Text>
-        </View>
-        {currentPaymentMethod && <PaymentItem isPlain {...translatePaymentMethod(currentPaymentMethod)} />}
-
-        <View className='justify-center px-4 pt-4'>
-          <Text className='mb-4 font-app-semibold text-heading2 text-black'>promocode</Text>
-          <View className='flex-row'>
-            {!appliedVoucher && (
-              <TextField
-                maxLength={8}
-                placeholder='EVAW2020'
-                value={voucher}
-                onChangeText={(text) => setVoucher(text)}
-                wrapperClassName='flex-1 mr-4 min-w-0 flex-shrink'
+      {approvalUrl === '' && (
+        <ScrollView>
+          <Header />
+          <View className='justify-center p-4'>
+            <Text className='font-app-semibold text-heading2 text-black'>bag</Text>
+          </View>
+          <View className='px-4'>
+            {bags?.results.map((item, index) => (
+              <BagItem
+                {...translateCartItem(item)}
+                key={index}
+                disableButton
+                paddingBottom={index < bags.results.length - 1 ? 24 : 16}
               />
-            )}
-            <View className='flex-1 flex-shrink-0'>
-              <Button label={appliedVoucher ? 'Cancel' : 'Apply'} onPress={applyVoucher} type='secondary' />
+            ))}
+          </View>
+
+          <View className='justify-center px-4 pt-4'>
+            <Text className='font-app-semibold text-heading2 text-black'>delivery address</Text>
+          </View>
+          {currentAddress && <AddressItem isPlain {...currentAddress} />}
+
+          <View className='justify-center px-4 pt-4'>
+            <Text className='font-app-semibold text-heading2 text-black'>payment method</Text>
+          </View>
+          {currentPaymentMethod && <PaymentItem isPlain {...translatePaymentMethod(currentPaymentMethod)} />}
+
+          <View className='justify-center px-4 pt-4'>
+            <Text className='mb-4 font-app-semibold text-heading2 text-black'>promocode</Text>
+            <View className='flex-row'>
+              {!appliedVoucher && (
+                <TextField
+                  maxLength={8}
+                  placeholder='EVAW2020'
+                  value={voucher}
+                  onChangeText={(text) => setVoucher(text)}
+                  wrapperClassName='flex-1 mr-4 min-w-0 flex-shrink'
+                />
+              )}
+              <View className='flex-1 flex-shrink-0'>
+                <Button label={appliedVoucher ? 'Cancel' : 'Apply'} onPress={applyVoucher} type='secondary' />
+              </View>
             </View>
           </View>
-        </View>
 
-        <View className='px-4 pb-4 pt-6'>
-          <View className='mt-1 flex-row justify-between'>
-            <Text className='font-app text-body1 text-giratina-500'>Subtotal</Text>
-            <Text className='font-app text-body1 text-giratina-500'>${subtotal}</Text>
-          </View>
-          <View className='mt-1 flex-row justify-between'>
-            <Text className='font-app text-body1 text-giratina-500'>Delivery fee</Text>
-            <Text className='font-app text-body1 text-giratina-500'>$10</Text>
-          </View>
-          {discountAmount !== 0 && (
+          <View className='px-4 pb-4 pt-6'>
             <View className='mt-1 flex-row justify-between'>
-              <Text className='font-app text-body1 text-giratina-500'>Promocode</Text>
-              <Text className='font-app text-body1 text-giratina-500'>-${discountAmount}</Text>
+              <Text className='font-app text-body1 text-giratina-500'>Subtotal</Text>
+              <Text className='font-app text-body1 text-giratina-500'>${subtotal}</Text>
             </View>
-          )}
-          <View className='flex-row justify-between'>
-            <Text className='font-app-semibold text-heading2'>total</Text>
-            <Text className='font-app-semibold text-heading2'>${total}</Text>
+            <View className='mt-1 flex-row justify-between'>
+              <Text className='font-app text-body1 text-giratina-500'>Delivery fee</Text>
+              <Text className='font-app text-body1 text-giratina-500'>$10</Text>
+            </View>
+            {discountAmount !== 0 && (
+              <View className='mt-1 flex-row justify-between'>
+                <Text className='font-app text-body1 text-giratina-500'>Promocode</Text>
+                <Text className='font-app text-body1 text-giratina-500'>-${discountAmount}</Text>
+              </View>
+            )}
+            <View className='flex-row justify-between'>
+              <Text className='font-app-semibold text-heading2'>total</Text>
+              <Text className='font-app-semibold text-heading2'>${total}</Text>
+            </View>
           </View>
-        </View>
 
-        <View className='px-4 pb-4 pt-6'>
-          <Button label={`Pay $${total}`} onPress={createOrder} />
-        </View>
-      </ScrollView>
+          <View className='px-4 pb-4 pt-6'>
+            <Button label={`Pay $${total}`} onPress={createOrder} />
+          </View>
+        </ScrollView>
+      )}
     </CustomSafeAreaView>
   )
 }

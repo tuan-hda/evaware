@@ -39,7 +39,7 @@ const PaymentItem = ({ onPress, selected, setSelected, index, isPlain, ...item }
         <Text className='font-app text-body1'>
           {item.provider} {item.number?.slice(-4)}
         </Text>
-        <Text className='font-app text-body2 text-giratina-500'>{item.exp}</Text>
+        {item.exp && <Text className='font-app text-body2 text-giratina-500'>{item.exp}</Text>}
       </View>
 
       {!isPlain && (
