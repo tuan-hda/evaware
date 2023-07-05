@@ -76,7 +76,6 @@ const ConfirmOrder = () => {
   }
 
   const onNavigationStateChange = async (webviewState) => {
-    console.log('WebviewState', webviewState)
     if (webviewState.url.includes('https://example.com/0')) {
       setApprovalUrl('')
       const { PayerID, paymentId } = webviewState.url
