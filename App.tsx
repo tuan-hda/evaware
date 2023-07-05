@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider, useIsFetching } from '@tanstack/react
 import LoadingScreen from '~/components/common/LoadingScreen'
 import ViewWrapper from '~/layouts/ViewWrapper'
 import SuperUserTab from '~/admin/nav/SuperUserTab'
+import { decode, encode } from 'base-64'
 
 const queryClient = new QueryClient()
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state'])
@@ -24,6 +25,13 @@ SplashScreen.preventAutoHideAsync()
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false)
   const [user] = useUserStore((state) => [state.user], shallow)
+
+  if (!global.btoa) {
+    global.btoa = encode
+  }
+  if (!global.atob) {
+    global.atob = decode
+  }
 
   useEffect(() => {
     async function prepare() {
