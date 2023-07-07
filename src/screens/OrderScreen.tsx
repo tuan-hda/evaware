@@ -17,6 +17,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast'
 import { cancelOrderService } from '~/services/order'
 import useAlertExit from '~/hooks/useAlertExit'
 import { convertMoney } from '~/utils/money'
+import { refundPayPalPayment } from '~/services/payment'
 
 const sample = {
   orderID: 23124,
@@ -65,9 +66,25 @@ const OrderScreen = ({ route }: OrderProp) => {
   const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
 
   const cancelOrder = async () => {
-    const res = await cancelOrderService(order.id)
-    if (!isError(res)) {
-      navigation.goBack()
+    const payID = order.payment
+    if (payID.slice(0, 5) == 'PAYID') {
+      const refundRes = await refundPayPalPayment(payID)
+      // if (isError(refundRes)) {
+      //   Toast.show({
+      //     type: 'error',
+      //     text1: 'Refund failed!'
+      //   })
+      // } else {
+      //   const res = await cancelOrderService(order.id)
+      //   if (!isError(res)) {
+      //     navigation.goBack()
+      //   }
+      // }
+    } else {
+      const res = await cancelOrderService(order.id)
+      if (!isError(res)) {
+        navigation.goBack()
+      }
     }
   }
 
