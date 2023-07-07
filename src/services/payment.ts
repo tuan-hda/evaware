@@ -35,23 +35,23 @@ const getAccessToken = async () => {
         Accept: 'application/json',
         'Accept-Language': 'en_US',
         'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: 'Basic ' + encode(`${PAYPAL_USERNAME}:${PAYPAL_PASSWORD}`),
+        Authorization: 'Basic ' + encode(`${PAYPAL_USERNAME}:${PAYPAL_PASSWORD}`)
       },
-      body: 'grant_type=client_credentials',
-    });
-    const data = await response.json();
-    ACCESS_TOKEN = data.access_token;
-    return ACCESS_TOKEN;
+      body: 'grant_type=client_credentials'
+    })
+    const data = await response.json()
+    ACCESS_TOKEN = data.access_token
+    return ACCESS_TOKEN
   } catch (error) {
-    console.log('Error:', error.message);
-    throw error;
+    console.log('Error:', error.message)
+    throw error
   }
 }
 
 export const createPayPalPayment = async (data: CreateOrderProps) => {
-    if (!ACCESS_TOKEN) {
-      ACCESS_TOKEN = await getAccessToken();
-    }
+  if (!ACCESS_TOKEN) {
+    ACCESS_TOKEN = await getAccessToken()
+  }
 
   const dataDetail = {
     intent: 'sale',
@@ -82,7 +82,7 @@ export const createPayPalPayment = async (data: CreateOrderProps) => {
 
     const paymentId = response.data.id
     const approvalUrl = response.data.links.find((link: any) => link.rel === 'approval_url').href
-    
+
     return {
       paymentId,
       approvalUrl
@@ -93,8 +93,11 @@ export const createPayPalPayment = async (data: CreateOrderProps) => {
 }
 
 export const executePayPalPayment = async (paymentId: string, payerId: string) => {
+  if (!ACCESS_TOKEN) {
+    ACCESS_TOKEN = await getAccessToken()
+  }
   try {
-    const response = await appService.post(
+    const response = await axios.post(
       `https://api.sandbox.paypal.com/v1/payments/payment/${paymentId}/execute`,
       {
         payer_id: payerId
@@ -111,3 +114,26 @@ export const executePayPalPayment = async (paymentId: string, payerId: string) =
     console.error('Error executing payment:', error)
   }
 }
+
+export const refundPayPalPayment = async (paymentId: string) => {
+  if (!ACCESS_TOKEN) {
+    ACCESS_TOKEN = await getAccessToken();
+  }
+
+  try {
+    const response = await axios.post(
+      `https://api.sandbox.paypal.com/v1/payments/payment/${paymentId}/refund`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error refunding payment:', error);
+  }
+};

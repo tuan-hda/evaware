@@ -22,6 +22,7 @@ import { CreateOrderProps } from '~/types/order.type'
 import { convertMoney } from '~/utils/money'
 import { createPayPalPayment, executePayPalPayment } from '~/services/payment'
 import WebView from 'react-native-webview'
+import queryString from 'query-string'
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -75,17 +76,58 @@ const ConfirmOrder = () => {
     }
   }
 
+  const createPaymentData = (paymentId?: string) => {
+    const { id, created_at, updated_at, ...address } = currentAddress
+    const createData: CreateOrderProps = {
+      ...address,
+      payment: paymentId ? paymentId : currentPaymentMethod.provider.name + ' ' + currentPaymentMethod.name,
+      total
+    }
+
+    if (appliedVoucher) {
+      createData.voucher = appliedVoucher.id
+      createData.voucher_code = appliedVoucher.code
+    }
+    return createData
+  }
+
+  const createOrderFromCart = async (data: CreateOrderProps) => {
+    const res = await createOrderFromCartService(data)
+
+    if (isError(res)) {
+      let text2 = 'Some error happened'
+
+      if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
+        text2 = 'Insufficient inventory'
+      }
+
+      Toast.show({
+        type: 'error',
+        text1: 'Made order failed',
+        text2
+      })
+    } else {
+      navigation.navigate('Success')
+    }
+  }
+
   const onNavigationStateChange = async (webviewState) => {
     if (webviewState.url.includes('https://example.com/0')) {
       setApprovalUrl('')
-      const { PayerID, paymentId } = webviewState.url
+      const url = webviewState.url
+      const parsedUrl = queryString.parseUrl(url)
+      const { PayerID, paymentId } = parsedUrl.query
       const executeRes = await executePayPalPayment(paymentId, PayerID)
-      Toast.show({
-        type: 'success',
-        text1: 'Payment seccessfully!',
-        text2: `PaymentID: ${executeRes.id}`
-      })
-      navigation.navigate('Success')
+
+      if (!isError(executeRes)) {
+        const paymentData = createPaymentData(paymentId)
+        createOrderFromCart(paymentData)
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Execute PayPal payment failed!'
+        })
+      }
     }
     if (webviewState.url.includes('https://example.com/1')) {
       setApprovalUrl('')
@@ -98,17 +140,7 @@ const ConfirmOrder = () => {
 
   const createOrder = async () => {
     if (!currentAddress || !currentPaymentMethod) return
-    const { id, created_at, updated_at, ...address } = currentAddress
-    const createData: CreateOrderProps = {
-      ...address,
-      payment: currentPaymentMethod.provider.name + ' ' + currentPaymentMethod.name,
-      total
-    }
-
-    if (appliedVoucher) {
-      createData.voucher = appliedVoucher.id
-      createData.voucher_code = appliedVoucher.code
-    }
+    const createData = createPaymentData()
 
     if (currentPaymentMethod.provider.name === 'PayPal') {
       const paypayRes = await createPayPalPayment(createData)
@@ -117,27 +149,11 @@ const ConfirmOrder = () => {
       } else {
         Toast.show({
           type: 'error',
-          text1: 'Payment failed!'
+          text1: 'Create PayPal payment failed!'
         })
       }
     } else {
-      const res = await createOrderFromCartService(createData)
-
-      if (isError(res)) {
-        let text2 = 'Some error happened'
-
-        if (res.error.data[0].toLowerCase().includes('insufficient inventory')) {
-          text2 = 'Insufficient inventory'
-        }
-
-        Toast.show({
-          type: 'error',
-          text1: 'Made order failed',
-          text2
-        })
-      } else {
-        navigation.navigate('Success')
-      }
+      createOrderFromCart(createData)
     }
   }
 
