@@ -109,30 +109,34 @@ export const executePayPalPayment = async (paymentId: string, payerId: string) =
         }
       }
     )
-    return response.data
+    const captureId = response.data.transactions[0].related_resources[0].sale.id
+    return {
+      captureId,
+      responseData: response.data
+    }
   } catch (error) {
     console.error('Error executing payment:', error)
   }
 }
 
-export const refundPayPalPayment = async (paymentId: string) => {
+export const refundPayPalPayment = async (captureId: string) => {
   if (!ACCESS_TOKEN) {
     ACCESS_TOKEN = await getAccessToken();
   }
 
   try {
     const response = await axios.post(
-      `https://api.sandbox.paypal.com/v1/payments/payment/${paymentId}/refund`,
-      {},
+      `https://api.sandbox.paypal.com/v1/payments/sale/${captureId}/refund`,
+      null,
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${ACCESS_TOKEN}`,
-        },
+          'Authorization': `Bearer ${ACCESS_TOKEN}`
+        }
       }
     );
 
-    return response.data;
+    return response.data
   } catch (error) {
     console.error('Error refunding payment:', error);
   }

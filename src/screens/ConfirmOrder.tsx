@@ -23,6 +23,7 @@ import { convertMoney } from '~/utils/money'
 import { createPayPalPayment, executePayPalPayment } from '~/services/payment'
 import WebView from 'react-native-webview'
 import queryString from 'query-string'
+import LoadingScreen from '~/components/common/LoadingScreen'
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -37,6 +38,8 @@ const ConfirmOrder = () => {
   )
   const [voucher, setVoucher] = useState('')
   const [approvalUrl, setApprovalUrl] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const [appliedVoucher, setAppliedVoucher] = useState<VoucherProps>()
   const { data, refetch } = useQuery({
     queryKey: ['cart'],
@@ -76,11 +79,11 @@ const ConfirmOrder = () => {
     }
   }
 
-  const createPaymentData = (paymentId?: string) => {
+  const createPaymentData = (paymentInfo?: string) => {
     const { id, created_at, updated_at, ...address } = currentAddress
     const createData: CreateOrderProps = {
       ...address,
-      payment: paymentId ? paymentId : currentPaymentMethod.provider.name + ' ' + currentPaymentMethod.name,
+      payment: paymentInfo ? paymentInfo : currentPaymentMethod.provider.name + ' ' + currentPaymentMethod.name,
       total
     }
 
@@ -113,6 +116,8 @@ const ConfirmOrder = () => {
 
   const onNavigationStateChange = async (webviewState) => {
     if (webviewState.url.includes('https://example.com/0')) {
+      setLoading(true)
+
       setApprovalUrl('')
       const url = webviewState.url
       const parsedUrl = queryString.parseUrl(url)
@@ -120,8 +125,14 @@ const ConfirmOrder = () => {
       const executeRes = await executePayPalPayment(paymentId, PayerID)
 
       if (!isError(executeRes)) {
-        const paymentData = createPaymentData(paymentId)
-        createOrderFromCart(paymentData)
+        const paymentInfo = {
+          paymentId,
+          captureId: executeRes?.captureId
+        }
+        const paymentData = createPaymentData(JSON.stringify(paymentInfo))
+
+        await createOrderFromCart(paymentData)
+        setLoading(false)
       } else {
         Toast.show({
           type: 'error',
@@ -159,6 +170,8 @@ const ConfirmOrder = () => {
 
   return (
     <CustomSafeAreaView className='bg-white'>
+      <LoadingScreen show={loading} />
+
       <NavBar step={3} total={3} />
       <View className='h-full w-full flex-1'>
         {approvalUrl !== '' && (
