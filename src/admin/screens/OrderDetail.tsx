@@ -14,6 +14,7 @@ import moment from 'moment'
 import { createOrderFromCartService, getOrdersService, updateStatusOrderService } from '~/services/order'
 import { useQuery } from '@tanstack/react-query'
 import { convertMoney } from '~/utils/money'
+import { refundPayPalPayment } from '~/services/payment'
 
 type Props = ViewProps
 
@@ -35,6 +36,10 @@ const OrderDetail = ({ route, ...props }: Props & OrderDetailProp) => {
 
   const update = async (status: string) => {
     await updateStatusOrderService(order.id, status)
+    if (status === 'Cancelled') {
+      const paymentInfo = JSON.parse(order.payment)
+      await refundPayPalPayment(paymentInfo.captureId)
+    }
     refetch()
     setStatus(status)
   }
