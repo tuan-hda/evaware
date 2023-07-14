@@ -108,11 +108,11 @@ const LoginScreen = () => {
         </Text>
 
         <Button onPress={login} label={'Log in'} />
-        <View className='mb-4 mt-8 flex-row justify-center'>
+        {/* <View className='mb-4 mt-8 flex-row justify-center'>
           <Text className='font-app-regular text-body1' onPress={() => navigation.navigate('PhoneLogin')}>
             or login with phone number
           </Text>
-        </View>
+        </View> */}
         <View className='flex-1' />
 
         {/* Don’t have an account? Sign up */}
