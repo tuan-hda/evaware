@@ -63,25 +63,32 @@ const OrderScreen = ({ route }: OrderProp) => {
     }, 0) || 0
   )
 
-  const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
+  const discountAmount = convertMoney((Number(order?.voucher?.discount || 0) / 100) * subtotal)
 
   const cancelOrder = async () => {
-    const paymentInfo = JSON.parse(order.payment)
-    const payID = paymentInfo.paymentId
-    if (payID.slice(0, 5) == 'PAYID') {
-      const refundRes = await refundPayPalPayment(paymentInfo.captureId)
-      if (isError(refundRes)) {
-        Toast.show({
-          type: 'error',
-          text1: 'Refund failed!'
-        })
+    try {
+      const paymentInfo = JSON.parse(order.payment)
+      const payID = paymentInfo.paymentId || ''
+      if (payID.slice(0, 5) === 'PAYID') {
+        const refundRes = await refundPayPalPayment(paymentInfo.captureId)
+        if (isError(refundRes)) {
+          Toast.show({
+            type: 'error',
+            text1: 'Refund failed!'
+          })
+        } else {
+          const res = await cancelOrderService(order.id)
+          if (!isError(res)) {
+            navigation.goBack()
+          }
+        }
       } else {
         const res = await cancelOrderService(order.id)
         if (!isError(res)) {
           navigation.goBack()
         }
       }
-    } else {
+    } catch (error) {
       const res = await cancelOrderService(order.id)
       if (!isError(res)) {
         navigation.goBack()
