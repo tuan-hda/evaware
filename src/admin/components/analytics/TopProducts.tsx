@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import React, { useState } from 'react'
 import AnalyticsHeader from './AnalyticsHeader'
 import classNames from 'classnames'
@@ -72,7 +72,9 @@ const TopProducts = () => {
                 index % 2 === 0 && 'bg-giratina-100'
               )}
             >
-              <View className='h-8 w-8 rounded-md bg-black' />
+              <View className='h-8 w-8 rounded-md'>
+                <Image source={{ uri: item.product.thumbnail }} className='h-8 w-8' />
+              </View>
               <Text className='ml-2 font-app-regular text-body1'>{item.product.name}</Text>
               <View className='flex-1' />
               <Text className='mr-2 w-14 text-right font-app text-body1 text-black'>{item.sales}</Text>

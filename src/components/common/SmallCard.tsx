@@ -50,7 +50,7 @@ const SmallCard = ({
                 Variation: {variation}
               </Text>
             )}
-            {props.noOrderAgain && <Text className='mt-1 font-app text-body3 text-black/75'>Qty: {props.qty}</Text>}
+            <Text className='mb-2 mt-1 font-app text-body3 text-giratina-500'>Qty: {props.qty}</Text>
           </View>
           {checkedStyle === 'saved' && (
             <Pressable onPress={onButtonClearPress}>

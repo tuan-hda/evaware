@@ -51,7 +51,7 @@ const Button = ({
   })
 
   const animStart = () => {
-    if (disabled || loading) {
+    if (disabled || loading || type === 'secondary') {
       return
     }
 

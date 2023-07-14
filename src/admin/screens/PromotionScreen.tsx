@@ -39,7 +39,10 @@ const PromotionScreen = () => {
       <FlatList
         className='flex-1'
         data={vouchers?.results.filter((item) => !item.is_deleted)}
-        renderItem={({ item }) => <PromotionItem data={item} onPress={() => checkSelected(item)} />}
+        renderItem={({ item }) => {
+          if (item.owner === null) return <PromotionItem data={item} onPress={() => checkSelected(item)} />
+          return null
+        }}
         showsVerticalScrollIndicator={false}
       />
 

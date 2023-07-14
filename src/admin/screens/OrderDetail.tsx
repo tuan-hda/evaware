@@ -79,11 +79,11 @@ const OrderDetail = ({ route, ...props }: Props & OrderDetailProp) => {
       return prev + curr.product.price * (1 - curr.product.discount / 100) * curr.qty
     }, 0) || 0
   )
-  const discountAmount = ((order?.voucher?.discount || 0) / 100) * subtotal
+  const discountAmount = convertMoney((Number(order?.voucher?.discount || 0) / 100) * subtotal)
 
   return (
     <CustomSafeAreaView>
-      <AppBar title='ORDER102' />
+      <AppBar title={`Order #${order.id}`} />
       <SelectModal selected={status} title='Update status' show={show} toggle={toggle} items={items} />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 12 }}>

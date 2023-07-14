@@ -37,8 +37,8 @@ const SuperUserNav = () => (
   <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
     <Stack.Screen name='UserScreen' component={SettingScreenSuperUser} />
     <Stack.Screen name='ManageUser' component={ManageUserScreen} />
-    <Stack.Screen name='MyDetails' component={DetailScreen} />
     <Stack.Screen name='ChangeRole' component={UserDetailScreen} />
+    <Stack.Screen name='MyDetails' component={DetailScreen} />
   </Stack.Navigator>
 )
 

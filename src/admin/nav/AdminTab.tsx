@@ -10,11 +10,14 @@ import AnalyticsScreen from '../screens/AnalyticsScreen'
 import OrderNav from './OrderNav'
 import ProductNav from './ProductNav'
 import SettingNav from './SettingNav'
+import useUserStore from '~/store/user'
+import { shallow } from 'zustand/shallow'
 
 const Tab = createBottomTabNavigator()
 
 const AdminTab = () => {
   const insets = useSafeAreaInsets()
+  const [user] = useUserStore((state) => [state.user], shallow)
 
   return (
     <Tab.Navigator
@@ -45,15 +48,17 @@ const AdminTab = () => {
           tabBarIcon: ({ focused }) => <Ionicons size={28} name='card' color={focused ? '#000000' : '#9e9e9e'} />
         }}
       />
-      <Tab.Screen
-        name='Analytics'
-        component={AnalyticsScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <MaterialCommunityIcons size={28} name='google-analytics' color={focused ? '#000000' : '#9e9e9e'} />
-          )
-        }}
-      />
+      {user?.is_superuser && (
+        <Tab.Screen
+          name='Analytics'
+          component={AnalyticsScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <MaterialCommunityIcons size={28} name='google-analytics' color={focused ? '#000000' : '#9e9e9e'} />
+            )
+          }}
+        />
+      )}
       <Tab.Screen
         name='Setting'
         component={SettingNav}

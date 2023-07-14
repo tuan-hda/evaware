@@ -24,6 +24,7 @@ import { createPayPalPayment, executePayPalPayment } from '~/services/payment'
 import WebView from 'react-native-webview'
 import queryString from 'query-string'
 import LoadingScreen from '~/components/common/LoadingScreen'
+import { PaymentMethodProps } from '~/types/payment.type'
 
 const Header = () => (
   <View className='h-16 justify-center px-4'>
@@ -56,7 +57,7 @@ const ConfirmOrder = () => {
     }, 0) || 0
   )
 
-  const discountAmount = ((appliedVoucher?.discount || 0) / 100) * subtotal
+  const discountAmount = convertMoney((Number(appliedVoucher?.discount || 0) / 100) * subtotal)
 
   const total = subtotal + 10 - discountAmount
 
@@ -80,10 +81,15 @@ const ConfirmOrder = () => {
   }
 
   const createPaymentData = (paymentInfo?: string) => {
+    if (!currentAddress) return
     const { id, created_at, updated_at, ...address } = currentAddress
     const createData: CreateOrderProps = {
       ...address,
-      payment: paymentInfo ? paymentInfo : currentPaymentMethod.provider.name + ' ' + currentPaymentMethod.name,
+      payment: paymentInfo
+        ? paymentInfo
+        : (currentPaymentMethod as PaymentMethodProps).provider.name +
+          ' ' +
+          (currentPaymentMethod as PaymentMethodProps).name,
       total
     }
 
@@ -151,7 +157,7 @@ const ConfirmOrder = () => {
 
   const createOrder = async () => {
     if (!currentAddress || !currentPaymentMethod) return
-    const createData = createPaymentData()
+    const createData = createPaymentData() as CreateOrderProps
 
     if (currentPaymentMethod.provider.name === 'PayPal') {
       const paypayRes = await createPayPalPayment(createData)

@@ -1,5 +1,5 @@
-import { View, Text, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, Pressable, TouchableOpacity } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Button, CustomSafeAreaView, NavBar } from '~/components/common'
 import { FlatList } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -12,6 +12,7 @@ import { PaymentItemProps, PaymentMethodProps } from '~/types/payment.type'
 import { translatePaymentMethod } from '~/utils/translateAxiosObj'
 import useCartStore from '~/store/cart'
 import { shallow } from 'zustand/shallow'
+import { produce } from 'immer'
 
 // const data = [
 //   {
@@ -40,12 +41,17 @@ const Header = () => (
   </View>
 )
 
-const Footer = () => {
+const Footer = ({ selected, payPalIndex }: { selected: number; payPalIndex: number }) => {
   const navigation = useNavigation<BagNavigationProp>()
-  const [currentPaymentMethod, setPaymentMethod] = useCartStore(
-    (state) => [state.currentPaymentMethod, state.setPaymentMethod],
-    shallow
-  )
+  const [setPaymentMethod] = useCartStore((state) => [state.setPaymentMethod], shallow)
+
+  const handleNavigate = () => {
+    if (selected === payPalIndex) {
+      paymentWithPayPal()
+    }
+    navigation.navigate('ConfirmOrder')
+  }
+
   const paymentWithPayPal = () => {
     const paypal: PaymentMethodProps = {
       id: 1,
@@ -66,25 +72,25 @@ const Footer = () => {
       }
     }
     setPaymentMethod(paypal)
-    navigation.navigate('ConfirmOrder')
   }
+
   return (
     <View>
       <View className='mt-10 px-4'>
         <Button label='Add new card' onPress={() => navigation.navigate('PaymentMethodBook')} type='secondary' />
       </View>
-      <View className='px-4'>
-        <Pressable
+      {/* <View className='mt-4 h-16 px-4'>
+        <TouchableOpacity
           onPress={paymentWithPayPal}
-          className='mt-4 h-16 flex-1 flex-row items-center justify-center rounded-lg bg-[#FFC439] px-4'
+          className='h-16 flex-1 flex-row items-center justify-center rounded-lg bg-giratina-100 px-4'
         >
-          <Text className='text-2xl font-semibold text-[#253b80]'>Pay</Text>
-          <Text className='text-2xl font-semibold text-[#179bd7]'>Pal</Text>
-        </Pressable>
-      </View>
+          <Text className='font-app-semibold text-lg font-semibold text-[#253b80]'>Pay</Text>
+          <Text className='font-app-semibold text-lg font-semibold text-[#179bd7]'>Pal</Text>
+        </TouchableOpacity>
+      </View> */}
 
       <View className='mt-4 px-4 pb-4'>
-        <Button label='Continue' onPress={() => navigation.navigate('ConfirmOrder')} />
+        <Button label='Continue' onPress={handleNavigate} />
       </View>
     </View>
   )
@@ -92,15 +98,13 @@ const Footer = () => {
 
 const PaymentMethod = () => {
   const [selected, setSelected] = useState(0)
-  const [currentPaymentMethod, setPaymentMethod] = useCartStore(
-    (state) => [state.currentPaymentMethod, state.setPaymentMethod],
-    shallow
-  )
+  const [setPaymentMethod] = useCartStore((state) => [state.setPaymentMethod], shallow)
   const { data: temp, refetch } = useQuery({
     queryKey: ['payments'],
     queryFn: getPaymentMethods
   })
   const data = temp?.data
+  const payPalIndex = (data?.results.length || 0) + 1
   useRefetchOnFocus(refetch)
 
   useEffect(() => {
@@ -117,19 +121,24 @@ const PaymentMethod = () => {
   return (
     <CustomSafeAreaView className='bg-white'>
       <NavBar step={2} total={3} />
-      <FlatList
-        data={data?.results}
-        ListHeaderComponent={Header}
-        ListFooterComponent={Footer}
-        renderItem={({ item, index }) => (
-          <PaymentItem
-            selected={selected}
-            setSelected={changePayment}
-            {...translatePaymentMethod(item)}
-            index={index}
-          />
-        )}
+      <Header />
+      {data?.results.map((item, index) => (
+        <PaymentItem
+          key={item.id}
+          selected={selected}
+          setSelected={changePayment}
+          {...translatePaymentMethod(item)}
+          index={index}
+        />
+      ))}
+      <PaymentItem
+        img='https://firebasestorage.googleapis.com/v0/b/evaware-893a5.appspot.com/o/payment_providers%2Femblem-Paypal.jpg?alt=media&token=2318ad74-0a14-4645-88a0-47d912efdcb5'
+        provider='PayPal'
+        selected={selected}
+        setSelected={changePayment}
+        index={(data?.results.length || 0) + 1}
       />
+      <Footer selected={selected} payPalIndex={payPalIndex} />
     </CustomSafeAreaView>
   )
 }

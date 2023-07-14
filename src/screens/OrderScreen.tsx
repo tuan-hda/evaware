@@ -125,6 +125,7 @@ const OrderScreen = ({ route }: OrderProp) => {
               variation={item.variation.name}
               price={item.price}
               desc={item.product.desc}
+              qty={item.qty}
               image={item.variation.img_urls[0]}
               onPress={() =>
                 navigation.navigate('Product', {

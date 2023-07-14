@@ -12,6 +12,12 @@ import { OrderProps } from '~/types/order.type'
 import { ProvinceProps } from '~/types/province.type'
 import { AddressProps } from '~/types/address.type'
 import SettingScreen from '../screens/SettingScreen'
+import useUserStore from '~/store/user'
+import { shallow } from 'zustand/shallow'
+import SettingScreenSuperUser from '../screens/SettingScreenSuperUser'
+import ManageUserScreen from '../screens/ManageUserScreen'
+import UserDetailScreen from '../screens/UserDetail'
+import { GeneralUserProps } from '~/types/user.type'
 
 export type UserNavParamList = {
   UserScreen: undefined
@@ -47,6 +53,10 @@ export type UserNavParamList = {
     isEdit?: boolean
     oldReview?: ReviewProps
   }
+  ChangeRole: {
+    data: GeneralUserProps
+  }
+  ManageUser: undefined
 }
 
 export type UserNavigationProp = StackNavigationProp<UserNavParamList>
@@ -56,17 +66,23 @@ export type AddAddressProp = StackScreenProps<UserNavParamList, 'AddAddress'>
 
 const Stack = createStackNavigator<UserNavParamList>()
 
-const UserNav = () => (
-  <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
-    <Stack.Screen name='UserScreen' component={SettingScreen} />
-    <Stack.Screen name='Address' component={AddressBookScreen} />
-    <Stack.Screen name='AddAddress' component={AddAddressScreen} />
-    <Stack.Screen name='ChooseAddress' component={ChooseAddressScreen} />
-    <Stack.Screen name='PaymentMethod' component={PaymentMethodScreen} />
-    <Stack.Screen name='MyDetails' component={DetailScreen} />
-    <Stack.Screen name='MyOrders' component={MyOrdersScreen} />
-    <Stack.Screen name='OrderScreen' component={OrderScreen} />
-  </Stack.Navigator>
-)
+const UserNav = () => {
+  const [user] = useUserStore((state) => [state.user], shallow)
+
+  return (
+    <Stack.Navigator screenOptions={{ ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
+      <Stack.Screen name='UserScreen' component={user?.is_superuser ? SettingScreenSuperUser : SettingScreen} />
+      <Stack.Screen name='Address' component={AddressBookScreen} />
+      <Stack.Screen name='AddAddress' component={AddAddressScreen} />
+      <Stack.Screen name='ChooseAddress' component={ChooseAddressScreen} />
+      <Stack.Screen name='PaymentMethod' component={PaymentMethodScreen} />
+      <Stack.Screen name='MyDetails' component={DetailScreen} />
+      <Stack.Screen name='MyOrders' component={MyOrdersScreen} />
+      <Stack.Screen name='OrderScreen' component={OrderScreen} />
+      <Stack.Screen name='ManageUser' component={ManageUserScreen} />
+      <Stack.Screen name='ChangeRole' component={UserDetailScreen} />
+    </Stack.Navigator>
+  )
+}
 
 export default UserNav

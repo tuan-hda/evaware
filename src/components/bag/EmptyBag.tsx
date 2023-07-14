@@ -15,7 +15,7 @@ const EmptyBag = () => {
         <Surprised />
         <Text className='mt-4 font-app-semibold text-heading2'>your bag is empty</Text>
         <Text className='mt-1 px-2 text-center font-app text-body1 text-giratina-500'>
-          items remain in your bag for 1 hour, and then they're moved to your Saved items
+          go find something for you now
         </Text>
       </View>
 
