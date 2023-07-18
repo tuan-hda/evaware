@@ -2,6 +2,7 @@ import { callAxios } from '~/utils/callAxios'
 import { appService } from './base'
 import { VoucherProps } from '~/types/voucher.type'
 import { ListProps } from '~/types/service.type'
+import { ProductProps } from '~/types/product.type'
 
 const path = '/voucher'
 
@@ -23,3 +24,5 @@ export const updateVoucherService = async (data: VoucherProps) => {
 export const deleteVoucherService = async (id: number) => {
   return await callAxios<VoucherProps>(appService.delete('/voucher' + '/' + id))
 }
+
+export const getRecommendPromotionService = async () => appService.get<ProductProps[]>(path + '/recommend')

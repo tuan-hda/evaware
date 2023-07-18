@@ -10,6 +10,9 @@ import AddPromotion from '../promotion/AddPromotion'
 import useVoucherData from '~/hooks/useVoucherData'
 import { useRefetchOnFocus } from '~/hooks/useRefetchOnFocus'
 import { VoucherProps } from '~/types/voucher.type'
+import Tab from '~/components/tab/Tab'
+import VoucherList from '../promotion/VoucherList'
+import RecommendList from '../promotion/RecommendList'
 
 const PromotionScreen = () => {
   const [show, setShow] = useState(false)
@@ -29,22 +32,20 @@ const PromotionScreen = () => {
   return (
     <CustomSafeAreaView className='flex-1 bg-white px-4'>
       <AddPromotion show={show} toggle={toggleShow} data={selected} />
-      <View className='mt-14 w-full  flex-row items-center justify-between'>
+      <View className='mt-14 w-full flex-row items-center justify-between'>
         <Text className='h-[58] text-left font-app-semibold text-heading1'>promotion</Text>
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <MaterialCommunityIcons name='menu-open' size={32} />
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        className='flex-1'
-        data={vouchers?.results.filter((item) => !item.is_deleted)}
-        renderItem={({ item }) => {
-          if (item.owner === null) return <PromotionItem data={item} onPress={() => checkSelected(item)} />
-          return null
-        }}
-        showsVerticalScrollIndicator={false}
-      />
+      <VoucherList checkSelected={checkSelected} vouchers={vouchers?.results.filter((item) => !item.is_deleted)} />
+      {/* <Tab
+        tab1={
+          <VoucherList checkSelected={checkSelected} vouchers={vouchers?.results.filter((item) => !item.is_deleted)} />
+        }
+        tab2={<RecommendList checkSelected={checkSelected} />}
+      /> */}
 
       <View className='py-4'>
         <Button onPress={() => checkSelected()} label='Add promotion' />
